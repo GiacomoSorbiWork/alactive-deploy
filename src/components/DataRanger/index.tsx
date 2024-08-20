@@ -33,7 +33,8 @@ const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
         alignItems: "flex-end",
         justifyContent: "center",
         marginTop: "20px",
-        marginBottom: "20px",
+        marginBottom: "0px",
+        height: "70px",
       }}
     >
       {Array.from({ length: count }, (_, i) => {
@@ -74,7 +75,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({ low = 80, high = 2000 }) => {
 };
 
 export default function RangeSlider() {
-  const [value, setValue] = React.useState<number[]>([20, 37]);
+  const [value, setValue] = React.useState<number[]>([80, 2000]);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number[]);
@@ -86,6 +87,7 @@ export default function RangeSlider() {
       <CustomSlider
         getAriaLabel={() => "Temperature range"}
         value={value}
+        max={3000}
         onChange={handleChange}
         valueLabelDisplay="auto"
         getAriaValueText={valuetext}
@@ -93,7 +95,7 @@ export default function RangeSlider() {
           marginTop: "-20px",
         }}
       />
-      <PriceRange />
+      <PriceRange low={value[0]} high={value[1]} />
     </>
   );
 }
