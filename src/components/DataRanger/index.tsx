@@ -32,6 +32,8 @@ const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
         flexDirection: "row",
         alignItems: "flex-end",
         justifyContent: "center",
+        marginTop: "20px",
+        marginBottom: "20px",
       }}
     >
       {Array.from({ length: count }, (_, i) => {

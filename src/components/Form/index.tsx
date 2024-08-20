@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useMemo } from "react";
-import CheckBox from "./checkbox";
+import CheckBox from "../Checkbox";
 import DateInput from "rsuite/DateInput";
 
 interface FormProps {

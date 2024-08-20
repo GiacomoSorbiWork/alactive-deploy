@@ -1,6 +1,6 @@
 import React from "react";
-import Wallet from "../../resources/wallet-money-cash-svgrepo-com.svg";
-import Calendar from "../../resources/calendar-symbol-svgrepo-com.svg";
+import Wallet from "../../../resources/wallet-money-cash-svgrepo-com.svg";
+import Calendar from "../../../resources/calendar-symbol-svgrepo-com.svg";
 
 interface CardProps {
   imgUrl: string;

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
-import { ProgressBar } from "../components/progress-bar";
-import arrowBack from "../../resources/arrow back.svg";
-import Button from "../components/button";
-import Form from "../components/Form";
-import Card from "../components/card";
-import SelectList from "../components/select-list";
-import RangeSlider from "../components/data-ranger";
+import { ProgressBar } from "../../components/ProgressBar";
+import arrowBack from "../../../resources/arrow back.svg";
+import Button from "../../components/Button";
+import Form from "../../components/Form";
+import Card from "../../components/Card";
+import SelectList from "../../components/SelectList";
+import RangeSlider from "../../components/DataRanger";
 
 const Register: React.FC = () => {
   const favoriteList: Array<string> = [
