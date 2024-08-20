@@ -1,0 +1,8 @@
+{
+  "name": "Alactive",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite",
+  "id": "2ec703e7"
+}
