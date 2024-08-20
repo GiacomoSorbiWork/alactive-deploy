@@ -95,7 +95,7 @@ const Register: React.FC = () => {
       )}
       <div
         className={`border-bottom p-2 flex flex-col justify-between ${
-          isCard || step === 6 ? "h-[80%]" : "h-[52%]"
+          isCard || step > 4 ? (step !== 5 ? "h-[95%]" : "h-[80%]") : "h-[52%]"
         }`}
       >
         {step === 1 && (
@@ -154,7 +154,16 @@ const Register: React.FC = () => {
         {step === 6 && (
           <SelectList data={favoriteList} onClick={handleSelectFavorite} />
         )}
-        {step === 7 && <RangeSlider />}
+        {step === 7 && (
+          <div className="mt-7">
+            <div className="px-[32px]">
+              <h1 className="text-4xl font-bold leading-tight tracking-wide text-white">
+                What’s your budget for a night out at a nigthlife event?
+              </h1>
+            </div>
+            <RangeSlider />
+          </div>
+        )}
         <Button text="Next" isActive={isActive()} onClick={handleNext} />
       </div>
     </>
