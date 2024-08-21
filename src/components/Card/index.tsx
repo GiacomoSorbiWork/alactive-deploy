@@ -1,13 +1,7 @@
 import React from "react";
 import Wallet from "../../../resources/wallet-money-cash-svgrepo-com.svg";
 import Calendar from "../../../resources/calendar-symbol-svgrepo-com.svg";
-
-interface CardProps {
-  imgUrl: string;
-  title: string;
-  payBill: number;
-  date: Date;
-}
+import { CardProps } from "./type";
 
 const formatDate = (date: Date): string => {
   // Format the date as needed, e.g., "MM/dd/yyyy"

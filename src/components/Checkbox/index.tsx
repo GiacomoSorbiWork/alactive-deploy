@@ -1,9 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-
-interface CheckBoxProps {
-  isChecked?: boolean;
-  handleSubscribed?: (checked: boolean) => void;
-}
+import { CheckBoxProps } from "./type";
 
 const CheckBox: React.FC<CheckBoxProps> = ({
   isChecked = true,

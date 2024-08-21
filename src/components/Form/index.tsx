@@ -1,19 +1,7 @@
-import React, { ChangeEvent, useMemo } from "react";
+import React, { useMemo } from "react";
 import CheckBox from "../Checkbox";
 import DateInput from "rsuite/DateInput";
-
-interface FormProps {
-  title: string;
-  label: string;
-  value: string | Date | null;
-  text?: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onDateChange?: (date: Date | null) => void;
-  checkValue?: string;
-  visibleCheckboxes?: boolean;
-  isSubscribed?: boolean;
-  handleSubscribed?: (subscribed: boolean) => void;
-}
+import { FormProps } from "./type";
 
 const Form: React.FC<FormProps> = ({
   title,

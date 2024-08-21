@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-
-interface SelectListProps {
-  data: Array<string>;
-  onClick: (item: string) => void;
-}
+import { SelectListProps } from "./type";
 
 const SelectList: React.FC<SelectListProps> = ({ data, onClick }) => {
   const [isActiveItem, setIsActiveItem] = useState<string>("");

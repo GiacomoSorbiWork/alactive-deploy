@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { Box } from "@mui/material";
 import { styled, keyframes } from "@mui/material/styles";
 import RangeSlider from "../DataRanger";
+import { BudgetProps } from "./type";
 
 // Define keyframes for animation
 const fadeIn = keyframes`  
@@ -19,13 +20,6 @@ const fadeIn = keyframes`
 const AnimatedBox = styled(Box)(() => ({
   animation: `${fadeIn} 0.5s ease-out`,
 }));
-
-interface BudgetProps {
-  isOpen: boolean;
-  onToggle: () => void;
-  value: number[];
-  onChange: (newValue: number[]) => void;
-}
 
 const Budget: FC<BudgetProps> = ({ isOpen, onToggle, value, onChange }) => {
   const handleChange = (event: Event, newValue: number | number[]): void => {

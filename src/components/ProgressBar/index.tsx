@@ -1,9 +1,6 @@
 import React from "react";
 import LinearProgress from "@mui/material/LinearProgress";
-
-interface ProgressBarProps {
-  progress: number;
-}
+import { ProgressBarProps } from "./type";
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   const limit = 8;

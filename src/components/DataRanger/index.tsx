@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
-
+import { PriceRangeProps, RangeSliderProps } from "./type";
 function valuetext(value: number) {
   return `${value}°C`;
 }
@@ -54,11 +54,6 @@ const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
   );
 };
 
-interface PriceRangeProps {
-  low: number; // Mandatory prop with value from parent
-  high: number; // Mandatory prop with value from parent
-}
-
 const PriceRange: React.FC<PriceRangeProps> = ({ low, high }) => {
   return (
     <div className="flex items-center text-white">
@@ -73,11 +68,6 @@ const PriceRange: React.FC<PriceRangeProps> = ({ low, high }) => {
     </div>
   );
 };
-
-interface RangeSliderProps {
-  value: number[];
-  onChange: (event: Event, newValue: number | number[]) => void;
-}
 
 export default function RangeSlider({ value, onChange }: RangeSliderProps) {
   return (

@@ -3,6 +3,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { InputAdornment, TextField } from "@mui/material";
 import { styled, keyframes } from "@mui/material/styles";
+import { LocationProps } from "./type";
 
 // Define keyframes for animation
 const fadeIn = keyframes`  
@@ -31,13 +32,6 @@ const CustomTextField = styled(TextField)(() => ({
     },
   },
 }));
-
-interface LocationProps {
-  isOpen: boolean;
-  onToggle: () => void;
-  value: string;
-  onChange: (value: string) => void;
-}
 
 const Location: FC<LocationProps> = ({ isOpen, onToggle, value, onChange }) => {
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {

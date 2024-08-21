@@ -5,7 +5,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { IconButton, Box, Typography, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
-import { Dayjs } from "dayjs";
+import { WhenProps, DatePickerFieldProps } from "./type";
 
 // Styled components
 const DemoContainer = styled(Box)(() => ({
@@ -52,13 +52,6 @@ const StyledIconButton = styled(IconButton)(() => ({
 }));
 
 // DatePickerField Component
-interface DatePickerFieldProps {
-  label: "Month" | "Year";
-  value: Dayjs | null;
-  onChange: (newValue: Dayjs | null) => void;
-  onClear: () => void;
-}
-
 const DatePickerField: FC<DatePickerFieldProps> = ({
   label,
   value,
@@ -112,7 +105,7 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
             open={openModel}
             views={[label.toLowerCase() as "month" | "year"]}
             value={value}
-            onChange={(newValue: Dayjs | null) => {
+            onChange={(newValue) => {
               onChange(newValue);
               handleClose();
             }}
@@ -126,14 +119,6 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
 };
 
 // When Component
-interface WhenProps {
-  isOpen: boolean;
-  onToggle: () => void;
-  selectedMonth: Dayjs | null;
-  setSelectedMonth: (value: Dayjs | null) => void;
-  selectedYear: Dayjs | null;
-  setSelectedYear: (value: Dayjs | null) => void;
-}
 
 const When: FC<WhenProps> = ({
   isOpen,

@@ -1,12 +1,5 @@
 import React from "react";
-import { SvgIconComponent } from "@mui/icons-material";
-
-interface ButtonProps {
-  text: string;
-  isActive?: boolean;
-  svg?: SvgIconComponent;
-  onClick: () => void;
-}
+import { ButtonProps } from "./type";
 
 const Button: React.FC<ButtonProps> = ({
   text,
