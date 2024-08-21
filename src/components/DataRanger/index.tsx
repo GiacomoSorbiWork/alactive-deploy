@@ -38,7 +38,7 @@ const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
       }}
     >
       {Array.from({ length: count }, (_, i) => {
-        const barHeight = Math.floor(Math.random() * 50) + 15; // Random height between 5 and 35
+        const barHeight = Math.floor(Math.random() * 50) + 15; // Random height between 15 and 65
         return (
           <Box
             key={i}
@@ -55,11 +55,11 @@ const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
 };
 
 interface PriceRangeProps {
-  low?: number; // Optional prop with default
-  high?: number; // Optional prop with default
+  low: number; // Mandatory prop with value from parent
+  high: number; // Mandatory prop with value from parent
 }
 
-const PriceRange: React.FC<PriceRangeProps> = ({ low = 80, high = 2000 }) => {
+const PriceRange: React.FC<PriceRangeProps> = ({ low, high }) => {
   return (
     <div className="flex items-center text-white">
       <div className="bg-[var(--secondary-color)] m-2.5 rounded-[30px] flex flex-col items-start p-[5px] pl-4 w-[45%] text-center">
@@ -74,21 +74,20 @@ const PriceRange: React.FC<PriceRangeProps> = ({ low = 80, high = 2000 }) => {
   );
 };
 
-export default function RangeSlider() {
-  const [value, setValue] = React.useState<number[]>([80, 2000]);
+interface RangeSliderProps {
+  value: number[];
+  onChange: (event: Event, newValue: number | number[]) => void;
+}
 
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setValue(newValue as number[]);
-  };
-
+export default function RangeSlider({ value, onChange }: RangeSliderProps) {
   return (
     <>
       <MusicBar />
       <CustomSlider
-        getAriaLabel={() => "Temperature range"}
+        getAriaLabel={() => "Price range"}
         value={value}
         max={3000}
-        onChange={handleChange}
+        onChange={onChange}
         valueLabelDisplay="auto"
         getAriaValueText={valuetext}
         sx={{
