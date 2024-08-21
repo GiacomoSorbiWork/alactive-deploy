@@ -83,6 +83,7 @@ const Form: React.FC<FormProps> = ({
           <>
             <DateInput
               format="dd/MM/yyyy"
+              placeholder="DD/MM/YYYY"
               className="bg-transparent text-[25px] tracking-[5px]"
               value={value as Date}
               onChange={onDateChange}

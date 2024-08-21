@@ -1,4 +1,5 @@
 import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import { ProgressBar } from "../../components/ProgressBar";
 import arrowBack from "../../../resources/arrow back.svg";
 import Button from "../../components/Button";
@@ -24,10 +25,17 @@ const Register: React.FC = () => {
   const [date, setDate] = useState<Date | null>(null);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
   const [isCard, setIsCard] = useState<boolean>(false);
+  const [rangeValue, setRangeValue] = useState<number[]>([80, 2000]);
+
+  const history = useHistory();
 
   useEffect(() => {
     setIsCard(step === 5);
   }, [step]);
+
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    setRangeValue(newValue as number[]);
+  };
 
   const handleBack = useCallback((): void => {
     if (step > 1) {
@@ -36,25 +44,29 @@ const Register: React.FC = () => {
   }, [step]);
 
   const handleNext = useCallback((): void => {
-    const isEmailValid = email.trim() !== "" && isSubscribed;
-    const isNameValid = name.trim() !== "";
-    const isUserNameValid = userName.trim() !== "" && userName.length <= 15;
-    const isDateValid = date !== null;
+    if (step >= 7) {
+      history.push("/dashboard");
+    } else {
+      const isEmailValid = email.trim() !== "" && isSubscribed;
+      const isNameValid = name.trim() !== "";
+      const isUserNameValid = userName.trim() !== "" && userName.length <= 15;
+      const isDateValid = date !== null;
 
-    const isFormValid =
-      (step === 1 && isEmailValid) ||
-      (step === 2 && isNameValid) ||
-      (step === 3 && isDateValid) ||
-      (step === 4 && isUserNameValid) ||
-      step >= 5; // Allow progression from steps 5+ even without validation
+      const isFormValid =
+        (step === 1 && isEmailValid) ||
+        (step === 2 && isNameValid) ||
+        (step === 3 && isDateValid) ||
+        (step === 4 && isUserNameValid) ||
+        step >= 5; // Allow progression from steps 5+ even without validation
 
-    if (!isFormValid) {
-      alert(
-        "Please fill out all fields correctly and accept the subscription."
-      );
-      return;
+      if (!isFormValid) {
+        alert(
+          "Please fill out all fields correctly and accept the subscription."
+        );
+        return;
+      }
+      setStep((prevStep) => prevStep + 1);
     }
-    setStep((prevStep) => prevStep + 1);
   }, [step, email, name, userName, date, isSubscribed]);
 
   const isActive = useCallback((): boolean => {
@@ -161,7 +173,7 @@ const Register: React.FC = () => {
                 What’s your budget for a night out at a nigthlife event?
               </h1>
             </div>
-            <RangeSlider />
+            <RangeSlider value={rangeValue} onChange={handleChange} />
           </div>
         )}
         <Button text="Next" isActive={isActive()} onClick={handleNext} />

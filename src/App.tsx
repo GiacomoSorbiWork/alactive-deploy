@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -11,9 +11,9 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import Register from "./pages/Register";
 
-import logo from "../resources/logo.svg";
+import Register from "./pages/Register";
+import DashBoard from "./pages/Dashboard";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -31,64 +31,85 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
-import "@ionic/react/css/palettes/dark.system.css";
-
 /* Theme variables */
 import "./theme/variables.css";
+
+import HomeSVG from "../resources/svg/Vector 5 (Stroke).svg";
+import FavoriteSVG from "../resources/svg/Vector.svg";
+import ProfileSVG from "../resources/svg/Frame.svg";
+import logo from "../resources/logo.svg";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [isClicked, setIsClicked] = useState(false); // Use state to track click status
-
-  const handleClick = () => {
-    setIsClicked(true); // Update state on click
-  };
   return (
     <IonApp>
       <IonReactRouter>
-        {/* <IonTabs> */}
-        <IonRouterOutlet>
-          <Route exact path="/">
-            <div onClick={handleClick}>
-              {!isClicked ? (
-                <div className="bg-[var(--primary-color)] h-screen flex justify-center items-center cursor-pointer">
-                  <img src={logo} alt="logo" />
-                </div>
-              ) : (
-                <div className="bg-black h-screen">
-                  <Register />
-                </div>
-              )}
-            </div>
-          </Route>
-        </IonRouterOutlet>
-        {/* <IonTabBar slot="bottom">
-          <IonTabButton tab="register" href="/register">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
-          </IonTabButton>
-        </IonTabBar> */}
-        {/* </IonTabs> */}
+        <RouterPart />
       </IonReactRouter>
     </IonApp>
+  );
+};
+
+const RouterPart: React.FC = () => {
+  return (
+    <IonRouterOutlet>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/dashboard" component={DashboardWithTabs} />
+        <Redirect from="*" to="/" />
+      </Switch>
+    </IonRouterOutlet>
+  );
+};
+
+const Home: React.FC = () => {
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleClick = () => {
+    setIsClicked(true);
+  };
+
+  return (
+    <div onClick={handleClick}>
+      {!isClicked ? (
+        <div className="bg-[var(--primary-color)] h-screen flex justify-center items-center cursor-pointer">
+          <img src={logo} alt="logo" />
+        </div>
+      ) : (
+        <div className="bg-black h-screen">
+          <Register />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DashboardWithTabs: React.FC = () => {
+  return (
+    <IonTabs>
+      <IonRouterOutlet>
+        <Route exact path="/dashboard" component={DashBoard} />
+        <Route exact path="/register" component={Register} />
+        <Route>
+          <Redirect to="/dashboard" />
+        </Route>
+      </IonRouterOutlet>
+      <IonTabBar slot="bottom">
+        <IonTabButton tab="home" href="/home">
+          <IonIcon icon={HomeSVG} />
+          <IonLabel>Home</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="favorite" href="/tab2">
+          <IonIcon icon={FavoriteSVG} />
+          <IonLabel>Favorite</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="porfile" href="/porfile">
+          <IonIcon icon={ProfileSVG} />
+          <IonLabel>Profile</IonLabel>
+        </IonTabButton>
+      </IonTabBar>
+    </IonTabs>
   );
 };
 
