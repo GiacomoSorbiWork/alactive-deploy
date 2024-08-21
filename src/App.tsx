@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { Route, Redirect, Switch, useLocation } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -14,6 +14,7 @@ import { IonReactRouter } from "@ionic/react-router";
 
 import Register from "./pages/Register";
 import DashBoard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -56,7 +57,11 @@ const RouterPart: React.FC = () => {
     <IonRouterOutlet>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path="/dashboard" component={DashboardWithTabs} />
+        <Route
+          path={["/dashboard", "/profile"]}
+          component={DashboardWithTabs}
+        />
+        <Route exact path="/register" component={Register} />
         <Redirect from="*" to="/" />
       </Switch>
     </IonRouterOutlet>
@@ -86,29 +91,34 @@ const Home: React.FC = () => {
 };
 
 const DashboardWithTabs: React.FC = () => {
+  const location = useLocation();
+
+  const shouldShowTabs = location.pathname !== "/register";
+
   return (
     <IonTabs>
       <IonRouterOutlet>
         <Route exact path="/dashboard" component={DashBoard} />
-        <Route exact path="/register" component={Register} />
-        <Route>
-          <Redirect to="/dashboard" />
-        </Route>
+        <Route exact path="/profile" component={Profile} />
+        <Redirect to="/dashboard" />
       </IonRouterOutlet>
-      <IonTabBar slot="bottom">
-        <IonTabButton tab="home" href="/home">
-          <IonIcon icon={HomeSVG} />
-          <IonLabel>Home</IonLabel>
-        </IonTabButton>
-        <IonTabButton tab="favorite" href="/tab2">
-          <IonIcon icon={FavoriteSVG} />
-          <IonLabel>Favorite</IonLabel>
-        </IonTabButton>
-        <IonTabButton tab="porfile" href="/porfile">
-          <IonIcon icon={ProfileSVG} />
-          <IonLabel>Profile</IonLabel>
-        </IonTabButton>
-      </IonTabBar>
+
+      {shouldShowTabs && (
+        <IonTabBar slot="bottom">
+          <IonTabButton tab="dashboard" href="/dashboard">
+            <IonIcon icon={HomeSVG} />
+            <IonLabel>Home</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="dashboard" href="/favorite">
+            <IonIcon icon={FavoriteSVG} />
+            <IonLabel>Favorite</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="profile" href="/profile">
+            <IonIcon icon={ProfileSVG} />
+            <IonLabel>Profile</IonLabel>
+          </IonTabButton>
+        </IonTabBar>
+      )}
     </IonTabs>
   );
 };
