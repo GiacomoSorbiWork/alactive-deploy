@@ -110,7 +110,6 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
               handleClose();
             }}
             onClose={handleClose}
-            // renderInput={(params) => <TextField {...params} />}
           />
         </Box>
       </CustomBox>
