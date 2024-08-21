@@ -2,7 +2,7 @@ import React, { useState, FC, MouseEvent } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { IconButton, Box, Typography, TextField } from "@mui/material";
+import { IconButton, Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { WhenProps, DatePickerFieldProps } from "./type";
@@ -110,7 +110,7 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
               handleClose();
             }}
             onClose={handleClose}
-            renderInput={(params) => <TextField {...params} />}
+            // renderInput={(params) => <TextField {...params} />}
           />
         </Box>
       </CustomBox>
