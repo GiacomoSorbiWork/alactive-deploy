@@ -41,6 +41,7 @@ import FavoriteSVG from "../resources/svg/Vector.svg";
 import ProfileSVG from "../resources/svg/Frame.svg";
 import logo from "../resources/logo.svg";
 import Login from "./pages/Login";
+import HostDetail from "./pages/HostDetail";
 
 setupIonicReact();
 
@@ -62,15 +63,15 @@ const RouterPart: React.FC = () => {
       {/* {!isAuthenticated ? (
         <Login />
       ) : ( */}
-      <IonRouterOutlet>
+      <IonRouterOutlet className="bg-[var(--primary-background-color)] overflow-auto">
         <Switch>
           <Route exact path="/" component={Home} />
           <Route
-            path={["/dashboard", "/profile"]}
+            path={["/dashboard", "/profile", "/host-detail"]}
             component={DashboardWithTabs}
           />
           <Route exact path="/register" component={Register} />
-          <Redirect from="*" to="/" />
+          {/* <Redirect from="*" to="/" /> */}
         </Switch>
       </IonRouterOutlet>
       {/* )} */}
@@ -107,9 +108,10 @@ const DashboardWithTabs: React.FC = () => {
 
   return (
     <IonTabs>
-      <IonRouterOutlet className="bg-[var(--primary-background-color)] overflow-auto">
+      <IonRouterOutlet>
         <Route exact path="/dashboard" component={DashBoard} />
         <Route exact path="/profile" component={Profile} />
+        <Route exact path="/host-detail" component={HostDetail} />
         <Redirect to="/dashboard" />
       </IonRouterOutlet>
 
