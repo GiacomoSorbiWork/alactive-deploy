@@ -36,9 +36,11 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
-import HomeSVG from "../resources/svg/Vector 5 (Stroke).svg";
-import FavoriteSVG from "../resources/svg/Vector.svg";
+import HomeSVG from "../resources/svg/home.svg";
+import FavoriteSVG from "../resources/svg/favorite.svg";
 import ProfileSVG from "../resources/svg/Frame.svg";
+import ActiveHomeSVG from "../resources/svg/active-home.svg";
+import ActiveFavoriteSVG from "../resources/svg/active-favorite.svg";
 import logo from "../resources/logo.svg";
 // import Login from "./pages/Login";
 import HostDetail from "./pages/HostDetail";
@@ -105,7 +107,6 @@ const DashboardWithTabs: React.FC = () => {
   const location = useLocation();
 
   const shouldShowTabs = location.pathname !== "/register";
-
   return (
     <IonTabs>
       <IonRouterOutlet>
@@ -118,16 +119,44 @@ const DashboardWithTabs: React.FC = () => {
       {shouldShowTabs && (
         <IonTabBar slot="bottom">
           <IonTabButton tab="dashboard" href="/dashboard">
-            <IonIcon icon={HomeSVG} />
-            <IonLabel>Home</IonLabel>
+            {location.pathname === "/dashboard" ? (
+              <>
+                <IonIcon icon={ActiveHomeSVG} />
+                <IonLabel style={{ color: "var(--primary-color)" }}>
+                  Home
+                </IonLabel>
+              </>
+            ) : (
+              <>
+                <IonIcon icon={HomeSVG} />
+                <IonLabel>Home</IonLabel>
+              </>
+            )}
           </IonTabButton>
-          <IonTabButton tab="dashboard" href="/favorite">
-            <IonIcon icon={FavoriteSVG} />
-            <IonLabel>Favorite</IonLabel>
+          <IonTabButton tab="favorite" href="/favorite">
+            {location.pathname === "/favorite" ? (
+              <>
+                <IonIcon icon={ActiveFavoriteSVG} />
+                <IonLabel style={{ color: "var(--primary-color)" }}>
+                  Favorite
+                </IonLabel>
+              </>
+            ) : (
+              <>
+                <IonIcon icon={FavoriteSVG} />
+                <IonLabel>Favorite</IonLabel>
+              </>
+            )}
           </IonTabButton>
           <IonTabButton tab="profile" href="/profile">
             <IonIcon icon={ProfileSVG} />
-            <IonLabel>Profile</IonLabel>
+            {location.pathname === "/profile" ? (
+              <IonLabel style={{ color: "var(--primary-color)" }}>
+                Profile
+              </IonLabel>
+            ) : (
+              <IonLabel>Profile</IonLabel>
+            )}
           </IonTabButton>
         </IonTabBar>
       )}
