@@ -11,6 +11,7 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import Register from "./pages/Register";
 import DashBoard from "./pages/Dashboard";
@@ -39,6 +40,7 @@ import HomeSVG from "../resources/svg/Vector 5 (Stroke).svg";
 import FavoriteSVG from "../resources/svg/Vector.svg";
 import ProfileSVG from "../resources/svg/Frame.svg";
 import logo from "../resources/logo.svg";
+import Login from "./pages/Login";
 
 setupIonicReact();
 
@@ -53,18 +55,26 @@ const App: React.FC = () => {
 };
 
 const RouterPart: React.FC = () => {
+  const { isAuthenticated, logout } = useAuth0();
+
   return (
-    <IonRouterOutlet>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route
-          path={["/dashboard", "/profile"]}
-          component={DashboardWithTabs}
-        />
-        <Route exact path="/register" component={Register} />
-        <Redirect from="*" to="/" />
-      </Switch>
-    </IonRouterOutlet>
+    <>
+      {/* {!isAuthenticated ? (
+        <Login />
+      ) : ( */}
+      <IonRouterOutlet>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route
+            path={["/dashboard", "/profile"]}
+            component={DashboardWithTabs}
+          />
+          <Route exact path="/register" component={Register} />
+          <Redirect from="*" to="/" />
+        </Switch>
+      </IonRouterOutlet>
+      {/* )} */}
+    </>
   );
 };
 
@@ -97,7 +107,7 @@ const DashboardWithTabs: React.FC = () => {
 
   return (
     <IonTabs>
-      <IonRouterOutlet>
+      <IonRouterOutlet className="bg-[var(--primary-background-color)] overflow-auto">
         <Route exact path="/dashboard" component={DashBoard} />
         <Route exact path="/profile" component={Profile} />
         <Redirect to="/dashboard" />
