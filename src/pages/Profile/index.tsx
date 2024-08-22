@@ -4,7 +4,12 @@ import items from "../../components/Carousel/data";
 import CloudCheck from "../../../resources/svg/artist.svg";
 import UserAvatar from "../../../resources/avatar/Basic_Ui_(186).jpg";
 import EventCard from "../../components/EventCard";
-import { UserHeaderProps } from "./type";
+import SpotifySVG from "../../../resources/svg/social/spotify-white-icon.svg";
+import YouTubeSVG from "../../../resources/svg/social/youtube-app-white-icon.svg";
+import InstagamSVG from "../../../resources/svg/social/instagram-white-icon.svg";
+import LinkdinSVG from "../../../resources/svg/social/linkedin-app-white-icon.svg";
+import LineSVG from "../../../resources/svg/social/link-svgrepo-com.svg";
+import { UserHeaderProps, SocialIconProps } from "./type";
 
 const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
   <div className="flex items-center p-4">
@@ -18,6 +23,16 @@ const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
     </div>
   </div>
 );
+
+const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
+  return (
+    <div className="flex items-center p-2">
+      <img src={icon} alt="Social Icon" className="w-6" />{" "}
+      {/* Added alt attribute for accessibility */}
+      <span className="ml-2 font-[600]">{text}</span>
+    </div>
+  );
+};
 
 const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -106,7 +121,31 @@ const Profile: React.FC = () => {
             </div>
           </div>
         )}
-        {activeTab === 1 && <div>About content goes here.</div>}
+        {activeTab === 1 && (
+          <>
+            <div>
+              <h2 className="text-[22px] font-[600] mb-3">Address</h2>
+              <p className="text-[14px] mb-1">
+                Bond street, 22, GU75HP, London, United Kingdom
+              </p>
+              <img src="https://img.freepik.com/premium-vector/3d-top-view-map-with-destination-location-point_34645-1177.jpg?w=1380"></img>
+            </div>
+
+            <div className="mt-5">
+              <h2 className="text-[22px] font-[600] mb-3">Information</h2>
+              <p className="text-[14px] mb-1">
+                {"The most technologically advanced club on the planet with" +
+                  "cutting-edge DJs and pioneering immersive experiences." +
+                  "Officially the World's Number 1 Club."}
+              </p>
+            </div>
+            <SocialIcon icon={SpotifySVG} text="Spotify" />
+            <SocialIcon icon={YouTubeSVG} text="You Tude" />
+            <SocialIcon icon={LinkdinSVG} text="Linkdin" />
+            <SocialIcon icon={InstagamSVG} text="Instagam" />
+            <SocialIcon icon={LineSVG} text="stefanooffical.com" />
+          </>
+        )}
       </div>
     </>
   );
