@@ -45,6 +45,7 @@ import logo from "../resources/logo.svg";
 // import Login from "./pages/Login";
 import HostDetail from "./pages/HostDetail";
 import Favorite from "./pages/Favorite";
+import Testing from "./pages/Testing";
 
 setupIonicReact();
 
@@ -69,6 +70,7 @@ const RouterPart: React.FC = () => {
       <IonRouterOutlet className="bg-[var(--primary-background-color)]">
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/test" component={Testing} />
           <Route
             path={["/dashboard", "/profile", "/favorite", "/host-detail"]}
             component={DashboardWithTabs}

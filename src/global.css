@@ -6,6 +6,11 @@ input:focus-visible {
   outline: none;
 }
 
+:root {
+  font-family: "inter";
+  color: white;
+}
+
 .border {
   border: 1px solid var(--primary-border-color);
 }
