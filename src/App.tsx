@@ -66,7 +66,7 @@ const RouterPart: React.FC = () => {
       {/* {!isAuthenticated ? (
         <Login />
       ) : ( */}
-      <IonRouterOutlet className="bg-[var(--primary-background-color)] overflow-auto">
+      <IonRouterOutlet className="bg-[var(--primary-background-color)]">
         <Switch>
           <Route exact path="/" component={Home} />
           <Route
@@ -110,7 +110,7 @@ const DashboardWithTabs: React.FC = () => {
   const shouldShowTabs = location.pathname !== "/register";
   return (
     <IonTabs>
-      <IonRouterOutlet>
+      <IonRouterOutlet className="overflow-auto">
         <Route exact path="/dashboard" component={DashBoard} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/favorite" component={Favorite} />
