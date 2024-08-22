@@ -7,7 +7,6 @@ import DocumentSVG from "../../../resources/svg/document.svg";
 import RecycleSVG from "../../../resources/svg/recycle.svg";
 import ArrowRigthSVG from "../../../resources/svg/arrow-right.svg";
 import arrowBack from "../../../resources/arrow back.svg";
-import "./profile.css";
 
 const ProfileList: React.FC<ProfileListType> = ({ img, title, text, type }) => {
   return (

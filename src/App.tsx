@@ -44,6 +44,7 @@ import ActiveFavoriteSVG from "../resources/svg/active-favorite.svg";
 import logo from "../resources/logo.svg";
 // import Login from "./pages/Login";
 import HostDetail from "./pages/HostDetail";
+import Favorite from "./pages/Favorite";
 
 setupIonicReact();
 
@@ -69,7 +70,7 @@ const RouterPart: React.FC = () => {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route
-            path={["/dashboard", "/profile", "/host-detail"]}
+            path={["/dashboard", "/profile", "/favorite", "/host-detail"]}
             component={DashboardWithTabs}
           />
           <Route exact path="/register" component={Register} />
@@ -112,6 +113,7 @@ const DashboardWithTabs: React.FC = () => {
       <IonRouterOutlet>
         <Route exact path="/dashboard" component={DashBoard} />
         <Route exact path="/profile" component={Profile} />
+        <Route exact path="/favorite" component={Favorite} />
         <Route exact path="/host-detail" component={HostDetail} />
         <Redirect to="/dashboard" />
       </IonRouterOutlet>
