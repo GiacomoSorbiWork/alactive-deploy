@@ -11,7 +11,7 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 
 import Register from "./pages/Register";
 import DashBoard from "./pages/Dashboard";
@@ -40,7 +40,7 @@ import HomeSVG from "../resources/svg/Vector 5 (Stroke).svg";
 import FavoriteSVG from "../resources/svg/Vector.svg";
 import ProfileSVG from "../resources/svg/Frame.svg";
 import logo from "../resources/logo.svg";
-import Login from "./pages/Login";
+// import Login from "./pages/Login";
 import HostDetail from "./pages/HostDetail";
 
 setupIonicReact();
@@ -56,7 +56,7 @@ const App: React.FC = () => {
 };
 
 const RouterPart: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth0();
+  // const { isAuthenticated, logout } = useAuth0();
 
   return (
     <>
