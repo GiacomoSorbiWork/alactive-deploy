@@ -100,7 +100,7 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
             </StyledIconButton>
           </SelectedValueBox>
         )}
-        <Box sx={{ display: "none" }}>
+        <Box hidden>
           <DatePicker
             open={openModel}
             views={[label.toLowerCase() as "month" | "year"]}

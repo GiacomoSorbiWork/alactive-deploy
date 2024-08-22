@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Box } from "@mui/material";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { ItemProps, Item } from "./types";
@@ -16,12 +16,7 @@ const CarouselItem: React.FC<ItemProps> = ({ item }) => {
         backgroundPosition: "center",
         height: "300px",
       }}
-    >
-      <Typography variant="h5" style={{ color: "#fff" }}>
-        {item.name}
-      </Typography>
-      <Typography style={{ color: "#fff" }}>{item.description}</Typography>
-    </Paper>
+    ></Paper>
   );
 };
 
