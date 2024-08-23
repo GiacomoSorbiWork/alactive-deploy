@@ -11,4 +11,5 @@ export interface FormProps {
 	visibleCheckboxes?: boolean;
 	isSubscribed?: boolean;
 	handleSubscribed?: (subscribed: boolean) => void;
+	errorMessage?: string;
 }

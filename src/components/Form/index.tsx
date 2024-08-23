@@ -14,6 +14,7 @@ const Form: React.FC<FormProps> = ({
   visibleCheckboxes = true,
   isSubscribed,
   handleSubscribed,
+  errorMessage,
 }) => {
   const isUsernameField = label === "Username";
   const usernameTooLong =
@@ -63,6 +64,9 @@ const Form: React.FC<FormProps> = ({
               <p className={`mt-2 ${validationMessage.color}`}>
                 {validationMessage.text}
               </p>
+            )}
+            {errorMessage && (
+              <p className={`mt-2 text-red-500`}>{errorMessage}</p>
             )}
           </div>
         ) : (

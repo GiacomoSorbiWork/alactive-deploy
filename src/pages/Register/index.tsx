@@ -30,6 +30,7 @@ const Register: React.FC = () => {
   const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
   const [isCard, setIsCard] = useState<boolean>(false);
   const [rangeValue, setRangeValue] = useState<number[]>([80, 2000]);
+  const [emailError, setEmailError] = useState<string>("");
 
   const history = useHistory();
 
@@ -39,6 +40,11 @@ const Register: React.FC = () => {
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setRangeValue(newValue as number[]);
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const handleBack = useCallback((): void => {
@@ -53,10 +59,19 @@ const Register: React.FC = () => {
     if (step >= 7) {
       history.push("/home");
     } else {
-      const isEmailValid = email.trim() !== "" && isSubscribed;
+      const isEmailValid = validateEmail(email) && isSubscribed;
       const isNameValid = name.trim() !== "";
       const isUserNameValid = userName.trim() !== "" && userName.length <= 15;
       const isDateValid = date !== null;
+
+      if (step === 1 && !isEmailValid) {
+        setEmailError(
+          "Please enter a valid email address and accept the subscription."
+        );
+        return;
+      } else {
+        setEmailError("");
+      }
 
       const isFormValid =
         (step === 1 && isEmailValid) ||
@@ -76,7 +91,7 @@ const Register: React.FC = () => {
   }, [step, email, name, userName, date, isSubscribed]);
 
   const isActive = useCallback((): boolean => {
-    const isEmailValid = email.trim() !== "" && isSubscribed;
+    const isEmailValid = validateEmail(email) && isSubscribed;
     const isNameValid = name.trim() !== "";
     const isUserNameValid = userName.trim() !== "" && userName.length <= 15;
     const isDateValid = date !== null;
@@ -122,6 +137,7 @@ const Register: React.FC = () => {
             }
             isSubscribed={isSubscribed}
             handleSubscribed={setIsSubscribed}
+            errorMessage={emailError}
           />
         )}
         {step === 2 && (
@@ -172,7 +188,7 @@ const Register: React.FC = () => {
           <div className="mb-[222px]">
             <div className="px-[30px]">
               <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
-                What’s your budget for a night out at a nigthlife event?
+                {"What’s your budget for a night out at a nightlife event?"}
               </h1>
             </div>
             <RangeSlider value={rangeValue} onChange={handleChange} />
