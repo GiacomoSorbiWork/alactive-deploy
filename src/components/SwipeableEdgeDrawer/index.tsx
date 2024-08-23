@@ -136,7 +136,7 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
   );
 
   return (
-    <div className="h-full w-full relative bg-primary overflow-hidden">
+    <div className="h-full w-full relative bg-primary overflow-hidden hidden">
       <Global styles={globalStyles} />
       <SwipeableDrawer
         container={container}

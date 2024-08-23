@@ -123,7 +123,7 @@ const DashboardWithTabs: React.FC = () => {
       </IonRouterOutlet>
 
       {shouldShowTabs && (
-        <IonTabBar slot="bottom">
+        <IonTabBar slot="bottom" className="backdrop-blur h-[75px]">
           <IonTabButton tab="dashboard" href="/dashboard">
             {location.pathname === "/dashboard" ? (
               <>
