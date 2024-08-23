@@ -1,5 +1,6 @@
 import React from "react";
 import { EventCardProps } from "./type";
+import { useHistory } from "react-router-dom";
 
 const EventCard: React.FC<EventCardProps> = ({
   imgUrl,
@@ -8,10 +9,12 @@ const EventCard: React.FC<EventCardProps> = ({
   location,
   price,
 }) => {
+  const history = useHistory();
   return (
     <div
       className="relative w-full max-w-sm h-64 rounded-md overflow-hidden bg-cover bg-center text-white"
       style={{ backgroundImage: `url(${imgUrl})` }}
+      onClick={() => history.push(`/event-detail`)}
     >
       <div className="flex justify-end">
         <p className="text-[12px] w-9 bg-secondaryContainer text-center leading-none rounded-bl-xl p-1 z-10">

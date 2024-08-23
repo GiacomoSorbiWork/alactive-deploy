@@ -30,3 +30,9 @@ export interface HostProps {
 	subTitle: string; // Subtitle text
 	text?: string; // Additional text, optional
 }
+
+export interface IconTextProps {
+	img: string;
+	text: string;
+	dividerState?: boolean;
+}

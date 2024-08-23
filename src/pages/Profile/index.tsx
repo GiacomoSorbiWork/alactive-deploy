@@ -6,7 +6,7 @@ import HammerSVG from "../../../resources/svg/hammer.svg";
 import DocumentSVG from "../../../resources/svg/document.svg";
 import RecycleSVG from "../../../resources/svg/recycle.svg";
 import ArrowRigthSVG from "../../../resources/svg/arrow-right.svg";
-import arrowBack from "../../../resources/arrow back.svg";
+import ArrowBack from "../../components/ArrowBack";
 
 const ProfileList: React.FC<ProfileListType> = ({ img, title, text, type }) => {
   return (
@@ -46,7 +46,7 @@ const Profile: React.FC<ProfileType> = ({
         className="relative w-full h-1/2 overflow-hidden bg-cover bg-center text-white"
         style={{ backgroundImage: `url(${imgUrl})` }}
       >
-        <img src={arrowBack} alt="Back" className="cursor-pointer mt-6" />
+        <ArrowBack />
         <div className="absolute bottom-7 text-white p-4">
           <p className="text-title-medium font-bold w-5/6 leading-snug">
             {title}

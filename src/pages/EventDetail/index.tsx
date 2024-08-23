@@ -7,15 +7,30 @@ import ClockSVG from "../../../resources/svg/clock.svg";
 import AddressSVG from "../../../resources/svg/address.svg";
 import UnCheckSVG from "../../../resources/svg/octagon.svg";
 
+import PersonManSVG from "../../../resources/svg/rules/person-man.svg";
+import CreditSVG from "../../../resources/svg/rules/credit_card_off.svg";
+import MoneySVG from "../../../resources/svg/rules/money_off.svg";
+import ContextualSVG from "../../../resources/svg/rules/contextual_token.svg";
+import PhotographySVG from "../../../resources/svg/rules/no_photography.svg";
+import SmokeSVG from "../../../resources/svg/rules/smoke_free.svg";
+import FrameSVG from "../../../resources/svg/rules/Frame.svg";
+
 import {
   EventHeaderProps,
   HostProps,
   IntroduceGroupProps,
   LineUpProps,
   MusicGenresProps,
+  IconTextProps,
 } from "./type";
 import Divider from "@mui/material/Divider";
 import { hostData, introData, lineUpData } from "./data";
+import ArrowBack from "../../components/ArrowBack";
+import { IonFooter } from "@ionic/react";
+import {
+  LargeDefaultButton,
+  TextOnlyButton,
+} from "../../subComponents/Buttons";
 
 const EventHeader: React.FC<EventHeaderProps> = ({
   title,
@@ -132,6 +147,46 @@ const Host: React.FC<HostProps> = ({ imgUrl, title, subTitle, text }) => (
   </>
 );
 
+const IconText: React.FC<IconTextProps> = ({
+  img,
+  text,
+  dividerState = true,
+}) => (
+  <>
+    <div className="flex py-[20px] items-center">
+      <img src={img} alt="" />
+      <p className="text-body-medium leading-none ml-2">{text}</p>
+    </div>
+    {dividerState && <Divider className="!border-white h-0 opacity-20" />}
+  </>
+);
+
+const Rules = () => (
+  <div>
+    <p className="text-title-small font-semibold mt-6 mb-4">Rules</p>
+    <p className="text-body-medium leading-none">
+      We ask every guest who will attend the event to follow the specific
+      guidelines.
+    </p>
+    <p className="text-body-medium font-semibold my-6">The Essentials</p>
+    <IconText
+      img={FrameSVG}
+      text={
+        "Smart/casual: Dress / Dark jeans or chinos, button-down shirts, casual loafers, polos or clean sneakers"
+      }
+      dividerState={false}
+    />
+    <p className="text-body-medium font-semibold my-6">More on rules</p>
+    <Divider className="!border-white h-0 opacity-20" />
+    <IconText img={PersonManSVG} text={"Minimum age 21"} />
+    <IconText img={SmokeSVG} text={"Prohibited to smoke"} />
+    <IconText img={PhotographySVG} text={"Prohibited to make pictures"} />
+    <IconText img={ContextualSVG} text={"Id’s required"} />
+    <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
+    <IconText img={CreditSVG} text={"The venue doesn’t accept credit cards"} />
+  </div>
+);
+
 const EventDetail: React.FC = () => {
   const eventInfo = {
     title: "House Rave",
@@ -142,6 +197,7 @@ const EventDetail: React.FC = () => {
 
   return (
     <>
+      <ArrowBack />
       <CarouselComponent items={items} />
       <div className="p-4">
         <EventHeader {...eventInfo}></EventHeader>
@@ -172,7 +228,13 @@ const EventDetail: React.FC = () => {
         ))}
         <Divider className="!border-white h-0 opacity-20" />
         <Host {...hostData}></Host>
+        <Divider className="!border-white h-0 opacity-20" />
+        <Rules />
       </div>
+      <IonFooter className="bg-primaryContainer px-8 py-4 flex items-center justify-between">
+        <TextOnlyButton text="Starting from $345"></TextOnlyButton>
+        <LargeDefaultButton text="Book"></LargeDefaultButton>
+      </IonFooter>
     </>
   );
 };

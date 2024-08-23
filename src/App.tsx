@@ -68,18 +68,14 @@ const RouterPart: React.FC = () => {
       {/* {!isAuthenticated ? (
         <Login />
       ) : ( */}
-      <IonRouterOutlet className="bg-primaryContainer">
+      <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/test" component={Testing} />
+          <Route exact path="/host-detail" component={HostDetail} />
+          <Route exact path="/event-detail" component={EventDetail} />
           <Route
-            path={[
-              "/dashboard",
-              "/profile",
-              "/favorite",
-              "/host-detail",
-              "/event-detail",
-            ]}
+            path={["/dashboard", "/profile", "/favorite"]}
             component={DashboardWithTabs}
           />
           <Route exact path="/register" component={Register} />
@@ -119,12 +115,10 @@ const DashboardWithTabs: React.FC = () => {
   const shouldShowTabs = location.pathname !== "/register";
   return (
     <IonTabs>
-      <IonRouterOutlet className="overflow-auto">
+      <IonRouterOutlet>
         <Route exact path="/dashboard" component={DashBoard} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/favorite" component={Favorite} />
-        <Route exact path="/host-detail" component={HostDetail} />
-        <Route exact path="/event-detail" component={EventDetail} />
         <Redirect to="/dashboard" />
       </IonRouterOutlet>
 
