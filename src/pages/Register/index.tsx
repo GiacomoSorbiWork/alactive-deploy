@@ -10,6 +10,7 @@ import {
   LargeDefaultButton,
   LargeDisabledButton,
 } from "../../subComponents/Buttons";
+import { Divider } from "@mui/material";
 
 const Register: React.FC = () => {
   const favoriteList: Array<string> = [
@@ -189,6 +190,7 @@ const Register: React.FC = () => {
           />
         )}
       </div>
+      <Divider className="!border-white h-0 opacity-20 mt-6" />
     </>
   );
 };
