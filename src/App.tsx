@@ -44,6 +44,7 @@ import ActiveFavoriteSVG from "../resources/svg/active-favorite.svg";
 import logo from "../resources/logo.svg";
 // import Login from "./pages/Login";
 import HostDetail from "./pages/HostDetail";
+import EventDetail from "./pages/EventDetail";
 import Favorite from "./pages/Favorite";
 import Testing from "./pages/Testing";
 
@@ -72,7 +73,13 @@ const RouterPart: React.FC = () => {
           <Route exact path="/" component={Home} />
           <Route exact path="/test" component={Testing} />
           <Route
-            path={["/dashboard", "/profile", "/favorite", "/host-detail"]}
+            path={[
+              "/dashboard",
+              "/profile",
+              "/favorite",
+              "/host-detail",
+              "/event-detail",
+            ]}
             component={DashboardWithTabs}
           />
           <Route exact path="/register" component={Register} />
@@ -117,6 +124,7 @@ const DashboardWithTabs: React.FC = () => {
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/favorite" component={Favorite} />
         <Route exact path="/host-detail" component={HostDetail} />
+        <Route exact path="/event-detail" component={EventDetail} />
         <Redirect to="/dashboard" />
       </IonRouterOutlet>
 

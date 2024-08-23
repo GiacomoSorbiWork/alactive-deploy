@@ -108,7 +108,7 @@ const Register: React.FC = () => {
           onClick={handleBack}
         />
       )}
-      <div className={`border-bottom p-4 pb-8 pt-0 flex flex-col`}>
+      <div className={`p-4 pb-8 pt-0 flex flex-col`}>
         {step === 1 && (
           <Form
             title="What’s your email?"
