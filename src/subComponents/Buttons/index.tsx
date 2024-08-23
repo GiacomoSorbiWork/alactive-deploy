@@ -5,8 +5,15 @@ import SearchIcon from "../../../resources/svg/search.svg";
 import { ButtonProps } from "./type";
 
 // Large Default Button
-const LargeDefaultButton: React.FC<ButtonProps> = ({ text = "Default" }) => (
-  <button className="h-[56px] flex items-center justify-center rounded-normal p-big bg-activeButton">
+const LargeDefaultButton: React.FC<ButtonProps> = ({
+  text = "Default",
+  className = "",
+  onClick,
+}) => (
+  <button
+    className={`min-h-[56px] flex items-center justify-center rounded-normal p-big bg-activeButton ${className}`}
+    onClick={onClick}
+  >
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
     </span>
@@ -14,8 +21,15 @@ const LargeDefaultButton: React.FC<ButtonProps> = ({ text = "Default" }) => (
 );
 
 // Large Disabled Button
-const LargeDisabledButton: React.FC<ButtonProps> = ({ text = "Disabled" }) => (
-  <button className="h-[56px] flex items-center justify-center rounded-normal p-big bg-disabledButton">
+const LargeDisabledButton: React.FC<ButtonProps> = ({
+  text = "Disabled",
+  className = "",
+  onClick,
+}) => (
+  <button
+    className={`min-h-[56px] flex items-center justify-center rounded-normal p-big bg-disabledButton ${className}`}
+    onClick={onClick}
+  >
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
     </span>
@@ -26,8 +40,12 @@ const LargeDisabledButton: React.FC<ButtonProps> = ({ text = "Disabled" }) => (
 const LargeIconButton: React.FC<ButtonProps> = ({
   text = "Add to list",
   icon = SearchIcon,
+  onClick,
 }) => (
-  <button className="h-[56px] flex items-center justify-center rounded-normal p-big gap-small bg-activeButton">
+  <button
+    className="min-h-[56px] flex items-center justify-center rounded-normal p-big gap-small bg-activeButton"
+    onClick={onClick}
+  >
     <img src={icon} alt="icon" />
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
@@ -36,8 +54,14 @@ const LargeIconButton: React.FC<ButtonProps> = ({
 );
 
 // Small Default Button
-const SmallDefaultButton: React.FC<ButtonProps> = ({ text = "Follow" }) => (
-  <button className="h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-activeButton">
+const SmallDefaultButton: React.FC<ButtonProps> = ({
+  text = "Follow",
+  onClick,
+}) => (
+  <button
+    className="min-h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-activeButton"
+    onClick={onClick}
+  >
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
     </span>
@@ -45,8 +69,14 @@ const SmallDefaultButton: React.FC<ButtonProps> = ({ text = "Follow" }) => (
 );
 
 // Small Disabled Button
-const SmallDisabledButton: React.FC<ButtonProps> = ({ text = "Following" }) => (
-  <button className="h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-disabledButton">
+const SmallDisabledButton: React.FC<ButtonProps> = ({
+  text = "Following",
+  onClick,
+}) => (
+  <button
+    className="min-h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-disabledButton"
+    onClick={onClick}
+  >
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
     </span>
@@ -57,8 +87,12 @@ const SmallDisabledButton: React.FC<ButtonProps> = ({ text = "Following" }) => (
 const SmallIconButton: React.FC<ButtonProps> = ({
   text = "Add to list",
   icon = PlusIcon,
+  onClick,
 }) => (
-  <button className="h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-activeButton">
+  <button
+    className="min-h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-activeButton"
+    onClick={onClick}
+  >
     <img src={icon} alt="icon" />
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
@@ -70,8 +104,12 @@ const SmallIconButton: React.FC<ButtonProps> = ({
 const SmallDisabledIconButton: React.FC<ButtonProps> = ({
   text = "Added to list",
   icon = CheckIcon,
+  onClick,
 }) => (
-  <button className="h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-disabledButton">
+  <button
+    className="min-h-[36px] flex items-center justify-center rounded-normal p-small gap-small bg-disabledButton"
+    onClick={onClick}
+  >
     <img src={icon} alt="icon" />
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
@@ -80,8 +118,14 @@ const SmallDisabledIconButton: React.FC<ButtonProps> = ({
 );
 
 // Text Only Button
-const TextOnlyButton: React.FC<ButtonProps> = ({ text = "Clear Filters" }) => (
-  <button className="h-[48px] flex items-center justify-center p-clear bg-transparent">
+const TextOnlyButton: React.FC<ButtonProps> = ({
+  text = "Clear Filters",
+  onClick,
+}) => (
+  <button
+    className="min-h-[48px] flex items-center justify-center p-clear bg-transparent"
+    onClick={onClick}
+  >
     <span className="font-semibold text-body-small leading-[16.94px]">
       {text}
     </span>
@@ -89,9 +133,47 @@ const TextOnlyButton: React.FC<ButtonProps> = ({ text = "Clear Filters" }) => (
 );
 
 // Round Button
-const RoundedButton: React.FC<ButtonProps> = ({ text = "Show More" }) => (
-  <button className="w-[135px] h-[30px] flex items-center justify-center rounded-rounded p-rounded bg-transparent border gap-normal">
+const RoundedButton: React.FC<ButtonProps> = ({
+  text = "Show More",
+  onClick,
+}) => (
+  <button
+    className="min-w-[135px] min-h-[30px] flex items-center justify-center rounded-rounded p-rounded bg-transparent border gap-normal"
+    onClick={onClick}
+  >
     <span className="font-semibold text-body-small leading-[16.94px]">
+      {text}
+    </span>
+  </button>
+);
+
+// Selected Button
+const SelectedButton: React.FC<ButtonProps> = ({
+  text = "Selected",
+  className = "",
+  onClick,
+}) => (
+  <button
+    className={`min-h-[50px] flex items-center justify-center rounded-rounded p-rounded bg-activeButton border gap-normal ${className}`}
+    onClick={onClick}
+  >
+    <span className="font-medium text-body-medium leading-[24px] tracking-[0.5px]">
+      {text}
+    </span>
+  </button>
+);
+
+// UNelected Button
+const UnselectedButton: React.FC<ButtonProps> = ({
+  text = "Unselected",
+  className = "",
+  onClick,
+}) => (
+  <button
+    className={`min-h-[50px] flex items-center justify-center rounded-rounded p-rounded bg-transparent border gap-normal ${className}`}
+    onClick={onClick}
+  >
+    <span className="font-medium text-body-medium leading-[24px] tracking-[0.5px]">
       {text}
     </span>
   </button>
@@ -107,4 +189,6 @@ export {
   SmallDisabledIconButton,
   TextOnlyButton,
   RoundedButton,
+  SelectedButton,
+  UnselectedButton,
 };

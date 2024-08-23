@@ -2,11 +2,14 @@ import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { ProgressBar } from "../../components/ProgressBar";
 import arrowBack from "../../../resources/arrow back.svg";
-import Button from "../../components/Button";
 import Form from "../../components/Form";
 import Card from "../../components/Card";
 import SelectList from "../../components/SelectList";
 import RangeSlider from "../../components/DataRanger";
+import {
+  LargeDefaultButton,
+  LargeDisabledButton,
+} from "../../subComponents/Buttons";
 
 const Register: React.FC = () => {
   const favoriteList: Array<string> = [
@@ -92,8 +95,8 @@ const Register: React.FC = () => {
     <>
       <ProgressBar progress={step} />
       {isCard && step !== 6 ? (
-        <div className="p-3">
-          <h1 className="text-4xl font-bold leading-tight tracking-wide text-white">
+        <div className="p-4">
+          <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
             Choose which events you would attend
           </h1>
         </div>
@@ -101,15 +104,11 @@ const Register: React.FC = () => {
         <img
           src={arrowBack}
           alt="Back"
-          className="cursor-pointer mt-6"
+          className="cursor-pointer my-6"
           onClick={handleBack}
         />
       )}
-      <div
-        className={`border-bottom p-2 flex flex-col justify-between ${
-          isCard || step > 4 ? (step !== 5 ? "h-[95%]" : "h-[80%]") : "h-[52%]"
-        }`}
-      >
+      <div className={`border-bottom p-4 pb-8 pt-0 flex flex-col`}>
         {step === 1 && (
           <Form
             title="What’s your email?"
@@ -167,16 +166,28 @@ const Register: React.FC = () => {
           <SelectList data={favoriteList} onClick={handleSelectFavorite} />
         )}
         {step === 7 && (
-          <div className="mt-7">
-            <div className="px-[32px]">
-              <h1 className="text-4xl font-bold leading-tight tracking-wide text-white">
+          <div className="mb-[222px]">
+            <div className="px-[30px]">
+              <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
                 What’s your budget for a night out at a nigthlife event?
               </h1>
             </div>
             <RangeSlider value={rangeValue} onChange={handleChange} />
           </div>
         )}
-        <Button text="Next" isActive={isActive()} onClick={handleNext} />
+        {isActive() ? (
+          <LargeDefaultButton
+            text="Next"
+            onClick={handleNext}
+            className="mt-6"
+          />
+        ) : (
+          <LargeDisabledButton
+            text="Next"
+            onClick={handleNext}
+            className="mt-6"
+          />
+        )}
       </div>
     </>
   );

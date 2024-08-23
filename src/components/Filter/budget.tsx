@@ -27,19 +27,19 @@ const Budget: FC<BudgetProps> = ({ isOpen, onToggle, value, onChange }) => {
   };
 
   return (
-    <div className={`${isOpen ? "p-3" : ""} text-white`}>
+    <div className="text-white my-6">
       {!isOpen ? (
         <div
           onClick={onToggle}
           className="cursor-pointer flex justify-between items-center"
         >
-          <p className="text-white text-[20px] p-3">Budget</p>
-          <span className="text-[14px] opacity-50 mr-2">{`$${value[0]} - $${value[1]}`}</span>
+          <p className="text-body-medium">Budget</p>
+          <span className="text-body-small opacity-50 mr-2">{`$${value[0]} - $${value[1]}`}</span>
         </div>
       ) : (
         <>
           <AnimatedBox>
-            <span className="text-[13px] pb-1 block">Budget</span>
+            <span className="text-body-medium">Budget</span>
           </AnimatedBox>
           <AnimatedBox>
             <RangeSlider value={value} onChange={handleChange} />

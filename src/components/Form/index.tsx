@@ -39,16 +39,14 @@ const Form: React.FC<FormProps> = ({
   }, [value]);
 
   return (
-    <div className="px-10 text-white mt-[15px] h-full">
-      <div className="header">
-        <h1 className="text-4xl font-bold leading-tight tracking-wide">
-          {title}
-        </h1>
-      </div>
-      <div className="body h-[85%] flex flex-col justify-center">
-        {text && <p className="my-[20px]">{text}</p>}
+    <div className="px-10 text-white">
+      <h1 className="text-title-large font-bold leading-[120%] mb-[41px] min-h-24">
+        {title}
+      </h1>
+      <div className="flex flex-col min-h-[185px]">
+        {text && <p>{text}</p>}
         {label !== "Birthday" ? (
-          <div>
+          <div className="mb-[41px]">
             <input
               id="input"
               className={`w-full bg-transparent border-b ${
@@ -80,7 +78,7 @@ const Form: React.FC<FormProps> = ({
           </>
         )}
         {visibleCheckboxes && (
-          <div className="flex items-center mt-[40px]">
+          <div className="flex items-center mb-[41px]">
             <CheckBox
               handleSubscribed={handleSubscribed}
               isChecked={isSubscribed}

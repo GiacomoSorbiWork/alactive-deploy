@@ -3,41 +3,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { IconButton, Box, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { keyframes, styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { WhenProps, DatePickerFieldProps } from "./type";
-
-// Styled components
-const DemoContainer = styled(Box)(() => ({
-  display: "flex",
-  justifyContent: "space-between",
-  gap: "16px",
-  width: "100%",
-  alignItems: "center",
-}));
-
-const CustomBox = styled(Box)(() => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-start",
-  backgroundColor: "#3d3d3d",
-  borderRadius: "8px",
-  padding: "5px 8px",
-  flexGrow: 1,
-  color: "white",
-  cursor: "pointer",
-  minHeight: "34px",
-}));
-
-const SelectedValueBox = styled(Box)(() => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "3px 6px",
-  backgroundColor: "#515151",
-  borderRadius: "7px",
-  marginLeft: "8px",
-}));
 
 const TextBox = styled(Typography)(() => ({
   color: "white",
@@ -49,6 +17,23 @@ const StyledIconButton = styled(IconButton)(() => ({
   color: "black",
   width: "15px",
   height: "15px",
+}));
+
+// Define keyframes for animation
+const fadeIn = keyframes`  
+  from {  
+    opacity: 0;  
+    transform: translateY(10px);  
+  }  
+  to {  
+    opacity: 1;  
+    transform: translateY(0);  
+  }  
+`;
+
+// Styled components
+const AnimatedBox = styled(Box)(() => ({
+  animation: `${fadeIn} 0.5s ease-out`,
 }));
 
 // DatePickerField Component
@@ -76,15 +61,15 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <CustomBox
+      <div
+        className="flex items-center justify-between bg-secondaryContainer rounded-big py-[5px] px-2 flex-grow cursor-pointer min-h-[35px]"
         onClick={() => {
           handleOpen();
         }}
-        sx={{ display: "flex", justifyContent: "space-between" }}
       >
         <TextBox>{label}</TextBox>
         {value && (
-          <SelectedValueBox>
+          <div className="flex items-center justify-between p-[6px] bg-white bg-opacity-10 rounded-big">
             <TextBox sx={{ fontSize: "12px" }}>
               {value.format(label === "Month" ? "MMMM" : "YYYY")}
             </TextBox>
@@ -98,7 +83,7 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
                 }}
               />
             </StyledIconButton>
-          </SelectedValueBox>
+          </div>
         )}
         <Box hidden>
           <DatePicker
@@ -112,7 +97,7 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
             onClose={handleClose}
           />
         </Box>
-      </CustomBox>
+      </div>
     </LocalizationProvider>
   );
 };
@@ -129,23 +114,23 @@ const When: FC<WhenProps> = ({
 }) => {
   return (
     <>
-      <div className={`${isOpen ? "p-3" : ""} text-white`}>
+      <div className={`my-6 text-white`}>
         {!isOpen ? (
           <div
             onClick={onToggle}
             className="cursor-pointer flex justify-between items-center"
           >
-            <p className="text-white text-[20px] p-3">When</p>
-            <span className="text-[14px] opacity-50 mr-2">
+            <p className="text-body-medium">When</p>
+            <span className="text-body-small opacity-50 mr-2">
               {selectedMonth ? selectedMonth.format("MMMM") : ""}
               {selectedMonth && selectedYear ? ", " : ""}
               {selectedYear ? selectedYear.format("YYYY") : ""}
             </span>
           </div>
         ) : (
-          <>
-            <Typography className="text-[13px] pb-1">When</Typography>
-            <DemoContainer>
+          <AnimatedBox>
+            <p className="text-body-medium mb-2">When</p>
+            <div className="flex justify-between items-center w-full gap-big">
               <DatePickerField
                 label="Month"
                 value={selectedMonth}
@@ -158,8 +143,8 @@ const When: FC<WhenProps> = ({
                 onChange={setSelectedYear}
                 onClear={() => setSelectedYear(null)}
               />
-            </DemoContainer>
-          </>
+            </div>
+          </AnimatedBox>
         )}
       </div>
     </>

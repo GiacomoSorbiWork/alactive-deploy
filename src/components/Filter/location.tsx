@@ -39,27 +39,22 @@ const Location: FC<LocationProps> = ({ isOpen, onToggle, value, onChange }) => {
   };
 
   return (
-    <div className={`${isOpen ? "p-3" : ""} text-white`}>
+    <div className={`text-white my-6`}>
       {!isOpen ? (
         <div
           onClick={onToggle}
           className="cursor-pointer flex justify-between items-center"
         >
-          <p className="text-white text-[20px] p-3">Location</p>
+          <p className="text-body-medium">Location</p>
           {value && (
-            <span className="text-[14px] opacity-50 mr-2">{value}</span>
+            <span className="text-body-small opacity-50 mr-2">{value}</span>
           )}
         </div>
       ) : (
         <>
-          <span className="text-[13px] pb-1 block">Location</span>
+          <span className="text-body-medium pb-1 block">Location</span>
           <CustomTextField
-            sx={{
-              backgroundColor: "var(--secondary-background-color)",
-              borderRadius: "30px",
-              width: "100%",
-              border: 0,
-            }}
+            className="bg-secondaryContainer rounded-rounded w-full border-0"
             size="small"
             value={value}
             onChange={handleChange}

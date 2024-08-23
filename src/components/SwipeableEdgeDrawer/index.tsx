@@ -16,23 +16,14 @@ import CloseSVG from "../../../resources/svg/close.svg";
 import Location from "../Filter/location";
 import When from "../Filter/when";
 import Budget from "../Filter/budget";
-import Button from "../Button";
-import Search from "@mui/icons-material/Search";
 import { Dayjs } from "dayjs";
+import { LargeIconButton, TextOnlyButton } from "../../subComponents/Buttons";
 
 // Constants
 const drawerBleeding = 56;
 
-const Root = styled("div")({
-  height: "100%",
-  width: "100%",
-  position: "relative",
-  backgroundColor: "var(--primary-background-color)",
-  overflow: "hidden", // Prevents scrolling when interacting with drawer
-});
-
 const StyledBox = styled(Box)({
-  backgroundColor: "var(--primary-background-color)",
+  background: "#232323",
   position: "absolute",
   top: -drawerBleeding,
   borderTopLeftRadius: 8,
@@ -43,13 +34,13 @@ const StyledBox = styled(Box)({
 });
 
 const Puller = styled("div")({
-  width: 30,
+  width: 50,
   height: 6,
   backgroundColor: "#4A4A4A",
   borderRadius: 3,
   position: "absolute",
-  top: 8,
-  left: "calc(50% - 15px)",
+  top: 10,
+  left: "calc(50% - 25px)",
 });
 
 const useTouchToOpenDrawer = (
@@ -145,7 +136,7 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
   );
 
   return (
-    <Root>
+    <div className="h-full w-full relative bg-primary overflow-hidden">
       <Global styles={globalStyles} />
       <SwipeableDrawer
         container={container}
@@ -161,10 +152,10 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
           <Puller />
           <Typography
             sx={{ p: 2, color: "white" }}
-            className="text-center flex justify-between !p-[18px]"
+            className="text-center flex justify-between !p-6 !pt-[50px]"
           >
-            <img src={CloseSVG} alt="" />
-            <span className="text-[20px] font-semibold tracking-[1px] m-2.5 block">
+            <img src={CloseSVG} alt="" onClick={() => setOpen(false)} />
+            <span className="font-bold text-title-small tracking-[0.5px] leading-6">
               Filters
             </span>
             <span className="w-4"></span>
@@ -173,10 +164,11 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
         </StyledBox>
         <Box
           sx={{
-            marginTop: "30px",
+            marginTop: "43px",
             height: "100%",
             overflow: "auto",
-            backgroundColor: "var(--primary-background-color)",
+            background: "#232323",
+            padding: "0 16px",
           }}
         >
           <Location
@@ -202,20 +194,12 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
             onChange={setBudget}
           />
         </Box>
-        <Divider className="!border-white h-0 opacity-20" />
-        <IonFooter className="bg-[var(--primary-background-color)] h-[70px] px-[20px] py-[10px] flex items-center justify-between">
-          <p onClick={handleClearFilters} className="text-white cursor-pointer">
-            Clear Filters
-          </p>
-          <Button
-            text="Search"
-            isActive={true}
-            onClick={handleNext}
-            svg={Search}
-          />
+        <IonFooter className="bg-filterContainer px-8 py-4 flex items-center justify-between text-white border-t border-white border-opacity-20">
+          <TextOnlyButton onClick={handleClearFilters}></TextOnlyButton>
+          <LargeIconButton onClick={handleNext} text="Search"></LargeIconButton>
         </IonFooter>
       </SwipeableDrawer>
-    </Root>
+    </div>
   );
 };
 

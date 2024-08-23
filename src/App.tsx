@@ -67,7 +67,7 @@ const RouterPart: React.FC = () => {
       {/* {!isAuthenticated ? (
         <Login />
       ) : ( */}
-      <IonRouterOutlet className="bg-[var(--primary-background-color)]">
+      <IonRouterOutlet className="bg-primaryContainer">
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/test" component={Testing} />
@@ -94,11 +94,11 @@ const Home: React.FC = () => {
   return (
     <div onClick={handleClick}>
       {!isClicked ? (
-        <div className="bg-[var(--primary-color)] h-screen flex justify-center items-center cursor-pointer">
+        <div className="bg-activeButton h-screen flex justify-center items-center cursor-pointer">
           <img src={logo} alt="logo" />
         </div>
       ) : (
-        <div className="bg-black h-screen">
+        <div className="bg-primaryContainer h-screen flex flex-col">
           <Register />
         </div>
       )}
@@ -126,9 +126,7 @@ const DashboardWithTabs: React.FC = () => {
             {location.pathname === "/dashboard" ? (
               <>
                 <IonIcon icon={ActiveHomeSVG} />
-                <IonLabel style={{ color: "var(--primary-color)" }}>
-                  Home
-                </IonLabel>
+                <IonLabel className="text-activeButton">Home</IonLabel>
               </>
             ) : (
               <>
@@ -141,9 +139,7 @@ const DashboardWithTabs: React.FC = () => {
             {location.pathname === "/favorite" ? (
               <>
                 <IonIcon icon={ActiveFavoriteSVG} />
-                <IonLabel style={{ color: "var(--primary-color)" }}>
-                  Favorite
-                </IonLabel>
+                <IonLabel className="text-activeButton">Favorite</IonLabel>
               </>
             ) : (
               <>
@@ -155,9 +151,7 @@ const DashboardWithTabs: React.FC = () => {
           <IonTabButton tab="profile" href="/profile">
             <IonIcon icon={ProfileSVG} />
             {location.pathname === "/profile" ? (
-              <IonLabel style={{ color: "var(--primary-color)" }}>
-                Profile
-              </IonLabel>
+              <IonLabel className="text-activeButton">Profile</IonLabel>
             ) : (
               <IonLabel>Profile</IonLabel>
             )}

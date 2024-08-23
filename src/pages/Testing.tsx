@@ -9,6 +9,8 @@ import {
   SmallDisabledIconButton,
   TextOnlyButton,
   RoundedButton,
+  SelectedButton,
+  UnselectedButton,
 } from "../subComponents/Buttons";
 const Testing = () => {
   return (
@@ -22,6 +24,8 @@ const Testing = () => {
       <SmallDisabledIconButton />
       <TextOnlyButton />
       <RoundedButton />
+      <SelectedButton />
+      <UnselectedButton />
     </div>
   );
 };

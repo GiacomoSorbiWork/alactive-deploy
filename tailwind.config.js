@@ -10,6 +10,7 @@ export default {
         secondary: "#9E80F3",
         secondaryContainer: "#717070",
         activeButton: "#825CF0",
+        filterContainer: "#232323",
         disabledButton: "#FFFFFF33",
         nonAllowedButton: "#FFFFFF1a",
       },
@@ -37,6 +38,7 @@ export default {
         small: "10px 16px",
         normal: "10px",
         clear: "8px 0px",
+        selected: "11px 0px",
         rounded: "5px 10px",
       },
       gap: {

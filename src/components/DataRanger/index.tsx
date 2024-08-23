@@ -57,13 +57,13 @@ const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
 const PriceRange: React.FC<PriceRangeProps> = ({ low, high }) => {
   return (
     <div className="flex items-center text-white">
-      <div className="bg-[var(--secondary-color)] m-2.5 rounded-[30px] flex flex-col items-start p-[5px] pl-4 w-[45%] text-center">
-        <p className="text-[11px] leading-4">Low</p>
-        <p className="text-1xl font-medium leading-4">${low}</p>
+      <div className="bg-white bg-opacity-10 m-2.5 rounded-rounded flex flex-col items-start p-[5px] pl-4 w-[45%] text-center">
+        <p className="text-[10px] leading-4">Low</p>
+        <p className="text-body-medium font-medium leading-4">${low}</p>
       </div>
-      <div className="bg-[var(--secondary-color)] m-2.5 rounded-[30px] flex flex-col items-start p-[5px] pl-4 w-[45%] text-center">
-        <p className="text-[11px] leading-4">High</p>
-        <p className="text-1xl font-medium leading-4">${high}</p>
+      <div className="bg-white bg-opacity-10 m-2.5 rounded-rounded flex flex-col items-start p-[5px] pl-4 w-[45%] text-center">
+        <p className="text-[10px] leading-4">High</p>
+        <p className="text-body-medium font-medium leading-4">${high}</p>
       </div>
     </div>
   );

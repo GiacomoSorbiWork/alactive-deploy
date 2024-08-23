@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SelectListProps } from "./type";
+import { SelectedButton, UnselectedButton } from "../../subComponents/Buttons";
 
 const SelectList: React.FC<SelectListProps> = ({ data, onClick }) => {
   const [isActiveItem, setIsActiveItem] = useState<string>("");
@@ -10,24 +11,30 @@ const SelectList: React.FC<SelectListProps> = ({ data, onClick }) => {
 
   return (
     <div className="flex flex-wrap">
-      <div className="px-[38px]">
-        <h1 className="text-4xl font-bold leading-tight tracking-wide text-white">
+      <div className="px-[30px]">
+        <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px] mb-1">
           Select your favorite music genres for nights out
         </h1>
       </div>
-      {data.map((item) => (
-        <button
-          key={item}
-          className={`m-2 p-2 w-full rounded-[30px] border text-white ${
-            isActiveItem == item
-              ? "bg-[var(--primary-color)]"
-              : "bg-transparent"
-          }`}
-          onClick={() => handleClick(item)}
-        >
-          {item}
-        </button>
-      ))}
+      <div className="flex flex-col w-full">
+        {data.map((item) =>
+          isActiveItem === item ? (
+            <SelectedButton
+              key={item}
+              text={item}
+              onClick={() => handleClick(item)}
+              className="my-[10px]"
+            />
+          ) : (
+            <UnselectedButton
+              key={item}
+              text={item}
+              onClick={() => handleClick(item)}
+              className="my-[10px]"
+            />
+          )
+        )}
+      </div>
     </div>
   );
 };
