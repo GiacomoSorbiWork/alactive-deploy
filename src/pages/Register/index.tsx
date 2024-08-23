@@ -44,6 +44,8 @@ const Register: React.FC = () => {
   const handleBack = useCallback((): void => {
     if (step > 1) {
       setStep(step - 1);
+    } else if (step === 1) {
+      history.push("/home");
     }
   }, [step]);
 
