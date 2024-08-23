@@ -10,18 +10,22 @@ import arrowBack from "../../../resources/arrow back.svg";
 
 const ProfileList: React.FC<ProfileListType> = ({ img, title, text, type }) => {
   return (
-    <div className="flex items-center justify-between w-full border-b border-[var(--primary-border-color)]">
-      <div className="flex py-4">
+    <div
+      className={`flex items-center justify-between w-full pb-6 pt-4 ${
+        !type && "border-b border-[var(--primary-border-color)]"
+      }`}
+    >
+      <div className="flex">
         <img src={img} alt="profile" />
         <div className={`flex ml-4 `}>
           <p
-            className={`text-md font-medium ${
+            className={`text-body-small font-bold ${
               type ? "text-[#ff8578]" : "text-white"
             }`}
           >
             {title} {text ? ":" : ""}
           </p>
-          <p className="text-md font-light text-gray ml-1">{text}</p>
+          <p className="text-body-small ml-1">{text}</p>
         </div>
       </div>
       {type !== "delete" && <img src={ArrowRigthSVG} alt="profile" />}
@@ -39,20 +43,22 @@ const Profile: React.FC<ProfileType> = ({
   return (
     <>
       <div
-        className="relative w-full max-w-sm h-1/2 overflow-hidden bg-cover bg-center text-white"
+        className="relative w-full h-1/2 overflow-hidden bg-cover bg-center text-white"
         style={{ backgroundImage: `url(${imgUrl})` }}
       >
         <img src={arrowBack} alt="Back" className="cursor-pointer mt-6" />
         <div className="absolute bottom-7 text-white p-4">
-          <p className="text-[30px] font-medium w-5/6 leading-tight">{title}</p>
-          <p className="text-[15px] font-light mt-2">{subTitle}</p>
+          <p className="text-title-medium font-bold w-5/6 leading-snug">
+            {title}
+          </p>
+          <p className="text-body-small mt-2">{subTitle}</p>
         </div>
       </div>
-      <div className="text-white px-4 rounded-t-[30px] relative mt-[-35px] bg-[var(--primary-background-color)]">
+      <div className="text-white px-4 rounded-t-rounded relative mt-[-35px] bg-primaryContainer">
         <div className="">
           <ProfileList img={UserSVG} title="Username" text={userName} />
           <ProfileList img={BirthSVG} title="Date of Birth" text={birthday} />
-          <p className="text-[18px] mt-5 font-bold">Account</p>
+          <p className="text-body-medium mt-5 font-bold">Account</p>
           <ProfileList img={HammerSVG} title="Terms of Service" />
           <ProfileList img={DocumentSVG} title="Pravacy Policy" />
           <ProfileList img={RecycleSVG} title="Delect Account" type="delete" />
