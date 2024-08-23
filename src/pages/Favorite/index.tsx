@@ -9,7 +9,7 @@ const Favorite: React.FC = () => {
   };
   return (
     <>
-      <h2 className="text-[22px] font-[600] mb-3 text-white text-center m-3">
+      <h2 className="text-title-small font-bold mb-6 text-white text-center m-3">
         Favorites
       </h2>
       <div className="mt-0">
@@ -17,10 +17,10 @@ const Favorite: React.FC = () => {
           <div className="flex flex-col items-center">
             <button
               onClick={() => handleTabClick(0)}
-              className={`py-2 px-4 ${
+              className={`text-body-small font-medium py-2 px-4 ${
                 activeTab === 0
-                  ? " text-[var(--primary-color)]"
-                  : "text-gray-500"
+                  ? " text-activeButton"
+                  : "text-white text-opacity-65"
               } focus:outline-none`}
             >
               Events
@@ -32,17 +32,14 @@ const Favorite: React.FC = () => {
           <div className="flex flex-col items-center">
             <button
               onClick={() => handleTabClick(1)}
-              className={`py-2 px-4 ${
+              className={`text-body-small font-medium py-2 px-4 ${
                 activeTab === 1
-                  ? " text-[var(--primary-color)]"
-                  : "text-gray-500"
+                  ? "text-activeButton"
+                  : "text-white text-opacity-65"
               } focus:outline-none`}
             >
-              About
+              Hosts
             </button>
-            {activeTab === 1 && (
-              <span className="w-12 h-[2px] bg-[var(--primary-color)]"></span>
-            )}
           </div>
         </div>
       </div>
