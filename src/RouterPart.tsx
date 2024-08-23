@@ -29,9 +29,9 @@ const RouterPart: React.FC = () => {
     <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
       <Switch>
         <Route exact path="/home" component={Home} />
+        <Route exact path="/register" component={Register} />
         {isAuthenticated ? (
           <>
-            <Route exact path="/register" component={Register} />
             <Route exact path="/host-detail" component={HostDetail} />
             <Route exact path="/event-detail" component={EventDetail} />
             <Route

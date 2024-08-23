@@ -49,7 +49,7 @@ const Register: React.FC = () => {
 
   const handleNext = useCallback((): void => {
     if (step >= 7) {
-      history.push("/dashboard");
+      history.push("/home");
     } else {
       const isEmailValid = email.trim() !== "" && isSubscribed;
       const isNameValid = name.trim() !== "";
