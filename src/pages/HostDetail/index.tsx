@@ -11,6 +11,7 @@ import LinkdinSVG from "../../../resources/svg/social/linkedin-app-white-icon.sv
 import LineSVG from "../../../resources/svg/social/link-svgrepo-com.svg";
 import { UserHeaderProps, SocialIconProps } from "./type";
 import { detailData } from "./data";
+import ArrowBack from "../../components/ArrowBack";
 
 const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
   <div className="flex items-center p-4">
@@ -49,6 +50,7 @@ const HostDetail: React.FC = () => {
 
   return (
     <>
+      <ArrowBack />
       <CarouselComponent items={items} />
       <UserHeader {...userInfo} />
       <div className="mt-0">

@@ -36,3 +36,9 @@ export interface IconTextProps {
 	text: string;
 	dividerState?: boolean;
 }
+
+export interface BookListProps {
+	svg: string;
+	title: string;
+	subTitle: string;
+}

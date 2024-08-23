@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import CarouselComponent from "../../components/Carousel";
 import items from "../../components/Carousel/data";
 import CloudCheckSVG from "../../../resources/svg/artist.svg";
@@ -14,6 +14,8 @@ import ContextualSVG from "../../../resources/svg/rules/contextual_token.svg";
 import PhotographySVG from "../../../resources/svg/rules/no_photography.svg";
 import SmokeSVG from "../../../resources/svg/rules/smoke_free.svg";
 import FrameSVG from "../../../resources/svg/rules/Frame.svg";
+import TicketsSVG from "../../../resources/svg/f7_tickets.svg";
+import GroupSVG from "../../../resources/svg/Group.svg";
 
 import {
   EventHeaderProps,
@@ -22,8 +24,10 @@ import {
   LineUpProps,
   MusicGenresProps,
   IconTextProps,
+  BookListProps,
 } from "./type";
 import Divider from "@mui/material/Divider";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { hostData, introData, lineUpData } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonFooter } from "@ionic/react";
@@ -187,20 +191,41 @@ const Rules = () => (
   </div>
 );
 
-const EventDetail: React.FC = () => {
+const BookList: React.FC<BookListProps> = ({ svg, title, subTitle }) => {
+  return (
+    <div className="flex my-3 items-center">
+      <div className="flex items-center justify-center h-[74px] w-[74px] bg-white bg-opacity-10 rounded-2xl">
+        <img src={svg} />
+      </div>
+      <div className="flex flex-col ml-2">
+        <p>{title}</p>
+        <p>{subTitle}</p>
+      </div>
+    </div>
+  );
+};
+
+const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const eventInfo = {
     title: "House Rave",
-    subtitle: "Pou up event in Mayfair",
+    subtitle: "Pop-up event in Mayfair",
     date: "12/03/2024",
     startingTime: "22:00",
   };
+
+  const container = window ? window().document.body : undefined;
+  const [isBookingModal, setIsBookingModal] = useState(false);
+
+  // Using useCallback to memoize the handlers
+  const handleOpen = useCallback(() => setIsBookingModal(true), []);
+  const handleClose = useCallback(() => setIsBookingModal(false), []);
 
   return (
     <>
       <ArrowBack />
       <CarouselComponent items={items} />
       <div className="p-4">
-        <EventHeader {...eventInfo}></EventHeader>
+        <EventHeader {...eventInfo} />
         <Divider className="!border-white h-0 opacity-20" />
         <MusicGenres
           fields={[
@@ -227,16 +252,54 @@ const EventDetail: React.FC = () => {
           <IntroduceGroup key={index} {...item} />
         ))}
         <Divider className="!border-white h-0 opacity-20" />
-        <Host {...hostData}></Host>
+        <Host {...hostData} />
         <Divider className="!border-white h-0 opacity-20" />
         <Rules />
       </div>
+
       <IonFooter className="bg-primaryContainer px-8 py-4 flex items-center justify-between">
-        <TextOnlyButton text="Starting from $345"></TextOnlyButton>
-        <LargeDefaultButton text="Book"></LargeDefaultButton>
+        <TextOnlyButton text="Starting from $345" />
+        <LargeDefaultButton text="Book" onClick={handleOpen} />
       </IonFooter>
+
+      <SwipeableDrawer
+        container={container}
+        anchor="bottom"
+        open={isBookingModal}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        disableSwipeToOpen={false}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          "& .MuiPaper-root": {
+            borderTopLeftRadius: "25px",
+            borderTopRightRadius: "25px",
+            border: 0,
+          },
+        }}
+      >
+        <div className="h-2 w-14 bg-white bg-opacity-50 absolute top-4 left-[calc(50%-25px)] rounded-xl" />
+        <div className="bg-filterContainer p-4 text-white flex flex-col">
+          <Divider className="!border-white h-0 opacity-20 !mt-6" />
+          <BookList
+            svg={TicketsSVG}
+            title="Ticket"
+            subTitle="From $20"
+          ></BookList>
+          <BookList
+            svg={GroupSVG}
+            title="VIP Table"
+            subTitle="Upon Request"
+          ></BookList>
+          <BookList
+            svg={TicketsSVG}
+            title="Guestlist"
+            subTitle="$20 ~ $40"
+          ></BookList>
+          <LargeDefaultButton text="Book"></LargeDefaultButton>
+        </div>
+      </SwipeableDrawer>
     </>
   );
 };
-
 export default EventDetail;
