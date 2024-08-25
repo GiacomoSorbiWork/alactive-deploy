@@ -17,10 +17,10 @@ input:focus-visible {
     font-family: InterVariable, sans-serif;
   }
 }
-.border {
+/* .border {
   border: 1px solid var(--primary-border-color);
-}
-
+} */
+/* 
 .border-bottom {
   border-bottom: 1px solid var(--primary-border-color);
-}
+} */

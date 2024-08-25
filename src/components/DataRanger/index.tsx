@@ -10,16 +10,12 @@ function valuetext(value: number) {
 const CustomSlider = styled(Slider)({
   "& .MuiSlider-thumb": {
     borderRadius: "5px", // Change the slider thumb to a square
-    backgroundColor: "var(--primary-color)", // Set thumb color
+    backgroundColor: "var(--secondary-color)", // Set thumb color
     width: "23px",
     height: "23px",
   },
-  "& .MuiSlider-track": {
-    backgroundColor: "var(--secondary-color)", // Set track color
-    border: 0,
-  },
   "& .MuiSlider-rail": {
-    backgroundColor: "var(--primary-color)", // Set the rail color (the inactive part of the track)
+    backgroundColor: "var(--secondary-color)", // Set the rail color (the inactive part of the track)
   },
 });
 
@@ -45,7 +41,7 @@ const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
             sx={{
               height: `${barHeight}px`,
               width: "6px",
-              backgroundColor: "var(--primary-color)",
+              backgroundColor: "var(--secondary-color)",
             }}
           />
         );

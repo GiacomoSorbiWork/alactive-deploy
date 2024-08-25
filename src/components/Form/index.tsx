@@ -1,14 +1,19 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CheckBox from "../../subComponents/Checkbox";
 import DateInput from "rsuite/DateInput";
 import { FormProps } from "./type";
 import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import ClearIcon from "../../../resources/svg/clear.svg";
 
 const Form: React.FC<FormProps> = ({
   title,
   label,
   value,
   text,
+  helperText,
+  placeholderText,
   onChange,
   onDateChange,
   checkValue = "I want to receive news, updates, and offers from Alactive",
@@ -20,28 +25,58 @@ const Form: React.FC<FormProps> = ({
   const isUsernameField = label === "Username";
   const usernameTooLong =
     isUsernameField && typeof value === "string" && value.length > 15;
+  const [isEmptyText, setIsEmptyText] = useState(true);
+  const [helperTextState, setHelperText] = useState(helperText);
 
   const validationMessage = useMemo(() => {
     if (!isUsernameField) return null;
-    if (typeof value === "string" && value.length > 0) {
-      if (usernameTooLong) {
+
+    if (typeof value === "string") {
+      if (value.length === 0) {
+        return {
+          text: "Username is required.",
+          color: "text-gray-500",
+          underline: "border-gray-500",
+        };
+      } else if (usernameTooLong) {
         return {
           text: "Maximum number of characters is 15.",
           color: "text-red-500",
           underline: "border-red-500",
         };
+      } else {
+        return {
+          text: "Username available",
+          color: "text-green-500",
+          underline: "border-green-500",
+        };
       }
-      return {
-        text: "Username available",
-        color: "text-green-500",
-        underline: "border-green-500",
-      };
     }
     return null;
   }, [value]);
 
+  useEffect(() => {
+    if (value) {
+      setIsEmptyText(false);
+    } else setIsEmptyText(true);
+
+    if (
+      label.toString().includes("Handle") &&
+      !value?.toString().startsWith("@")
+    ) {
+      setHelperText("Handle should be started @.");
+    } else setHelperText(helperText);
+  }, [value]);
+
+  const handleClear = () => {
+    if (onChange != undefined)
+      onChange({
+        target: { value: "" },
+      } as React.ChangeEvent<HTMLInputElement>);
+  };
+
   return (
-    <div className="px-10 text-white">
+    <div className="text-white">
       <h1 className="text-title-large font-bold leading-[120%] mb-[41px] min-h-24">
         {title}
       </h1>
@@ -58,16 +93,37 @@ const Form: React.FC<FormProps> = ({
               label={label}
               value={value as string}
               onChange={onChange}
+              placeholder={placeholderText}
+              helperText={helperTextState}
               required
+              InputProps={{
+                endAdornment: value ? (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClear} edge="end">
+                      <img
+                        src={ClearIcon}
+                        style={{ color: "var(--secondary-color)" }}
+                      />
+                    </IconButton>
+                  </InputAdornment>
+                ) : null,
+              }}
               sx={{
                 "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "var(--secondary-color) !important", // Change underline color after focus
+                  borderColor: isEmptyText
+                    ? "var(--secondary-container-color) !important"
+                    : "var(--secondary-color) !important",
                 },
                 "& .MuiFormLabel-root": {
-                  color: "var(--secondary-color) !important", // Change underline color after focus
+                  color: isEmptyText
+                    ? "var(--secondary-container-color) !important"
+                    : "var(--secondary-color) !important",
                 },
                 "& .MuiInputBase-input": {
-                  color: "white", // MUI-specific way to change input text color
+                  color: "white",
+                },
+                "& .MuiFormHelperText-root": {
+                  color: "var(--secondary-container-color)",
                 },
               }}
               focused
@@ -90,7 +146,7 @@ const Form: React.FC<FormProps> = ({
               value={value as Date}
               onChange={onDateChange}
             />
-            <p className="text-[20px] mt-3">Your age will not be public.</p>
+            <p className="text-body-medium opacity-50 mt-3">{helperText}</p>
           </>
         )}
         {visibleCheckboxes && (

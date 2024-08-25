@@ -1,10 +1,9 @@
-import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
+import React, { useState, ChangeEvent, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { ProgressBar } from "../../components/ProgressBar";
 import Form from "../../components/Form";
-import Card from "../../components/Card";
-import SelectList from "../../components/SelectList";
 import RangeSlider from "../../components/DataRanger";
+import EventCard from "../../components/EventCard";
 import { LargeDefaultButton, BackButton } from "../../subComponents/Buttons";
 import {
   IonContent,
@@ -15,216 +14,218 @@ import {
 } from "@ionic/react";
 
 const Register: React.FC = () => {
-  const favoriteList: Array<string> = [
-    "Commercial",
-    "House",
-    "Reggaeton",
-    "EDM",
-    "Techno",
-    "Bass Music",
-  ];
-
   const [step, setStep] = useState<number>(1);
   const [lastStep, setLastStep] = useState<number>(1);
-  const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
+  const [handle, setHandle] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
-  const [isCard, setIsCard] = useState<boolean>(false);
   const [rangeValue, setRangeValue] = useState<number[]>([80, 2000]);
-  const [emailError, setEmailError] = useState<string>("");
-
+  const [eventCardSelectedList, setEventCardSelectedList] = useState<string[]>(
+    []
+  );
+  const [favoriteList, setFavorite] = useState<string[]>([]);
+  const musicList = [
+    "Commercial",
+    "Reggaeton",
+    "Hip-Hop",
+    "EDM",
+    "House",
+    "Techno",
+    "Bass Music",
+    "Tech-House",
+    "Afro-House",
+    "Trance",
+    "Big Room",
+  ];
   const history = useHistory();
-
-  useEffect(() => {
-    setIsCard(step === 5);
-  }, [step]);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setRangeValue(newValue as number[]);
   };
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
   const handleBack = useCallback((): void => {
     if (step > 1) {
       setStep(step - 1);
-    } else if (step === 1) {
+    } else {
       history.push("/home");
     }
   }, [step]);
 
   const handleNext = useCallback((): void => {
-    if (step >= 7) {
-      history.push("/home");
-    } else {
-      const isEmailValid = validateEmail(email) && isSubscribed;
-      const isNameValid = name.trim() !== "";
-      const isUserNameValid = userName.trim() !== "" && userName.length <= 15;
-      const isDateValid = date !== null;
+    const isNameValid = name.trim() !== "";
+    const isHandleValid = handle.trim().startsWith("@");
+    const isDateValid = date !== null;
+    const isEventSelected = eventCardSelectedList.length > 0;
+    const isFavoriteSelected = favoriteList.length > 0;
 
-      if (step === 1 && !isEmailValid) {
-        setEmailError(
-          "Please enter a valid email address and accept the subscription."
-        );
-        return;
-      } else {
-        setEmailError("");
-      }
-
-      const isFormValid =
-        (step === 1 && isEmailValid) ||
-        (step === 2 && isNameValid) ||
-        (step === 3 && isDateValid) ||
-        (step === 4 && isUserNameValid) ||
-        step >= 5; // Allow progression from steps 5+ even without validation
-
-      if (!isFormValid) {
-        alert(
-          "Please fill out all fields correctly and accept the subscription."
-        );
-        return;
-      }
-      setStep((prevStep) => prevStep + 1);
-      if (lastStep <= step) setLastStep((prevStep) => prevStep + 1);
+    const isFormValid =
+      (step === 1 && isNameValid) ||
+      (step === 2 && isHandleValid && handle.length > 1) ||
+      (step === 3 && isDateValid) ||
+      (step === 4 && isEventSelected) ||
+      (step === 5 && isFavoriteSelected) ||
+      step === 6;
+    if (!isFormValid) {
+      alert("Please fill out all fields correctly.");
+      return;
     }
-  }, [step, email, name, userName, date, isSubscribed]);
+
+    if (step === 6)
+      setTimeout(() => {
+        history.push("/home");
+      }, 2000); // simulate loading delay
+    setStep((prev) => prev + 1);
+    setLastStep((prev) => Math.max(prev, step + 1));
+  }, [step, name, handle, date, eventCardSelectedList, favoriteList]);
 
   const isActive = useCallback((): boolean => {
-    const isEmailValid = validateEmail(email) && isSubscribed;
-    const isNameValid = name.trim() !== "";
-    const isUserNameValid = userName.trim() !== "" && userName.length <= 15;
-    const isDateValid = date !== null;
-
     return (
-      (step === 1 && isEmailValid) ||
-      (step === 2 && isNameValid) ||
-      (step === 3 && isDateValid) ||
-      (step === 4 && isUserNameValid) ||
-      step >= 5
+      (step === 1 && name.trim() !== "") ||
+      (step === 2 && handle.trim().startsWith("@") && handle.length > 1) ||
+      (step === 3 && date !== null) ||
+      (step === 4 && eventCardSelectedList.length > 0) ||
+      (step === 5 && favoriteList.length > 0) ||
+      step === 6
     );
-  }, [step, email, name, userName, date, isSubscribed]);
+  }, [step, name, handle, date, eventCardSelectedList, favoriteList]);
 
-  const handleSelectFavorite = (item: string) => {
-    console.log("Selected favorite: ", item);
+  const handleSelectedEvent = (selectedItem?: string): void => {
+    if (!selectedItem) return;
+
+    setEventCardSelectedList((prevList) => {
+      if (prevList.includes(selectedItem)) {
+        return prevList.filter((item) => item !== selectedItem);
+      } else {
+        return [...prevList, selectedItem];
+      }
+    });
+  };
+
+  const toggleFavorite = (music: string) => {
+    setFavorite((prevList) =>
+      prevList.includes(music)
+        ? prevList.filter((item) => item !== music)
+        : [...prevList, music]
+    );
   };
 
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar></IonToolbar>
+        <IonToolbar />
       </IonHeader>
       <IonContent>
-        <ProgressBar progress={step} />
-        {isCard && step !== 6 && (
-          <div className="p-4">
-            <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
-              Choose which events you would attend
-            </h1>
-          </div>
-        )}
-        <div className={`p-4 pb-8 pt-0 flex flex-col`}>
+        {step < 7 && <ProgressBar progress={step} />}
+        <div className="p-8 flex flex-col">
           {step === 1 && (
             <Form
-              title="What’s your email?"
-              label="Email Address"
-              value={email}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setEmail(e.target.value)
-              }
-              isSubscribed={isSubscribed}
-              handleSubscribed={setIsSubscribed}
-              errorMessage={emailError}
-            />
-            // <TextField
-            //   helperText="Please enter your email"
-            //   id="demo-helper-text-misaligned"
-            //   label="Email"
-            //   focused
-            // />
-          )}
-          {step === 2 && (
-            <Form
-              title="My Name is"
-              label="Name"
+              title="Nice to meet you. And your name is?"
+              label="Your Name"
               value={name}
+              placeholderText="My name is..."
+              helperText="For example, Stefano Alberto Proietti"
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setName(e.target.value)
               }
-              visibleCheckboxes={false}
             />
-            // <TextField
-            //   helperText="Please enter your name"
-            //   id="demo-helper-text-misaligned"
-            //   label="Name"
-            // />
+          )}
+          {step === 2 && (
+            <Form
+              title="Great. What will your username be?"
+              label="Your Handle"
+              value={handle}
+              placeholderText="My handle is..."
+              helperText="For example, @stefano"
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setHandle(e.target.value)
+              }
+            />
           )}
           {step === 3 && (
             <Form
-              title="My birthday is"
+              title="Nice. When do we send you a gift?"
               label="Birthday"
+              helperText="Your birthday will not be public, and we will only use it to confirm your age."
               value={date}
-              onChange={() => {}} // Necessary for type safety, but will not be used
-              onDateChange={(d: Date | null) => setDate(d)}
+              onDateChange={setDate}
               visibleCheckboxes={false}
             />
           )}
           {step === 4 && (
-            <Form
-              title="Create a username"
-              label="Username"
-              text="By creating an account, you agree to our Terms. Learn how we collect and use your data in our Data Policy."
-              value={userName}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setUserName(e.target.value)
-              }
-              visibleCheckboxes={false}
-            />
+            <>
+              <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
+                Choose which events you would attend
+              </h1>
+              <EventCard
+                imgUrl="https://t4.ftcdn.net/jpg/08/19/24/63/240_F_819246328_2nfWzjhKYjhnl1yURFR0NL1oToq8FDnn.jpg"
+                title="Black Coffee Minimal House Event"
+                date="30/05/2024"
+                location="New York, NY"
+                price="200"
+                purpose="Registration"
+                isChecked={eventCardSelectedList.includes(
+                  "Black Coffee Minimal House Event"
+                )}
+                selectFunc={handleSelectedEvent}
+                cardId="Black Coffee Minimal House Event"
+              />
+            </>
           )}
           {step === 5 && (
-            <Card
-              imgUrl=""
-              title="Black Coffee Minimal House Event"
-              payBill={30}
-              date={new Date()}
-            />
+            <div>
+              <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px] mb-8">
+                {"What kind of music do you like?"}
+              </h1>
+              <div className="flex flex-wrap gap-3">
+                {musicList.map((music, index) => (
+                  <button
+                    key={"music-" + index}
+                    className={`border border-solid border-white ${
+                      !favoriteList.includes(music)
+                        ? "bg-transparent "
+                        : "bg-[var(--secondary-color)] "
+                    } rounded-big p-2`}
+                    onClick={() => toggleFavorite(music)}
+                  >
+                    {music}
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
           {step === 6 && (
-            <SelectList data={favoriteList} onClick={handleSelectFavorite} />
+            <div>
+              <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
+                {"What’s your budget for a night out at a nightlife event?"}
+              </h1>
+              <RangeSlider value={rangeValue} onChange={handleChange} />
+            </div>
           )}
           {step === 7 && (
-            <div className="mb-[222px]">
-              <div className="px-[30px]">
-                <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
-                  {"What’s your budget for a night out at a nightlife event?"}
-                </h1>
-              </div>
-              <RangeSlider value={rangeValue} onChange={handleChange} />
+            <div>
+              <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
+                All done! Let the fun begin...
+              </h1>
             </div>
           )}
         </div>
       </IonContent>
       <IonFooter class="p-4">
-        <div className="flex items-center mt-6 gap-2">
-          <BackButton onClick={handleBack} />
-          <div className="w-full">
+        {step < 7 && (
+          <div className="flex items-center mt-6 gap-2">
+            <BackButton onClick={handleBack} />
             <LargeDefaultButton
               text="Continue"
               className="w-full"
               onClick={handleNext}
               state={isActive() ? "isActive" : "disabled"}
             />
+            {lastStep > step && (
+              <BackButton onClick={handleNext} state="noBack isActive" />
+            )}
           </div>
-          {lastStep > step && (
-            <BackButton onClick={handleNext} state="noBack isActive" />
-          )}
-        </div>
+        )}
       </IonFooter>
-      {/* <Divider className="!border-white h-0 opacity-20 mt-6" /> */}
     </IonPage>
   );
 };
