@@ -7,7 +7,9 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import HostDetail from "./pages/HostDetail";
 import EventDetail from "./pages/EventDetail";
-import DashboardWithTabs from "./DashboardWithTabs";
+import DashBoard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Favorite from "./pages/Favorite";
 import Loading from "./components/Loading"; // Consider using a dedicated loading component
 
 const RouterPart: React.FC = () => {
@@ -31,12 +33,13 @@ const RouterPart: React.FC = () => {
         <Route exact path="/register" component={Register} />
         {isAuthenticated ? (
           <>
+            <Route exact path="/" component={DashBoard} />
             <Route exact path="/host-detail" component={HostDetail} />
             <Route exact path="/event-detail" component={EventDetail} />
-            <Route
-              path={["/dashboard", "/profile", "/favorite"]}
-              component={DashboardWithTabs}
-            />
+            <Route exact path="/dashboard" component={DashBoard} />
+            <Route exact path="/profile" component={Profile} />
+            <Route exact path="/favorite" component={Favorite} />
+            <Redirect to="/dashboard" />
             <Redirect from="*" to="/dashboard" />
           </>
         ) : (

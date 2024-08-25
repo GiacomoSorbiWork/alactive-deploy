@@ -8,6 +8,9 @@ import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/rules/credit_card_off.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
+import { IonContent, IonPage } from "@ionic/react";
+import { useHistory } from "react-router";
+import FooterBar from "../../components/FooterBar";
 
 interface IconButtonProps {
   icon: string;
@@ -60,13 +63,11 @@ const DashBoard: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
     useVideoControls();
+  const history = useHistory();
 
   return (
-    <>
-      <div
-        className="relative w-full h-screen overflow-hidden"
-        onClick={() => togglePlayback(videoRef)}
-      >
+    <IonPage>
+      <IonContent fullscreen={true} onClick={() => togglePlayback(videoRef)}>
         <video
           ref={videoRef}
           muted={isMuted}
@@ -82,7 +83,11 @@ const DashBoard: React.FC = () => {
             <img src={PageInfoSVG} alt="Page Info" />
           </div>
           <div className="flex flex-col items-center w-max ml-auto mb-20">
-            <IconButton icon={HostAvatarSVG} label="Circoloco" />
+            <IconButton
+              icon={HostAvatarSVG}
+              label="Circoloco"
+              onClick={() => history.push("/host-detail")}
+            />
             <IconButton
               icon={isLiked ? LikedSVG : FavoriteSVG}
               label={isLiked ? "Liked" : "Like"}
@@ -108,10 +113,10 @@ const DashBoard: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <SwipeableEdgeDrawer />
-    </>
+        <SwipeableEdgeDrawer />
+        <FooterBar></FooterBar>
+      </IonContent>
+    </IonPage>
   );
 };
 
