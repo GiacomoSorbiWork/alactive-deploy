@@ -11,12 +11,7 @@ import PageInfoSVG from "../../../resources/svg/page_info.svg";
 import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
-
-interface IconButtonProps {
-  icon: string;
-  label: string;
-  onClick?: () => void;
-}
+import { IconButtonProps } from "./type";
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
   <button

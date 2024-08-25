@@ -20,7 +20,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const handleClick = () => {
     if (isCard) {
-      history.push(`/event-detail`);
+      history.push(`/event-view`);
     } else if (selectFunc) {
       selectFunc(cardId); // Pass cardId directly
     }
@@ -46,12 +46,12 @@ const EventCard: React.FC<EventCardProps> = ({
       >
         <h2
           className={`${
-            isCard ? "text-body-medium" : "text-title-small"
-          } font-bold leading-tight w-4/5 mb-9`}
+            isCard ? "text-body-medium" : "text-title-small mb-9"
+          } font-bold leading-tight w-4/5`}
         >
           {title}
         </h2>
-        {isCard && <p className="text-[12px] text-opacity-75">{location}</p>}
+        {isCard && <p className="text-[12px] opacity-80 mb-4">{location}</p>}
       </div>
       {isCard ? (
         <span className="absolute bottom-2 left-4 p-1 bg-secondaryContainer rounded-md text-[10px] font-medium">

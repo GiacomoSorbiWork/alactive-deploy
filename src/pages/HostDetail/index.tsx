@@ -67,7 +67,7 @@ const HostDetail: React.FC = () => {
               Events
             </button>
             {activeTab === 0 && (
-              <span className="w-12 h-[2px] bg-[var(--primary-color)]"></span>
+              <span className="w-12 h-[2px] bg-[var(--secondary-color)]"></span>
             )}
           </div>
           <div className="flex flex-col items-center">
@@ -89,14 +89,26 @@ const HostDetail: React.FC = () => {
       </div>
       <div className="p-4 text-white">
         {activeTab === 0 && (
-          <div>
-            <h2 className="text-title-small font-bold mb-4">Hosting Events</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {detailData.map((event, index) => (
-                <EventCard {...event} key={index} />
-              ))}
+          <>
+            <div>
+              <h2 className="text-title-small font-bold mb-4">
+                Hosting Events
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {detailData.map((event, index) => (
+                  <EventCard {...event} key={index} />
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="mt-7">
+              <h2 className="text-title-small font-bold mb-4">Highlights</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {detailData.map((event, index) => (
+                  <EventCard {...event} key={index} />
+                ))}
+              </div>
+            </div>
+          </>
         )}
         {activeTab === 1 && (
           <>

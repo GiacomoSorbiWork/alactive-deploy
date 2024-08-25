@@ -11,6 +11,7 @@ import DashBoard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Favorite from "./pages/Favorite";
 import Loading from "./components/Loading"; // Consider using a dedicated loading component
+import EventMediaView from "./pages/EventMediaView";
 
 const RouterPart: React.FC = () => {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -36,6 +37,7 @@ const RouterPart: React.FC = () => {
             <Route exact path="/" component={DashBoard} />
             <Route exact path="/host-detail" component={HostDetail} />
             <Route exact path="/event-detail" component={EventDetail} />
+            <Route exact path="/event-view" component={EventMediaView} />
             <Route exact path="/dashboard" component={DashBoard} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/favorite" component={Favorite} />
