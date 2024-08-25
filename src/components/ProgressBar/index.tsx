@@ -12,9 +12,9 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
     <div className="bg-black">
       <LinearProgress
         sx={{
-          backgroundColor: "#535353", // Background color of the progress bar
+          backgroundColor: "var(--secondary-container-color)", // Background color of the progress bar
           "& .MuiLinearProgress-bar": {
-            backgroundColor: "var(--primary-color)", // Color of the progress indicator
+            backgroundColor: "var(--secondary-color)", // Color of the progress indicator
           },
           height: "12px", // Height of the progress bar
         }}

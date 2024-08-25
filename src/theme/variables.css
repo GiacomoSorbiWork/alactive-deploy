@@ -1,11 +1,20 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
 :root {
-  --primary-color: #825cf0;
+  /* --primary-color: #825cf0;
   --primary-border-color: #383838;
   --primary-background-color: #232323;
   --secondary-color: #272727;
-  --secondary-background-color: rgb(90, 90, 90);
+  --secondary-background-color: rgb(90, 90, 90); */
+
+  --primary-color: #000000;
+  --primary-container-color: #080707;
+  --secondary-color: #9e80f3;
+  --secondary-container-color: #717070;
+  --active-button-color: #825cf0;
+  --filter-container-color: #232323;
+  --disabled-button-color: #ffffff33;
+  --non-allowed-button-color: #ffffff1a;
 
   --ion-background-color: #080707;
   --ion-text-color: white;

@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
-import CheckBox from "../Checkbox";
+import CheckBox from "../../subComponents/Checkbox";
 import DateInput from "rsuite/DateInput";
 import { FormProps } from "./type";
+import TextField from "@mui/material/TextField";
 
 const Form: React.FC<FormProps> = ({
   title,
@@ -48,17 +49,28 @@ const Form: React.FC<FormProps> = ({
         {text && <p>{text}</p>}
         {label !== "Birthday" ? (
           <div className="mb-[41px]">
-            <input
+            <TextField
               id="input"
-              className={`w-full bg-transparent border-b ${
+              className={`w-full ${
                 validationMessage ? validationMessage.underline : "border-white"
               } text-lg p-1`}
               type={label === "Email Address" ? "email" : "text"}
-              aria-label={label}
+              label={label}
               value={value as string}
-              placeholder={label}
               onChange={onChange}
               required
+              sx={{
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "var(--secondary-color) !important", // Change underline color after focus
+                },
+                "& .MuiFormLabel-root": {
+                  color: "var(--secondary-color) !important", // Change underline color after focus
+                },
+                "& .MuiInputBase-input": {
+                  color: "white", // MUI-specific way to change input text color
+                },
+              }}
+              focused
             />
             {validationMessage && (
               <p className={`mt-2 ${validationMessage.color}`}>

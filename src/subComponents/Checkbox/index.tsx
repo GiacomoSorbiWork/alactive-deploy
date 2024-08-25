@@ -26,7 +26,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({
         htmlFor="custom-checkbox"
         className={`flex items-center justify-center w-4 h-4 rounded cursor-pointer ${
           checked
-            ? "bg-[var(--primary-color)]"
+            ? "bg-[var(--secondary-color)]"
             : "bg-transparent border-gray-400 border-2"
         } transition-colors duration-200`}
       >

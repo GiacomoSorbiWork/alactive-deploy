@@ -4,4 +4,5 @@ export interface ButtonProps {
 	icon?: string;
 	className?: string;
 	onClick?: () => void;
+	state?: string;
 }

@@ -8,7 +8,6 @@ import Register from "./pages/Register";
 import HostDetail from "./pages/HostDetail";
 import EventDetail from "./pages/EventDetail";
 import DashboardWithTabs from "./DashboardWithTabs";
-import Testing from "./pages/Testing";
 import Loading from "./components/Loading"; // Consider using a dedicated loading component
 
 const RouterPart: React.FC = () => {
@@ -38,7 +37,6 @@ const RouterPart: React.FC = () => {
               path={["/dashboard", "/profile", "/favorite"]}
               component={DashboardWithTabs}
             />
-            <Route exact path="/test" component={Testing} />
             <Redirect from="*" to="/dashboard" />
           </>
         ) : (

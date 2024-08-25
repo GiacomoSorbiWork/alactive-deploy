@@ -2,39 +2,30 @@ import React from "react";
 import PlusIcon from "../../../resources/svg/plus.svg";
 import CheckIcon from "../../../resources/svg/check.svg";
 import SearchIcon from "../../../resources/svg/search.svg";
+import arrowBack from "../../../resources/svg/arrow-left.svg";
+import arrowFoward from "../../../resources/svg/arrow-right.svg";
 import { ButtonProps } from "./type";
 
 // Large Default Button
 const LargeDefaultButton: React.FC<ButtonProps> = ({
   text = "Default",
   className = "",
+  state = "isActive",
   onClick,
-}) => (
-  <button
-    className={`min-h-[56px] flex items-center justify-center rounded-normal p-big bg-activeButton ${className}`}
-    onClick={onClick}
-  >
-    <span className="font-semibold text-body-small leading-[16.94px]">
-      {text}
-    </span>
-  </button>
-);
-
-// Large Disabled Button
-const LargeDisabledButton: React.FC<ButtonProps> = ({
-  text = "Disabled",
-  className = "",
-  onClick,
-}) => (
-  <button
-    className={`min-h-[56px] flex items-center justify-center rounded-normal p-big bg-disabledButton ${className}`}
-    onClick={onClick}
-  >
-    <span className="font-semibold text-body-small leading-[16.94px]">
-      {text}
-    </span>
-  </button>
-);
+}) => {
+  let bgColor = state === "isActive" ? "bg-activeButton" : "bg-disabledButton";
+  if (state === "blocking") bgColor = "";
+  return (
+    <button
+      className={`min-h-[56px] flex items-center justify-center rounded-normal p-big ${bgColor} ${className}`}
+      onClick={onClick}
+    >
+      <span className="font-semibold text-body-small leading-[16.94px]">
+        {text}
+      </span>
+    </button>
+  );
+};
 
 // Large Button with Icon
 const LargeIconButton: React.FC<ButtonProps> = ({
@@ -179,9 +170,30 @@ const UnselectedButton: React.FC<ButtonProps> = ({
   </button>
 );
 
+const BackButton: React.FC<ButtonProps> = ({
+  icon = arrowBack,
+  className = "",
+  onClick,
+  state = "isActive",
+}) => {
+  let bgColor = state.includes("isActive")
+    ? "bg-activeButton"
+    : "bg-disabledButton";
+  if (state === "blocking") bgColor = "";
+  icon = icon && state.includes("noBack") ? arrowFoward : arrowBack;
+
+  return (
+    <button
+      className={`flex items-center justify-center min-w-max rounded-normal p-4 ${bgColor} ${className}`}
+      onClick={onClick}
+    >
+      <img src={icon} alt="back" />
+    </button>
+  );
+};
+
 export {
   LargeDefaultButton,
-  LargeDisabledButton,
   LargeIconButton,
   SmallDefaultButton,
   SmallDisabledButton,
@@ -191,4 +203,5 @@ export {
   RoundedButton,
   SelectedButton,
   UnselectedButton,
+  BackButton,
 };
