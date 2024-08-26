@@ -24,3 +24,10 @@ input:focus-visible {
 .border-bottom {
   border-bottom: 1px solid var(--primary-border-color);
 } */
+
+.MuiPaper-root {
+  background-color: var(--secondary-container-color) !important;
+}
+.MuiTypography-root {
+  color: white !important;
+}

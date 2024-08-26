@@ -63,9 +63,7 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div
         className="flex items-center justify-between bg-secondaryContainer rounded-big py-[5px] px-2 flex-grow cursor-pointer min-h-[35px]"
-        onClick={() => {
-          handleOpen();
-        }}
+        onClick={handleOpen}
       >
         <TextBox>{label}</TextBox>
         {value && (
@@ -113,41 +111,39 @@ const When: FC<WhenProps> = ({
   setSelectedYear,
 }) => {
   return (
-    <>
-      <div className={`my-6 text-white`}>
-        {!isOpen ? (
-          <div
-            onClick={onToggle}
-            className="cursor-pointer flex justify-between items-center"
-          >
-            <p className="text-body-medium">When</p>
-            <span className="text-body-small opacity-50 mr-2">
-              {selectedMonth ? selectedMonth.format("MMMM") : ""}
-              {selectedMonth && selectedYear ? ", " : ""}
-              {selectedYear ? selectedYear.format("YYYY") : ""}
-            </span>
+    <div className="my-6 text-white">
+      {!isOpen ? (
+        <div
+          onClick={onToggle}
+          className="cursor-pointer flex justify-between items-center"
+        >
+          <p className="text-body-medium">When</p>
+          <span className="text-body-small opacity-50 mr-2">
+            {selectedMonth ? selectedMonth.format("MMMM") : ""}
+            {selectedMonth && selectedYear ? ", " : ""}
+            {selectedYear ? selectedYear.format("YYYY") : ""}
+          </span>
+        </div>
+      ) : (
+        <AnimatedBox>
+          <p className="text-body-medium mb-2">When</p>
+          <div className="flex justify-between items-center w-full gap-big">
+            <DatePickerField
+              label="Month"
+              value={selectedMonth}
+              onChange={setSelectedMonth}
+              onClear={() => setSelectedMonth(null)}
+            />
+            <DatePickerField
+              label="Year"
+              value={selectedYear}
+              onChange={setSelectedYear}
+              onClear={() => setSelectedYear(null)}
+            />
           </div>
-        ) : (
-          <AnimatedBox>
-            <p className="text-body-medium mb-2">When</p>
-            <div className="flex justify-between items-center w-full gap-big">
-              <DatePickerField
-                label="Month"
-                value={selectedMonth}
-                onChange={setSelectedMonth}
-                onClear={() => setSelectedMonth(null)}
-              />
-              <DatePickerField
-                label="Year"
-                value={selectedYear}
-                onChange={setSelectedYear}
-                onClear={() => setSelectedYear(null)}
-              />
-            </div>
-          </AnimatedBox>
-        )}
-      </div>
-    </>
+        </AnimatedBox>
+      )}
+    </div>
   );
 };
 
