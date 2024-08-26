@@ -8,6 +8,7 @@ import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/rules/credit_card_off.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
+import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
@@ -60,6 +61,10 @@ const DashBoard: React.FC = () => {
     useVideoControls();
   const history = useHistory();
 
+  const handleGoEventDetail = () => {
+    history.push("/event-detail");
+  };
+
   return (
     <IonPage>
       <IonContent fullscreen={true} onClick={() => togglePlayback(videoRef)}>
@@ -77,6 +82,13 @@ const DashBoard: React.FC = () => {
             <p className="text-title-small font-bold">Tailored</p>
             <img src={PageInfoSVG} alt="Page Info" />
           </div>
+          <button
+            className="absolute top-1/2 right-3 p-2 rounded-rounded bg-black bg-opacity-30 flex border border-solid border-white border-opacity-75"
+            onClick={handleGoEventDetail}
+          >
+            <img src={ArrowLeft} alt="Credit Card" />
+            <p>Swipe for Details</p>
+          </button>
           <div className="flex flex-col items-center w-max ml-auto mb-20">
             <IconButton
               icon={HostAvatarSVG}
