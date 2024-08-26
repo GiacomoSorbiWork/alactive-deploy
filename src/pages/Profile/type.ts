@@ -3,6 +3,8 @@ export interface ProfileListType {
 	title: string; // The title or label to display
 	text?: string; // The associated text or value
 	type?: string; // The associated type
+	arrowVisible?: boolean; //
+	onClick?: () => void; // The callback function to be executed when the profile is clicked
 }
 
 export interface ProfileType {
