@@ -11,7 +11,7 @@ const Home: React.FC = () => {
     <div onClick={handleClick}>
       {!isClicked ? (
         <div className="bg-activeButton h-screen flex justify-center items-center cursor-pointer">
-          <img src={logo} alt="logo" />
+          <img src={logo} alt="logo" className="h-[180px]" />
         </div>
       ) : (
         <div className="bg-primaryContainer h-screen flex flex-col">
