@@ -20,7 +20,13 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
     onClick={onClick}
     aria-label={label}
   >
-    <img src={icon} className="h-6" alt={label} />
+    <img
+      src={icon}
+      className={`${
+        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "h-7" : "h-10"
+      }`}
+      alt={label}
+    />
     <p className="text-body-small">{label}</p>
   </button>
 );
@@ -83,7 +89,7 @@ const DashBoard: React.FC = () => {
             <img src={PageInfoSVG} alt="Page Info" />
           </div>
           <button
-            className="absolute top-1/2 right-3 p-2 rounded-rounded bg-black bg-opacity-30 flex border border-solid border-white border-opacity-75"
+            className="absolute top-1/2 right-3 p-2 rounded-rounded bg-black bg-opacity-30 backdrop-blur-sm flex border border-solid border-white border-opacity-75"
             onClick={handleGoEventDetail}
           >
             <img src={ArrowLeft} alt="Credit Card" />

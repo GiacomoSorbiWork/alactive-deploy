@@ -12,6 +12,7 @@ import LineSVG from "../../../resources/svg/social/link-svgrepo-com.svg";
 import { UserHeaderProps, SocialIconProps } from "./type";
 import { detailData } from "./data";
 import ArrowBack from "../../components/ArrowBack";
+import { IonContent, IonPage } from "@ionic/react";
 
 const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
   <div className="flex items-center p-4">
@@ -49,99 +50,101 @@ const HostDetail: React.FC = () => {
   };
 
   return (
-    <>
-      <ArrowBack />
-      <CarouselComponent items={items} />
-      <UserHeader {...userInfo} />
-      <div className="mt-0">
-        <div className="flex">
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => handleTabClick(0)}
-              className={`text-body-small font-medium py-2 px-4 ${
-                activeTab === 0
-                  ? " text-activeButton"
-                  : "text-white text-opacity-65"
-              } focus:outline-none`}
-            >
-              Events
-            </button>
-            {activeTab === 0 && (
-              <span className="w-12 h-[2px] bg-[var(--secondary-color)]"></span>
-            )}
-          </div>
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => handleTabClick(1)}
-              className={`text-body-small font-medium py-2 px-4 ${
-                activeTab === 1
-                  ? "text-activeButton"
-                  : "text-white text-opacity-65"
-              } focus:outline-none`}
-            >
-              About
-            </button>
-            {activeTab === 1 && (
-              <span className="w-12 h-[2px] bg-activeButton"></span>
-            )}
+    <IonPage>
+      <IonContent fullscreen={true}>
+        <ArrowBack />
+        <CarouselComponent items={items} />
+        <UserHeader {...userInfo} />
+        <div className="mt-0">
+          <div className="flex">
+            <div className="flex flex-col items-center">
+              <button
+                onClick={() => handleTabClick(0)}
+                className={`text-body-small font-medium py-2 px-4 ${
+                  activeTab === 0
+                    ? " text-activeButton"
+                    : "text-white text-opacity-65"
+                } focus:outline-none`}
+              >
+                Events
+              </button>
+              {activeTab === 0 && (
+                <span className="w-12 h-[2px] bg-[var(--secondary-color)]"></span>
+              )}
+            </div>
+            <div className="flex flex-col items-center">
+              <button
+                onClick={() => handleTabClick(1)}
+                className={`text-body-small font-medium py-2 px-4 ${
+                  activeTab === 1
+                    ? "text-activeButton"
+                    : "text-white text-opacity-65"
+                } focus:outline-none`}
+              >
+                About
+              </button>
+              {activeTab === 1 && (
+                <span className="w-12 h-[2px] bg-activeButton"></span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="p-4 text-white">
-        {activeTab === 0 && (
-          <>
-            <div>
-              <h2 className="text-title-small font-bold mb-4">
-                Hosting Events
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {detailData.map((event, index) => (
-                  <EventCard {...event} key={index} />
-                ))}
+        <div className="p-4 text-white">
+          {activeTab === 0 && (
+            <>
+              <div>
+                <h2 className="text-title-small font-bold mb-4">
+                  Hosting Events
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {detailData.map((event, index) => (
+                    <EventCard {...event} key={index} />
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="mt-7">
-              <h2 className="text-title-small font-bold mb-4">Highlights</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {detailData.map((event, index) => (
-                  <EventCard {...event} key={index} />
-                ))}
+              <div className="mt-7">
+                <h2 className="text-title-small font-bold mb-4">Highlights</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {detailData.map((event, index) => (
+                    <EventCard {...event} key={index} />
+                  ))}
+                </div>
               </div>
-            </div>
-          </>
-        )}
-        {activeTab === 1 && (
-          <>
-            <div>
-              <h2 className="text-title-small font-bold mb-4">Address</h2>
-              <p className="text-label-small mb-4">
-                Bond street, 22, GU75HP, London, United Kingdom
-              </p>
-              <img
-                className="rounded-md"
-                src="https://img.freepik.com/premium-vector/3d-top-view-map-with-destination-location-point_34645-1177.jpg?w=1380"
-              ></img>
-            </div>
+            </>
+          )}
+          {activeTab === 1 && (
+            <>
+              <div>
+                <h2 className="text-title-small font-bold mb-4">Address</h2>
+                <p className="text-label-small mb-4">
+                  Bond street, 22, GU75HP, London, United Kingdom
+                </p>
+                <img
+                  className="rounded-md"
+                  src="https://img.freepik.com/premium-vector/3d-top-view-map-with-destination-location-point_34645-1177.jpg?w=1380"
+                ></img>
+              </div>
 
-            <div className="mt-5">
-              <h2 className="text-title-small font-semibold mb-3">
-                Information
-              </h2>
-              <p className="text-body-small font-medium mb-1">
-                {"The most technologically advanced club on the planet with" +
-                  "cutting-edge DJs and pioneering immersive experiences." +
-                  "Officially the World's Number 1 Club."}
-              </p>
-            </div>
-            <SocialIcon icon={SpotifySVG} text="Spotify" />
-            <SocialIcon icon={YouTubeSVG} text="You Tude" />
-            <SocialIcon icon={LinkdinSVG} text="Linkdin" />
-            <SocialIcon icon={InstagamSVG} text="Instagam" />
-            <SocialIcon icon={LineSVG} text="stefanooffical.com" />
-          </>
-        )}
-      </div>
-    </>
+              <div className="mt-5">
+                <h2 className="text-title-small font-semibold mb-3">
+                  Information
+                </h2>
+                <p className="text-body-small font-medium mb-1">
+                  {"The most technologically advanced club on the planet with" +
+                    "cutting-edge DJs and pioneering immersive experiences." +
+                    "Officially the World's Number 1 Club."}
+                </p>
+              </div>
+              <SocialIcon icon={SpotifySVG} text="Spotify" />
+              <SocialIcon icon={YouTubeSVG} text="You Tude" />
+              <SocialIcon icon={LinkdinSVG} text="Linkdin" />
+              <SocialIcon icon={InstagamSVG} text="Instagam" />
+              <SocialIcon icon={LineSVG} text="stefanooffical.com" />
+            </>
+          )}
+        </div>
+      </IonContent>
+    </IonPage>
   );
 };
 

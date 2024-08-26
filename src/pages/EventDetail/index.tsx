@@ -30,7 +30,7 @@ import Divider from "@mui/material/Divider";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { hostData, introData, lineUpData } from "./data";
 import ArrowBack from "../../components/ArrowBack";
-import { IonFooter } from "@ionic/react";
+import { IonContent, IonFooter, IonPage } from "@ionic/react";
 import {
   LargeDefaultButton,
   TextOnlyButton,
@@ -221,85 +221,87 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const handleClose = useCallback(() => setIsBookingModal(false), []);
 
   return (
-    <>
-      <ArrowBack />
-      <CarouselComponent items={items} />
-      <div className="p-4">
-        <EventHeader {...eventInfo} />
-        <Divider className="!border-white h-0 opacity-20" />
-        <MusicGenres
-          fields={[
-            "Tech house",
-            "Afro house",
-            "Deep house",
-            "Downtempo",
-            "Organic House",
-          ]}
-        />
-        <Divider className="!border-white h-0 opacity-20" />
-        <div className="mt-6">
-          <p className="text-title-small font-bold mb-4">Lineup</p>
-          <div className="overflow-x-auto pb-6">
-            <div className="flex w-max gap-6">
-              {lineUpData.map((item, index) => (
-                <LineUp key={index} {...item} />
-              ))}
+    <IonPage>
+      <IonContent fullscreen={true}>
+        <ArrowBack />
+        <CarouselComponent items={items} />
+        <div className="p-4">
+          <EventHeader {...eventInfo} />
+          <Divider className="!border-white h-0 opacity-20" />
+          <MusicGenres
+            fields={[
+              "Tech house",
+              "Afro house",
+              "Deep house",
+              "Downtempo",
+              "Organic House",
+            ]}
+          />
+          <Divider className="!border-white h-0 opacity-20" />
+          <div className="mt-6">
+            <p className="text-title-small font-bold mb-4">Lineup</p>
+            <div className="overflow-x-auto pb-6">
+              <div className="flex w-max gap-6">
+                {lineUpData.map((item, index) => (
+                  <LineUp key={index} {...item} />
+                ))}
+              </div>
             </div>
           </div>
+          <Divider className="!border-white h-0 opacity-20" />
+          {introData.map((item, index) => (
+            <IntroduceGroup key={index} {...item} />
+          ))}
+          <Divider className="!border-white h-0 opacity-20" />
+          <Host {...hostData} />
+          <Divider className="!border-white h-0 opacity-20" />
+          <Rules />
         </div>
-        <Divider className="!border-white h-0 opacity-20" />
-        {introData.map((item, index) => (
-          <IntroduceGroup key={index} {...item} />
-        ))}
-        <Divider className="!border-white h-0 opacity-20" />
-        <Host {...hostData} />
-        <Divider className="!border-white h-0 opacity-20" />
-        <Rules />
-      </div>
 
-      <IonFooter className="bg-primaryContainer px-8 py-4 flex items-center justify-between">
-        <TextOnlyButton text="Starting from $345" />
-        <LargeDefaultButton text="Book" onClick={handleOpen} />
-      </IonFooter>
+        <IonFooter className="bg-primaryContainer px-8 py-4 flex items-center justify-between">
+          <TextOnlyButton text="Starting from $345" />
+          <LargeDefaultButton text="Book" onClick={handleOpen} />
+        </IonFooter>
 
-      <SwipeableDrawer
-        container={container}
-        anchor="bottom"
-        open={isBookingModal}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        disableSwipeToOpen={false}
-        ModalProps={{ keepMounted: true }}
-        sx={{
-          "& .MuiPaper-root": {
-            borderTopLeftRadius: "25px",
-            borderTopRightRadius: "25px",
-            border: 0,
-          },
-        }}
-      >
-        <div className="h-2 w-14 bg-white bg-opacity-50 absolute top-4 left-[calc(50%-25px)] rounded-xl" />
-        <div className="bg-filterContainer p-4 text-white flex flex-col">
-          <Divider className="!border-white h-0 opacity-20 !mt-6" />
-          <BookList
-            svg={TicketsSVG}
-            title="Ticket"
-            subTitle="From $20"
-          ></BookList>
-          <BookList
-            svg={GroupSVG}
-            title="VIP Table"
-            subTitle="Upon Request"
-          ></BookList>
-          <BookList
-            svg={TicketsSVG}
-            title="Guestlist"
-            subTitle="$20 ~ $40"
-          ></BookList>
-          <LargeDefaultButton text="Book"></LargeDefaultButton>
-        </div>
-      </SwipeableDrawer>
-    </>
+        <SwipeableDrawer
+          container={container}
+          anchor="bottom"
+          open={isBookingModal}
+          onClose={handleClose}
+          onOpen={handleOpen}
+          disableSwipeToOpen={false}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            "& .MuiPaper-root": {
+              borderTopLeftRadius: "25px",
+              borderTopRightRadius: "25px",
+              border: 0,
+            },
+          }}
+        >
+          <div className="h-2 w-14 bg-white bg-opacity-50 absolute top-4 left-[calc(50%-25px)] rounded-xl" />
+          <div className="bg-filterContainer p-4 text-white flex flex-col">
+            <Divider className="!border-white h-0 opacity-20 !mt-6" />
+            <BookList
+              svg={TicketsSVG}
+              title="Ticket"
+              subTitle="From $20"
+            ></BookList>
+            <BookList
+              svg={GroupSVG}
+              title="VIP Table"
+              subTitle="Upon Request"
+            ></BookList>
+            <BookList
+              svg={TicketsSVG}
+              title="Guestlist"
+              subTitle="$20 ~ $40"
+            ></BookList>
+            <LargeDefaultButton text="Book"></LargeDefaultButton>
+          </div>
+        </SwipeableDrawer>
+      </IonContent>
+    </IonPage>
   );
 };
 export default EventDetail;
