@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { EventCardProps } from "./type";
 import CreditSVG from "../../../resources/svg/rules/credit_card_off.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
+import ThumbUPSVG from "../../../resources/svg/thumbvector.svg";
 
 const EventCard: React.FC<EventCardProps> = ({
   imgUrl,
@@ -40,10 +41,15 @@ const EventCard: React.FC<EventCardProps> = ({
         </p>
       )}
       <div
-        className={`absolute inset-0 p-4 h-full flex flex-col justify-end ${
-          isChecked ? "bg-blue-700 bg-opacity-75" : "bg-black bg-opacity-20"
+        className={`absolute inset-0 p-4 h-full flex flex-col justify-end bg-black ${
+          isChecked ? "bg-opacity-55" : " bg-opacity-20"
         }`}
       >
+        {isChecked && (
+          <div className="flex items-center justify-center h-full">
+            <img src={ThumbUPSVG} className="w-20 mt-20" />
+          </div>
+        )}
         <h2
           className={`${
             isCard ? "text-body-medium" : "text-title-small mb-9"
