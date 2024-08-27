@@ -6,7 +6,7 @@ import Loading from "./components/Loading";
 
 // Lazy load the components
 const Home = lazy(() => import("./pages/Home"));
-const Register = lazy(() => import("./pages/Register"));
+const OnBoarding = lazy(() => import("./pages/OnBoarding"));
 const HostDetail = lazy(() => import("./pages/HostDetail"));
 const EventDetail = lazy(() => import("./pages/EventDetail"));
 const DashBoard = lazy(() => import("./pages/Dashboard"));
@@ -38,7 +38,7 @@ const RouterPart: React.FC = () => {
           <Route exact path="/home" component={Home} />
           {isAuthenticated ? (
             <>
-              <Route exact path="/" component={Register} />
+              <Route exact path="/" component={OnBoarding} />
               <Route exact path="/host-detail" component={HostDetail} />
               <Route exact path="/event-detail" component={EventDetail} />
               <Route exact path="/event-view" component={EventMediaView} />
