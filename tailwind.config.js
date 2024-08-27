@@ -11,7 +11,7 @@ export default {
         secondaryContainer: "#717070",
         activeButton: "#825CF0",
         filterContainer: "#232323",
-        disabledButton: "#FFFFFF33",
+        disabledButton: "#717070",
         nonAllowedButton: "#FFFFFF1a",
       },
       fontWeight: {
@@ -45,6 +45,15 @@ export default {
         big: "16px",
         normal: "10px",
         small: "8px",
+      },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        marquee: "marquee 10s linear infinite",
       },
     },
   },
