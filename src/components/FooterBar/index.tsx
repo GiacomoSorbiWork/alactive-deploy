@@ -20,6 +20,7 @@ const FooterBar: React.FC = () => {
         <span
           className={classNames({
             "text-activeButton": location.pathname === "/dashboard",
+            "text-body-small font-semibold leading-[17px]": true,
           })}
         >
           Home
@@ -35,6 +36,7 @@ const FooterBar: React.FC = () => {
         <span
           className={classNames({
             "text-activeButton": location.pathname === "/favorite",
+            "text-body-small font-semibold leading-[17px]": true,
           })}
         >
           Favorite
@@ -45,6 +47,7 @@ const FooterBar: React.FC = () => {
         <span
           className={classNames({
             "text-activeButton": location.pathname === "/profile",
+            "text-body-small font-semibold leading-[17px]": true,
           })}
         >
           Profile
