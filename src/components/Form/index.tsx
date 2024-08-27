@@ -116,7 +116,7 @@ const Form: React.FC<FormProps> = ({
                 },
                 "& .MuiFormLabel-root": {
                   color: isEmptyText
-                    ? "var(--secondary-container-color) !important"
+                    ? "white !important"
                     : "var(--secondary-color) !important",
                 },
                 "& .MuiInputBase-input": {
@@ -146,6 +146,11 @@ const Form: React.FC<FormProps> = ({
               value={value as Date}
               onChange={onDateChange}
             />
+            {errorMessage && (
+              <p className={`text-body-small mt-2 text-red-500`}>
+                {errorMessage}
+              </p>
+            )}
             <p className="text-body-medium opacity-50 mt-3">{helperText}</p>
           </>
         )}

@@ -117,7 +117,7 @@ const When: FC<WhenProps> = ({
           onClick={onToggle}
           className="cursor-pointer flex justify-between items-center"
         >
-          <p className="text-body-medium">When</p>
+          <p className="text-body-medium font-semibold">When</p>
           <span className="text-body-small opacity-50 mr-2">
             {selectedMonth ? selectedMonth.format("MMMM") : ""}
             {selectedMonth && selectedYear ? ", " : ""}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import EventCard from "../../components/EventCard";
 import HostCard from "../../components/HostCard";
 import { IonContent, IonPage } from "@ionic/react";
+import FooterBar from "../../components/FooterBar";
 
 const Favorite: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -29,7 +30,7 @@ const Favorite: React.FC = () => {
                 Events
               </button>
               {activeTab === 0 && (
-                <span className="w-12 h-[2px] bg-[var(--primary-color)]"></span>
+                <span className="w-12 h-[2px] bg-[var(--secondary-color)]"></span>
               )}
             </div>
             <div className="flex flex-col items-center">
@@ -44,7 +45,7 @@ const Favorite: React.FC = () => {
                 Hosts
               </button>
               {activeTab === 1 && (
-                <span className="w-12 h-[2px] bg-[var(--primary-color)]"></span>
+                <span className="w-12 h-[2px] bg-[var(--secondary-color)]"></span>
               )}
             </div>
           </div>
@@ -97,6 +98,7 @@ const Favorite: React.FC = () => {
             </div>
           )}
         </div>
+        <FooterBar></FooterBar>
       </IonContent>
     </IonPage>
   );

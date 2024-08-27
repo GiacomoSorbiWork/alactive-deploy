@@ -128,7 +128,7 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
   const globalStyles = useMemo(
     () => css`
       .MuiDrawer-root > .MuiPaper-root {
-        height: calc(80% - ${drawerBleeding}px);
+        height: calc(74% - ${drawerBleeding}px);
         overflow: visible;
       }
     `,

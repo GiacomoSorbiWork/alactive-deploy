@@ -33,7 +33,7 @@ const Budget: FC<BudgetProps> = ({ isOpen, onToggle, value, onChange }) => {
           onClick={onToggle}
           className="cursor-pointer flex justify-between items-center"
         >
-          <p className="text-body-medium">Budget</p>
+          <p className="text-body-medium font-semibold">Budget</p>
           <span className="text-body-small opacity-50 mr-2">{`$${value[0]} - $${value[1]}`}</span>
         </div>
       ) : (

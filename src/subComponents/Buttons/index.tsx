@@ -20,7 +20,7 @@ const LargeDefaultButton: React.FC<ButtonProps> = ({
       className={`min-h-[56px] flex items-center justify-center rounded-normal p-big ${bgColor} ${className}`}
       onClick={onClick}
     >
-      <span className="font-semibold text-body-small leading-[16.94px]">
+      <span className="font-semibold text-body-large leading-[16.94px]">
         {text}
       </span>
     </button>

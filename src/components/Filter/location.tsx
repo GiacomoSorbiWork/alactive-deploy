@@ -45,7 +45,7 @@ const Location: FC<LocationProps> = ({ isOpen, onToggle, value, onChange }) => {
           onClick={onToggle}
           className="cursor-pointer flex justify-between items-center"
         >
-          <p className="text-body-medium">Location</p>
+          <p className="text-body-medium font-semibold">Location</p>
           {value && (
             <span className="text-body-small opacity-50 mr-2">{value}</span>
           )}

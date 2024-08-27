@@ -5,7 +5,7 @@ import FavoriteSVG from "../../../resources/svg/favorite.svg";
 import LikedSVG from "../../../resources/svg/liked.svg";
 import MuteSVG from "../../../resources/svg/Speaker.svg";
 import UnmuteSVG from "../../../resources/svg/mute.svg";
-import CreditSVG from "../../../resources/svg/rules/credit_card_off.svg";
+import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
@@ -23,7 +23,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
     <img
       src={icon}
       className={`${
-        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "h-7" : "h-10"
+        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "w-8" : "h-10"
       }`}
       alt={label}
     />
@@ -84,16 +84,18 @@ const DashBoard: React.FC = () => {
           Your browser does not support the video tag.
         </video>
         <div className="relative z-10 h-full flex items-end">
-          <div className="absolute top-3 w-full flex justify-between p-4">
+          <div className="absolute top-10 w-full flex justify-between px-4">
             <p className="text-title-small font-bold">Tailored</p>
             <img src={PageInfoSVG} alt="Page Info" />
           </div>
           <button
-            className="absolute top-1/2 right-3 p-2 rounded-rounded bg-black bg-opacity-30 backdrop-blur-sm flex border border-solid border-white border-opacity-75"
+            className="absolute top-[46%] flex items-center right-3 p-2 rounded-rounded bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75"
             onClick={handleGoEventDetail}
           >
             <img src={ArrowLeft} alt="Credit Card" />
-            <p>Swipe for Details</p>
+            <p className="text-body-small font-semibold leading-[17px]">
+              Swipe for Details
+            </p>
           </button>
           <div className="flex flex-col items-center w-max ml-auto mb-20">
             <IconButton
@@ -115,14 +117,21 @@ const DashBoard: React.FC = () => {
         </div>
         <div className="absolute bottom-[90px] left-4">
           <p className="text-title-small font-bold my-2">Week 15 Ibiza</p>
+          <div className="marquee">
+            <span>This is a marquee text. </span>
+          </div>
           <div className="flex gap-3">
-            <div className="flex items-center p-2 bg-secondaryContainer bg-opacity-50 rounded-3xl">
-              <img src={CreditSVG} alt="Credit Card" />
-              <p className="text-label-small ml-2">Starting from $27</p>
+            <div className="flex items-center px-3 py-2 bg-secondaryContainer bg-opacity-70 rounded-3xl">
+              <img src={CreditSVG} className="h-6" alt="Credit Card" />
+              <p className="text-label-small font-medium leading-[17px] ml-2">
+                Starting from £27
+              </p>
             </div>
-            <div className="flex items-center p-2 bg-secondaryContainer bg-opacity-50 rounded-3xl">
-              <img src={CalendarSVG} alt="Calendar" />
-              <p className="text-label-small ml-2">29/08/2024</p>
+            <div className="flex items-center px-3 py-2 bg-secondaryContainer bg-opacity-70 rounded-3xl">
+              <img src={CalendarSVG} className="h-6" alt="Calendar" />
+              <p className="text-label-small font-medium leading-[17px] ml-2">
+                29/08/2024
+              </p>
             </div>
           </div>
         </div>
