@@ -5,7 +5,13 @@ import Form from "../../components/Form";
 import RangeSlider from "../../components/DataRanger";
 import EventCard from "../../components/EventCard";
 import { LargeDefaultButton, BackButton } from "../../subComponents/Buttons";
-import { IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/react";
+import {
+  IonContent,
+  IonFooter,
+  IonHeader,
+  IonPage,
+  IonToolbar,
+} from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 
 const OnBoarding: React.FC = () => {
@@ -246,7 +252,7 @@ const OnBoarding: React.FC = () => {
             </div>
           )}
         </div>
-        {step < 7 && (
+        {step === 4 && (
           <div className="flex items-center p-4 gap-2 bg-black bg-opacity-50 backdrop-blur-sm sticky bottom-0">
             <BackButton onClick={handleBack} />
             <LargeDefaultButton
@@ -261,6 +267,22 @@ const OnBoarding: React.FC = () => {
           </div>
         )}
       </IonContent>
+      <IonFooter>
+        {step < 7 && step != 4 && (
+          <div className="flex items-center p-4 gap-2 bg-black bg-opacity-50 backdrop-blur-sm sticky bottom-0">
+            <BackButton onClick={handleBack} />
+            <LargeDefaultButton
+              text="Continue"
+              className="w-full"
+              onClick={handleNext}
+              state={isActive() ? "isActive" : "disabled"}
+            />
+            {lastStep > step && (
+              <BackButton onClick={handleNext} state="noBack isActive" />
+            )}
+          </div>
+        )}
+      </IonFooter>
     </IonPage>
   );
 };

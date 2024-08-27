@@ -9,6 +9,7 @@ import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
+import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
@@ -117,21 +118,30 @@ const DashBoard: React.FC = () => {
         </div>
         <div className="absolute bottom-[90px] left-4">
           <p className="text-title-small font-bold my-2">Week 15 Ibiza</p>
-          <div className="marquee">
-            <span>This is a marquee text. </span>
-          </div>
-          <div className="flex gap-3">
-            <div className="flex items-center px-3 py-2 bg-secondaryContainer bg-opacity-70 rounded-3xl">
-              <img src={CreditSVG} className="h-6" alt="Credit Card" />
-              <p className="text-label-small font-medium leading-[17px] ml-2">
-                Starting from £27
-              </p>
-            </div>
-            <div className="flex items-center px-3 py-2 bg-secondaryContainer bg-opacity-70 rounded-3xl">
-              <img src={CalendarSVG} className="h-6" alt="Calendar" />
-              <p className="text-label-small font-medium leading-[17px] ml-2">
-                29/08/2024
-              </p>
+          <div className="overflow-hidden w-[75vw]">
+            <div className="flex animate-marquee gap-3">
+              {[...Array(3)].map((_, index) => (
+                <React.Fragment key={index}>
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                    <img src={CreditSVG} alt="Credit Card" />
+                    <p className="text-label-small font-medium ml-2">
+                      Starting from $200
+                    </p>
+                  </div>
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                    <img src={CalendarSVG} alt="Calendar" />
+                    <p className="text-label-small font-medium ml-2">
+                      09/23/2022
+                    </p>
+                  </div>
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                    <img src={MusicSVG} alt="Music" className="h-[17px]" />
+                    <p className="text-label-small font-medium ml-2">
+                      Commerical
+                    </p>
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
           </div>
         </div>

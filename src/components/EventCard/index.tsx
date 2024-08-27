@@ -84,7 +84,6 @@ const EventCard: React.FC<EventCardProps> = ({
       ) : (
         <div className="absolute bottom-4 left-4 flex gap-3 overflow-hidden">
           <div className="flex animate-marquee gap-3">
-            {/* Repeated content for continuous marquee */}
             {[...Array(2)].map((_, index) => (
               <React.Fragment key={index}>
                 <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
@@ -98,7 +97,7 @@ const EventCard: React.FC<EventCardProps> = ({
                   <p className="text-label-small font-medium ml-2">{date}</p>
                 </div>
                 <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
-                  <img src={MusicSVG} alt="Music" />
+                  <img src={MusicSVG} alt="Music" className="h-[17px]" />
                   <p className="text-label-small font-medium ml-2">
                     {musicType}
                   </p>
