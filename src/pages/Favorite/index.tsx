@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import EventCard from "../../components/EventCard";
 import HostCard from "../../components/HostCard";
-import { IonContent, IonPage } from "@ionic/react";
+import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
 
 const Favorite: React.FC = () => {
@@ -12,7 +12,7 @@ const Favorite: React.FC = () => {
   };
   return (
     <IonPage>
-      <IonContent fullscreen={true}>
+      <IonHeader>
         <h2 className="text-title-small font-bold mb-6 text-white text-center m-3">
           Favorites
         </h2>
@@ -50,7 +50,9 @@ const Favorite: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="p-4 text-white overflow-y-auto">
+      </IonHeader>
+      <IonContent fullscreen={true}>
+        <div className="p-4 text-white overflow-y-auto mb-[75px]">
           {activeTab === 0 && (
             <div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

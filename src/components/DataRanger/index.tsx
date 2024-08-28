@@ -1,5 +1,4 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import { PriceRangeProps, RangeSliderProps } from "./type";
@@ -21,32 +20,22 @@ const CustomSlider = styled(Slider)({
 
 const MusicBar: React.FC<{ count?: number }> = ({ count = 20 }) => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        gap: "3px",
-        flexDirection: "row",
-        alignItems: "flex-end",
-        justifyContent: "center",
-        marginTop: "20px",
-        marginBottom: "0px",
-        height: "70px",
-      }}
-    >
+    <div className="flex gap-1 items-end justify-center mt-5 mb-0 h-16">
       {Array.from({ length: count }, (_, i) => {
         const barHeight = Math.floor(Math.random() * 50) + 15; // Random height between 15 and 65
         return (
-          <Box
+          <div
             key={i}
-            sx={{
+            className="w-1.5 rounded-sm"
+            style={{
               height: `${barHeight}px`,
-              width: "6px",
-              backgroundColor: "var(--secondary-color)",
+              backgroundColor: "var(--secondary-color)", // Example Airbnb color
+              transition: "height 0.2s ease",
             }}
           />
         );
       })}
-    </Box>
+    </div>
   );
 };
 

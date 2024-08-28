@@ -21,8 +21,8 @@ http://ionicframework.com/docs/theming/ */
 
   --ion-tab-bar-background: #0009;
   --ion-tab-bar-color: white;
-  --ion-tab-bar-color-selected: #ffffff; /* Selected tab color */
-  --ion-tab-button-font-size: 18px; /* Or any size you prefer */
+  --ion-tab-bar-color-selected: #ffffff;
+  --ion-tab-button-font-size: 18px;
 
   --ion-font-family: Inter, sans-serif;
   --ion-font-feature-settings: "liga" 1, "calt" 1;

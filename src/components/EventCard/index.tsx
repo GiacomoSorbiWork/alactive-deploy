@@ -33,7 +33,7 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div
       className={`relative w-full ${
-        isCard ? "h-64" : "h-[554px] mb-4"
+        isCard ? "h-64" : "h-[55vh] mb-4"
       } rounded-md overflow-hidden bg-cover bg-center text-white`}
       onClick={handleClick}
     >

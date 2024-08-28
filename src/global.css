@@ -31,3 +31,7 @@ input:focus-visible {
 .MuiTypography-root {
   color: white !important;
 }
+
+ion-header {
+  background-color: var(--primary-color);
+}

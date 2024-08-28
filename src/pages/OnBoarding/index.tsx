@@ -140,7 +140,7 @@ const OnBoarding: React.FC = () => {
         <IonToolbar />
         {step < 7 && <ProgressBar progress={step} />}
         {step === 4 && (
-          <div className="p-8 flex flex-col">
+          <div className="p-8 pb-0 flex flex-col">
             <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
               Choose which events you would attend
             </h1>
@@ -150,16 +150,17 @@ const OnBoarding: React.FC = () => {
       <IonContent>
         <div className="p-8 flex flex-col">
           {step === 1 && (
-            <Form
-              title="Nice to meet you. And your name is?"
-              label="Your Name"
-              value={name}
-              placeholderText="My name is..."
-              helperText="For example, Stefano Alberto Proietti"
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setName(e.target.value)
-              }
-            />
+            // <Form
+            //   title="Nice to meet you. And your name is?"
+            //   label="Your Name"
+            //   value={name}
+            //   placeholderText="My name is..."
+            //   helperText="For example, Stefano Alberto Proietti"
+            //   onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            //     setName(e.target.value)
+            //   }
+            // />
+            <LoadingSpinner />
           )}
           {step === 2 && (
             <Form

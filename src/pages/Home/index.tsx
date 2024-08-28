@@ -6,12 +6,13 @@ import { IonContent, IonPage } from "@ionic/react";
 const Home: React.FC = () => {
   const [isClicked, setIsClicked] = useState(false);
 
-  const handleClick = () => setIsClicked(true);
-
+  setTimeout(() => {
+    setIsClicked(true);
+  }, 1500);
   return (
     <IonPage>
       <IonContent fullscreen={true}>
-        <div onClick={handleClick}>
+        <div>
           {!isClicked ? (
             <div className="bg-activeButton h-screen flex justify-center items-center cursor-pointer">
               <img src={logo} alt="logo" className="h-[180px]" />
