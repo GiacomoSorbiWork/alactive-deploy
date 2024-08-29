@@ -3,6 +3,7 @@ import EventCard from "../../components/EventCard";
 import HostCard from "../../components/HostCard";
 import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
+import Logo from "../../../resources/shortcut.svg";
 
 const Favorite: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -13,7 +14,7 @@ const Favorite: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <h2 className="text-title-small font-bold mb-6 text-white text-center m-3">
+        <h2 className="text-[24px] mt-12 font-bold mb-6 text-white text-center m-3">
           Favorites
         </h2>
         <div className="mt-0">
@@ -21,7 +22,7 @@ const Favorite: React.FC = () => {
             <div className="flex flex-col items-center">
               <button
                 onClick={() => handleTabClick(0)}
-                className={`text-body-small font-medium py-2 px-4 ${
+                className={`text-body-medium font-medium py-1 px-4 ${
                   activeTab === 0
                     ? " text-activeButton"
                     : "text-white text-opacity-65"
@@ -30,13 +31,13 @@ const Favorite: React.FC = () => {
                 Events
               </button>
               {activeTab === 0 && (
-                <span className="w-12 h-[2px] bg-[var(--secondary-color)]"></span>
+                <span className="w-14 h-[2px] bg-[var(--secondary-color)]"></span>
               )}
             </div>
             <div className="flex flex-col items-center">
               <button
                 onClick={() => handleTabClick(1)}
-                className={`text-body-small font-medium py-2 px-4 ${
+                className={`text-body-medium font-medium py-1 px-4 ${
                   activeTab === 1
                     ? "text-activeButton"
                     : "text-white text-opacity-65"
@@ -45,7 +46,7 @@ const Favorite: React.FC = () => {
                 Hosts
               </button>
               {activeTab === 1 && (
-                <span className="w-12 h-[2px] bg-[var(--secondary-color)]"></span>
+                <span className="w-14 h-[2px] bg-[var(--secondary-color)]"></span>
               )}
             </div>
           </div>
@@ -62,6 +63,7 @@ const Favorite: React.FC = () => {
                   date="2 Jun"
                   location="New York, NY"
                   price="FROM $200"
+                  titleLogo={Logo}
                 />
                 <EventCard
                   imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"

@@ -86,7 +86,7 @@ const DatePickerField: FC<DatePickerFieldProps> = ({
         <Box hidden>
           <DatePicker
             open={openModel}
-            views={[label.toLowerCase() as "month" | "year"]}
+            views={[label.toLowerCase() === "month" ? "day" : "year"]}
             value={value}
             onChange={(newValue) => {
               onChange(newValue);

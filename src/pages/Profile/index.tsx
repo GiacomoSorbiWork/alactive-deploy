@@ -88,7 +88,7 @@ const Profile: React.FC<ProfileType> = ({
             <p className="text-body-small mt-2">{subTitle}</p>
           </Box>
         </div>
-        <div className="text-white px-4 rounded-t-rounded relative mt-[-35px] bg-primaryContainer">
+        <div className="text-white px-4 rounded-t-rounded relative mt-[-35px] bg-primaryContainer pb-[75px]">
           <ProfileList
             img={BirthSVG}
             title="Date of Birth"

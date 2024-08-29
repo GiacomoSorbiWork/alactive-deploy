@@ -31,16 +31,15 @@ const LargeDefaultButton: React.FC<ButtonProps> = ({
 const LargeIconButton: React.FC<ButtonProps> = ({
   text = "Add to list",
   icon = SearchIcon,
+  className = "",
   onClick,
 }) => (
   <button
-    className="min-h-[56px] flex items-center justify-center rounded-normal p-big gap-small bg-activeButton"
+    className={`min-h-[56px] flex items-center justify-center rounded-normal p-big gap-small bg-activeButton ${className}`}
     onClick={onClick}
   >
     <img src={icon} alt="icon" />
-    <span className="font-semibold text-body-small leading-[16.94px]">
-      {text}
-    </span>
+    <span className="font-bold text-body-medium leading-[16.94px]">{text}</span>
   </button>
 );
 

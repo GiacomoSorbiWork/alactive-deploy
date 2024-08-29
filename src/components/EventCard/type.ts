@@ -3,6 +3,7 @@ export interface EventCardProps {
 	videoUrl?: string;
 	cardId?: string;
 	title: string;
+	titleLogo?: string;
 	date: string;
 	location: string;
 	musicType?: string;

@@ -56,7 +56,7 @@ const PriceRange: React.FC<PriceRangeProps> = ({ low, high }) => {
 
 export default function RangeSlider({ value, onChange }: RangeSliderProps) {
   return (
-    <>
+    <div className="px-3">
       <MusicBar />
       <CustomSlider
         getAriaLabel={() => "Price range"}
@@ -70,6 +70,6 @@ export default function RangeSlider({ value, onChange }: RangeSliderProps) {
         }}
       />
       <PriceRange low={value[0]} high={value[1]} />
-    </>
+    </div>
   );
 }

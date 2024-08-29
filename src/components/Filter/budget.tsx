@@ -27,7 +27,7 @@ const Budget: FC<BudgetProps> = ({ isOpen, onToggle, value, onChange }) => {
   };
 
   return (
-    <div className="text-white my-6">
+    <div className="text-white my-6 overflow-hidden">
       {!isOpen ? (
         <div
           onClick={onToggle}

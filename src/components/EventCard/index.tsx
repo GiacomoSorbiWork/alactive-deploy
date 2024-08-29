@@ -11,6 +11,7 @@ const EventCard: React.FC<EventCardProps> = ({
   videoUrl,
   cardId,
   title,
+  titleLogo,
   date,
   location,
   price,
@@ -34,7 +35,7 @@ const EventCard: React.FC<EventCardProps> = ({
     <div
       className={`relative w-full ${
         isCard ? "h-64" : "h-[55vh] mb-4"
-      } rounded-2xl overflow-hidden bg-cover bg-center text-white`}
+      } rounded-2xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30`}
       onClick={handleClick}
     >
       {videoUrl ? (
@@ -53,13 +54,13 @@ const EventCard: React.FC<EventCardProps> = ({
       )}
 
       {isCard && (
-        <p className="absolute top-0 right-0 bg-secondaryContainer text-center text-[12px] w-9 p-1 leading-none rounded-bl-xl z-10">
+        <p className="absolute top-0 right-0 bg-black bg-opacity-80 text-center text-[12px] w-10 p-2 leading-none rounded-bl-xl z-10">
           {date}
         </p>
       )}
 
       <div
-        className={`absolute inset-0 p-4 h-full flex flex-col justify-end bg-black ${
+        className={`absolute inset-0 px-2 py-4 h-full flex flex-col justify-end bg-black ${
           isChecked ? "bg-opacity-55" : "bg-opacity-20"
         }`}
       >
@@ -68,17 +69,21 @@ const EventCard: React.FC<EventCardProps> = ({
             <img src={ThumbUPSVG} className="w-20 mt-20" />
           </div>
         )}
-        <h2
-          className={`${
-            isCard ? "text-body-medium" : "text-title-small mb-11"
-          } font-bold leading-tight w-4/5`}
-        >
-          {title}
-        </h2>
+        <div className="flex">
+          {titleLogo && <img src={titleLogo} className="w-6 h-6" />}
+          <h2
+            className={`${
+              isCard ? "text-body-medium" : "text-title-small mb-11"
+            } font-bold leading-tight w-4/5`}
+          >
+            {title}
+          </h2>
+        </div>
+
         {isCard && <p className="text-[12px] opacity-80 mb-4">{location}</p>}
       </div>
       {isCard ? (
-        <span className="absolute bottom-2 left-4 p-1 bg-secondaryContainer rounded-md text-[10px] font-medium">
+        <span className="absolute bottom-2 left-2 p-1 bg-white bg-opacity-25 rounded-md text-[10px] font-medium">
           $FROM {price}
         </span>
       ) : (

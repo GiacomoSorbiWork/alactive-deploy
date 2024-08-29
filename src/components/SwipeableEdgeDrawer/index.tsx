@@ -17,7 +17,7 @@ import Location from "../Filter/location";
 import When from "../Filter/when";
 import Budget from "../Filter/budget";
 import { Dayjs } from "dayjs";
-import { LargeIconButton, TextOnlyButton } from "../../subComponents/Buttons";
+import { LargeIconButton } from "../../subComponents/Buttons";
 
 // Constants
 const drawerBleeding = 56;
@@ -195,7 +195,12 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
           />
         </Box>
         <IonFooter className="bg-filterContainer px-8 py-4 flex items-center justify-between text-white border-t border-white border-opacity-20">
-          <TextOnlyButton onClick={handleClearFilters}></TextOnlyButton>
+          <p
+            className="font-bold text-body-medium"
+            onClick={handleClearFilters}
+          >
+            Clear Filters
+          </p>
           <LargeIconButton onClick={handleNext} text="Search"></LargeIconButton>
         </IonFooter>
       </SwipeableDrawer>
