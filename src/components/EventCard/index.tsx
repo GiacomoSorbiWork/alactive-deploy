@@ -54,19 +54,19 @@ const EventCard: React.FC<EventCardProps> = ({
       )}
 
       {isCard && date && (
-        <p className="absolute top-0 right-0 bg-black bg-opacity-80 text-center text-[12px] w-10 p-2 leading-none rounded-bl-xl z-10">
+        <p className="absolute top-0 right-0 bg-black bg-opacity-80 text-center text-[12px] font-medium w-10 p-2 leading-[14.4px] tracking-[1%] rounded-bl-xl z-10">
           {date}
         </p>
       )}
 
       <div
-        className={`absolute inset-0 px-2 py-4 h-full flex flex-col justify-end bg-black ${
+        className={`absolute inset-0 px-2 py-4 h-full flex flex-col justify-end bg-cardGradient ${
           isChecked ? "bg-opacity-55" : "bg-opacity-20"
         }`}
       >
         {isChecked && (
           <div className="flex items-center justify-center h-full">
-            <img src={ThumbUPSVG} className="w-20 mt-20" alt="Thumbs Up" />
+            <img src={ThumbUPSVG} className="w-20 mt-20 " alt="Thumbs Up" />
           </div>
         )}
         <div className="flex">
@@ -90,7 +90,7 @@ const EventCard: React.FC<EventCardProps> = ({
       {price && (
         <>
           {isCard ? (
-            <span className="absolute bottom-2 left-2 p-1 bg-white bg-opacity-25 rounded-md text-[10px] font-medium">
+            <span className="absolute bottom-2 left-2 p-1 bg-white bg-opacity-20 rounded-md text-[10px] font-medium">
               $FROM {price}
             </span>
           ) : (

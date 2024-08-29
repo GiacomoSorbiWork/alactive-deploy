@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SwipeableEdgeDrawer from "../../components/SwipeableEdgeDrawer";
 import HostAvatarSVG from "../../../resources/svg/Host Avatar.svg";
 import FavoriteSVG from "../../../resources/svg/favorite.svg";
@@ -8,7 +8,7 @@ import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
-import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
+// import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import SearchSVG from "../../../resources/svg/search.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
@@ -64,11 +64,37 @@ const VIDEO_URL =
   "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aMMwUnH5kfSTj56rB5Rp3RjRyLnTSo11ugDGbxe410xllYK5LNQ0wzQKhsgXmsvzU5PGvMST8QEzsxY086~pZcPYMqIkhj0UOKkCK4I1PSH6YW59FI3~OKAFxDrh7H6E5DoCgFw0Dsg4DD~ovArSwsF3JywwyzL-WNrUwfuLhwHYIDC14Y9P3RPXey0Urk1ERbR6gXLrB94JluZZqsjvqGtERIZqPS1vxPpGbQ-C4J58kgmm7qVfiUugqW5jjbPkkXDBFF~KFj1ziiZxfC1tDnJzqiz1V6gTd3cTlD-kI86GEzd9rSbGalJ0qEyxIGBn5C4B7fycA43vK-4KA2sB~A__";
 
 const DashBoard: React.FC = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
     useVideoControls();
   const history = useHistory();
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+
+  const touchStartX = useRef(0); // To store the initial touch X coordinate
+  const touchEndX = useRef(0); // To store the final touch X coordinate
+
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchEndX.current - touchStartX.current < 50) {
+      handleGoEventDetail();
+    }
+  };
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.addEventListener("touchstart", handleTouchStart);
+      scrollRef.current.addEventListener("touchmove", handleTouchMove);
+      scrollRef.current.addEventListener("touchend", handleTouchEnd);
+    }
+  }, [scrollRef.current]);
 
   const handleGoEventDetail = () => {
     history.push("/event-detail");
@@ -86,7 +112,7 @@ const DashBoard: React.FC = () => {
           <source src={VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        <div className="relative z-10 h-full flex items-end">
+        <div className="relative z-10 h-full flex items-end" ref={scrollRef}>
           <div className="absolute top-7 w-full flex items-center justify-between px-4">
             <p className="text-[27px] font-bold">Tailored</p>
             <div className="flex gap-1">
@@ -99,7 +125,7 @@ const DashBoard: React.FC = () => {
               <img className="h-6" src={PageInfoSVG} alt="Page Info" />
             </div>
           </div>
-          <button
+          {/* <button
             className="absolute top-[46%] flex items-center right-3 p-2 rounded-rounded bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75"
             onClick={handleGoEventDetail}
           >
@@ -107,7 +133,7 @@ const DashBoard: React.FC = () => {
             <p className="text-body-small font-semibold leading-[17px]">
               Swipe for Details
             </p>
-          </button>
+          </button> */}
           <div className="flex flex-col items-center w-max ml-auto mb-20">
             <IconButton
               icon={HostAvatarSVG}

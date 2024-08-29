@@ -14,6 +14,9 @@ export default {
         disabledButton: "#717070",
         nonAllowedButton: "#FFFFFF1a",
       },
+      backgroundImage: {
+        cardGradient: "linear-gradient(#00000000, #00000000, #000000e6)",
+      },
       fontWeight: {
         semibold: "600",
       },

@@ -60,7 +60,7 @@ const Favorite: React.FC = () => {
                 <EventCard
                   imgUrl="https://t4.ftcdn.net/jpg/08/19/24/63/240_F_819246328_2nfWzjhKYjhnl1yURFR0NL1oToq8FDnn.jpg"
                   title="Sample Event 1"
-                  date="2 Jun"
+                  date="29 Apr"
                   location="New York, NY"
                   price="FROM $200"
                   titleLogo={Logo}
