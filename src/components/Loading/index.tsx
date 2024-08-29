@@ -4,7 +4,7 @@ import "./loading.css";
 const LoadingSpinner: React.FC = () => {
   return (
     <div className="loader flex justify-center items-center h-full">
-      <div className="h-max">
+      <div className="relative h-[70vw] w-[70vw]">
         <div className="box">
           <div className="logo">
             <svg

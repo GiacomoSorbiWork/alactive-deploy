@@ -67,7 +67,7 @@
 }
 
 .loader .logo svg {
-  fill: var(--logo-color);
+  /* fill: var(--logo-color); */
   width: 100%;
   animation: color-change var(--duration) infinite ease-in-out;
 }
@@ -87,7 +87,7 @@
   }
 }
 
-@keyframes color-change {
+/* @keyframes color-change {
   0% {
     fill: var(--logo-color);
   }
@@ -97,4 +97,4 @@
   100% {
     fill: var(--logo-color);
   }
-}
+} */
