@@ -9,6 +9,7 @@ import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
+import SearchSVG from "../../../resources/svg/search.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
@@ -85,9 +86,12 @@ const DashBoard: React.FC = () => {
           Your browser does not support the video tag.
         </video>
         <div className="relative z-10 h-full flex items-end">
-          <div className="absolute top-10 w-full flex justify-between px-4">
+          <div className="absolute top-7 w-full flex justify-between px-4">
             <p className="text-title-small font-bold">Tailored</p>
-            <img src={PageInfoSVG} alt="Page Info" />
+            <div className="flex gap-1">
+              <img className="h-6" src={SearchSVG} alt="Page Info" />
+              <img className="h-6" src={PageInfoSVG} alt="Page Info" />
+            </div>
           </div>
           <button
             className="absolute top-[46%] flex items-center right-3 p-2 rounded-rounded bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75"

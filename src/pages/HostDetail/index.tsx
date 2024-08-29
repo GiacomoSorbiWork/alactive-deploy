@@ -102,12 +102,36 @@ const HostDetail: React.FC = () => {
                   ))}
                 </div>
               </div>
+              {/* <div className="mt-7">
+                <h2 className="text-title-small font-bold mb-4">Highlights</h2>
+                <div className="flex overflow-x-auto gap-4">
+                  <img
+                    className="w-screen h-auto object-cover rounded-md"
+                    src="https://via.placeholder.com/800x600"
+                    alt="Highlight"
+                  />
+                </div>
+              </div> */}
               <div className="mt-7">
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {detailData.map((event, index) => (
-                    <EventCard {...event} key={index} />
-                  ))}
+                <div className="flex overflow-x-auto gap-4">
+                  <video
+                    className="w-screen h-52 object-cover rounded-md"
+                    controls
+                    src="https://www.w3schools.com/html/mov_bbb.mp4"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                  <img
+                    className="w-screen h-52 object-cover rounded-md"
+                    src="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
+                    alt="Highlight"
+                  />
+                  <img
+                    className="w-screen h-52 object-cover rounded-md"
+                    src="https://t3.ftcdn.net/jpg/06/75/79/98/240_F_675799899_EnRwJ46w1SrGrsS0Umt3mKoZq0g3rqmK.jpg"
+                    alt="Highlight"
+                  />
                 </div>
               </div>
             </>
@@ -136,9 +160,9 @@ const HostDetail: React.FC = () => {
                 </p>
               </div>
               <SocialIcon icon={SpotifySVG} text="Spotify" />
-              <SocialIcon icon={YouTubeSVG} text="You Tude" />
-              <SocialIcon icon={LinkdinSVG} text="Linkdin" />
-              <SocialIcon icon={InstagamSVG} text="Instagam" />
+              <SocialIcon icon={YouTubeSVG} text="YouTube" />
+              <SocialIcon icon={LinkdinSVG} text="LinkedIn" />
+              <SocialIcon icon={InstagamSVG} text="Instagram" />
               <SocialIcon icon={LineSVG} text="stefanooffical.com" />
             </>
           )}

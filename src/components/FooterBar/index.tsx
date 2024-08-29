@@ -11,27 +11,30 @@ const FooterBar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <div className="backdrop-blur-md h-[75px] flex justify-around items-center fixed bottom-0 w-full z-20 border-t border-white border-opacity-35">
-      <Link to="/dashboard" className="flex flex-col items-center">
+    <div className="backdrop-blur-md grid grid-cols-3 justify-around items-center fixed bottom-0 w-full z-20 border-t border-white border-opacity-35 py-2 px-4">
+      <Link to="/dashboard" className="p-2 flex flex-col items-center">
         <img
           src={location.pathname === "/dashboard" ? ActiveHomeSVG : HomeSVG}
           alt="Home"
+          className="h-6 w-6"
         />
-        <span
+        <div
           className={classNames({
             "text-activeButton": location.pathname === "/dashboard",
             "text-body-small font-semibold leading-[17px]": true,
           })}
         >
           Home
-        </span>
+        </div>
       </Link>
-      <Link to="/favorite" className="flex flex-col items-center">
+
+      <Link to="/favorite" className="p-2 flex flex-col items-center">
         <img
           src={
             location.pathname === "/favorite" ? ActiveFavoriteSVG : FavoriteSVG
           }
           alt="Favorite"
+          className="h-6 w-6"
         />
         <span
           className={classNames({
@@ -42,8 +45,8 @@ const FooterBar: React.FC = () => {
           Favorite
         </span>
       </Link>
-      <Link to="/profile" className="flex flex-col items-center">
-        <img src={ProfileSVG} alt="Profile" />
+      <Link to="/profile" className="p-2 flex flex-col items-center">
+        <img src={ProfileSVG} alt="Profile" className="h-6 w-6" />
         <span
           className={classNames({
             "text-activeButton": location.pathname === "/profile",

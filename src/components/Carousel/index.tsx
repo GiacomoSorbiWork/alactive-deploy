@@ -34,7 +34,7 @@ const CustomCarousel: React.FC<{ items: Item[] }> = ({ items }) => {
       <Carousel
         autoPlay={false}
         indicators={false}
-        navButtonsAlwaysVisible={true}
+        navButtonsAlwaysVisible={false}
         animation="slide"
         onChange={handleChange}
       >
