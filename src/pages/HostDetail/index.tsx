@@ -13,6 +13,8 @@ import { UserHeaderProps, SocialIconProps } from "./type";
 import { detailData } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonPage } from "@ionic/react";
+import { RoundedButton } from "../../subComponents/Buttons";
+import { useHistory } from "react-router";
 
 const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
   <div className="flex items-center p-4">
@@ -38,7 +40,7 @@ const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
 
 const HostDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
-
+  const history = useHistory();
   const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
@@ -102,6 +104,11 @@ const HostDetail: React.FC = () => {
                   ))}
                 </div>
               </div>
+              {detailData.length >= 6 && (
+                <div className="flex justify-center p-4">
+                  <RoundedButton onClick={() => history.push("host-events")} />
+                </div>
+              )}
               {/* <div className="mt-7">
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
                 <div className="flex overflow-x-auto gap-4">

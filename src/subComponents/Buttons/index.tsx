@@ -116,7 +116,7 @@ const TextOnlyButton: React.FC<ButtonProps> = ({
     className="min-h-[48px] flex items-center justify-center p-clear bg-transparent"
     onClick={onClick}
   >
-    <span className="font-semibold text-body-small leading-[16.94px]">
+    <span className="font-medium text-body-small leading-[16.94px]">
       {text}
     </span>
   </button>
@@ -128,7 +128,7 @@ const RoundedButton: React.FC<ButtonProps> = ({
   onClick,
 }) => (
   <button
-    className="min-w-[135px] min-h-[30px] flex items-center justify-center rounded-rounded p-rounded bg-transparent border gap-normal"
+    className="min-w-[135px] min-h-[30px] flex items-center justify-center rounded-rounded p-rounded bg-transparent border border-solid gap-normal"
     onClick={onClick}
   >
     <span className="font-semibold text-body-small leading-[16.94px]">

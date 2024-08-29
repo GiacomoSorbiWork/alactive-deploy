@@ -8,7 +8,6 @@ import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
-// import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import SearchSVG from "../../../resources/svg/search.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
@@ -70,6 +69,7 @@ const DashBoard: React.FC = () => {
     useVideoControls();
   const history = useHistory();
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [videoTime, setVideoTime] = useState(0); // State to store video time
 
   const touchStartX = useRef(0); // To store the initial touch X coordinate
   const touchEndX = useRef(0); // To store the final touch X coordinate
@@ -83,22 +83,57 @@ const DashBoard: React.FC = () => {
   };
 
   const handleTouchEnd = () => {
-    if (touchEndX.current - touchStartX.current < 50) {
+    if (
+      touchEndX.current != 0 &&
+      touchEndX.current - touchStartX.current < 50
+    ) {
       handleGoEventDetail();
     }
   };
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.addEventListener("touchstart", handleTouchStart);
-      scrollRef.current.addEventListener("touchmove", handleTouchMove);
-      scrollRef.current.addEventListener("touchend", handleTouchEnd);
+    const currentScrollRef = scrollRef.current;
+    if (currentScrollRef) {
+      currentScrollRef.addEventListener("touchstart", handleTouchStart);
+      currentScrollRef.addEventListener("touchmove", handleTouchMove);
+      currentScrollRef.addEventListener("touchend", handleTouchEnd);
+      return () => {
+        currentScrollRef.removeEventListener("touchstart", handleTouchStart);
+        currentScrollRef.removeEventListener("touchmove", handleTouchMove);
+        currentScrollRef.removeEventListener("touchend", handleTouchEnd);
+      };
     }
-  }, [scrollRef.current]);
+  }, [scrollRef]);
 
   const handleGoEventDetail = () => {
     history.push("/event-detail");
   };
+
+  useEffect(() => {
+    const handleVideoTimeUpdate = () => {
+      if (videoRef.current) {
+        setVideoTime(videoRef.current.currentTime);
+      }
+    };
+
+    const currentVideoRef = videoRef.current;
+    if (currentVideoRef) {
+      currentVideoRef.addEventListener("timeupdate", handleVideoTimeUpdate);
+      return () => {
+        currentVideoRef.removeEventListener(
+          "timeupdate",
+          handleVideoTimeUpdate
+        );
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = videoTime; // Set video time when component mounts
+      videoRef.current.play(); // Ensure video plays
+    }
+  }, [videoTime]);
 
   return (
     <IonPage>
@@ -125,15 +160,6 @@ const DashBoard: React.FC = () => {
               <img className="h-6" src={PageInfoSVG} alt="Page Info" />
             </div>
           </div>
-          {/* <button
-            className="absolute top-[46%] flex items-center right-3 p-2 rounded-rounded bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75"
-            onClick={handleGoEventDetail}
-          >
-            <img src={ArrowLeft} alt="Credit Card" />
-            <p className="text-body-small font-semibold leading-[17px]">
-              Swipe for Details
-            </p>
-          </button> */}
           <div className="flex flex-col items-center w-max ml-auto mb-20">
             <IconButton
               icon={HostAvatarSVG}

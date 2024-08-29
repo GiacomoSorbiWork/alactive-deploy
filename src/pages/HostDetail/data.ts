@@ -31,4 +31,20 @@ export const detailData = [
 		location: "Los Angeles, CA",
 		price: "FROM $75",
 	},
+	{
+		imgUrl:
+			"https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg",
+		title: "Sample Event 2",
+		date: "23 Aug",
+		location: "Los Angeles, CA",
+		price: "FROM $75",
+	},
+	{
+		imgUrl:
+			"https://t4.ftcdn.net/jpg/07/90/04/33/240_F_790043387_sjkrr01wF935RYQzWHsqePxZ1SDantUJ.jpg",
+		title: "Sample Event 1",
+		date: "12 Oct",
+		location: "New York, NY",
+		price: "FROM $200",
+	},
 ];

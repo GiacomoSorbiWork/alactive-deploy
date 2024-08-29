@@ -28,7 +28,7 @@ import Divider from "@mui/material/Divider";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { hostData, introData, lineUpData, booklist } from "./data";
 import ArrowBack from "../../components/ArrowBack";
-import { IonContent, IonFooter, IonPage } from "@ionic/react";
+import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import {
   LargeDefaultButton,
   TextOnlyButton,
@@ -40,9 +40,9 @@ const EventHeader: React.FC<EventHeaderProps> = ({
   date,
   startingTime,
 }) => (
-  <div className="my-6">
-    <p className="text-title-medium font-bold">{title}</p>
-    <p className="text-body-large font-medium my-[19px]">{subtitle}</p>
+  <div className="mb-6 mt-[-16px]">
+    <p className="text-[30px] font-bold">{title}</p>
+    <p className="text-[18px] font-medium my-[19px]">{subtitle}</p>
     <div>
       <div className="flex items-center mb-[16px]">
         <img src={CalendarSVG} alt="" />
@@ -205,7 +205,7 @@ const BookList: React.FC<BookListProps> = ({
         <img src={svg} />
       </div>
       <div className="flex flex-col ml-2">
-        <p>{title}</p>
+        <p className="text-body-large font-bold">{title}</p>
         <p>{subTitle}</p>
       </div>
     </div>
@@ -222,7 +222,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
 
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
-  const [selectedBook, setSelectedBook] = useState("booklist1");
+  const [selectedBook, setSelectedBook] = useState("booklist0");
 
   // Using useCallback to memoize the handlers
   const handleOpen = useCallback(() => setIsBookingModal(true), []);
@@ -230,6 +230,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
 
   return (
     <IonPage>
+      <IonHeader></IonHeader>
       <IonContent fullscreen={true}>
         <ArrowBack />
         <CarouselComponent items={items} />
@@ -309,15 +310,16 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             <LargeDefaultButton
               text="Book"
               onClick={handleClose}
+              className="rounded-[12px]"
             ></LargeDefaultButton>
           </div>
         </SwipeableDrawer>
       </IonContent>
-      <IonFooter className="bg-primaryContainer px-8 py-4 items-center grid grid-cols-3 gap-1">
+      <IonFooter className="bg-primaryContainer p-4 items-center grid grid-cols-3 gap-1">
         <div className="col-span-2">
           <TextOnlyButton text="Starting from $345" />
         </div>
-        <LargeDefaultButton text="Book" onClick={handleOpen} />
+        <LargeDefaultButton text="Book" className="ml-4" onClick={handleOpen} />
       </IonFooter>
     </IonPage>
   );
