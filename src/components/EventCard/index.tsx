@@ -61,7 +61,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
       <div
         className={`absolute inset-0 px-2 py-4 h-full flex flex-col justify-end bg-cardGradient ${
-          isChecked ? "bg-opacity-55" : "bg-opacity-20"
+          isChecked ? "bg-black bg-opacity-55" : "bg-opacity-20"
         }`}
       >
         {isChecked && (
