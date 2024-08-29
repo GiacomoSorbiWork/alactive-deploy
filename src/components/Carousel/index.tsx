@@ -14,7 +14,7 @@ const CarouselItem: React.FC<ItemProps> = ({ item }) => {
         backgroundImage: `url(${item.imgPath})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        height: "300px",
+        height: "400px",
       }}
     ></Paper>
   );
@@ -37,6 +37,9 @@ const CustomCarousel: React.FC<{ items: Item[] }> = ({ items }) => {
         navButtonsAlwaysVisible={false}
         animation="slide"
         onChange={handleChange}
+        sx={{
+          height: "400px",
+        }}
       >
         {items.map((item, index) => (
           <CarouselItem key={index} item={item} />

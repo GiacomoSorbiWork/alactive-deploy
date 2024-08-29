@@ -1,3 +1,6 @@
+import TicketsSVG from "../../../resources/svg/f7_tickets.svg";
+import GroupSVG from "../../../resources/svg/Group.svg";
+
 export const detailData = [
 	{
 		imgUrl:
@@ -82,3 +85,21 @@ export const hostData = {
 	subTitle: "Company",
 	text: "Circoloco is a dance party that is held at the DC10 nightclub in Ibiza, Spain, as well as other various locations globally. Circoloco features musical artists from the genres of electronic music, house music, and techno, such as The Martinez Brothers, Seth Troxler, Tale of Us, Black Coffee, and The Blessed Madonna.",
 };
+
+export const booklist = [
+	{
+		svg: TicketsSVG,
+		title: "Ticket",
+		subTitle: "From $20",
+	},
+	{
+		svg: GroupSVG,
+		title: "VIP Table",
+		subTitle: "Upon Request",
+	},
+	{
+		svg: TicketsSVG,
+		title: "Guestlist",
+		subTitle: "$20 ~ $40",
+	},
+];

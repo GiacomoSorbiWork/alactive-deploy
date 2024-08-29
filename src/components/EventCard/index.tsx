@@ -34,7 +34,7 @@ const EventCard: React.FC<EventCardProps> = ({
     <div
       className={`relative w-full ${
         isCard ? "h-64" : "h-[55vh] mb-4"
-      } rounded-md overflow-hidden bg-cover bg-center text-white`}
+      } rounded-2xl overflow-hidden bg-cover bg-center text-white`}
       onClick={handleClick}
     >
       {videoUrl ? (

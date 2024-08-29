@@ -41,4 +41,6 @@ export interface BookListProps {
 	svg: string;
 	title: string;
 	subTitle: string;
+	onClick?: () => void;
+	className?: string;
 }

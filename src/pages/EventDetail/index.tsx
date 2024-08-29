@@ -14,8 +14,6 @@ import ContextualSVG from "../../../resources/svg/rules/contextual_token.svg";
 import PhotographySVG from "../../../resources/svg/rules/no_photography.svg";
 import SmokeSVG from "../../../resources/svg/rules/smoke_free.svg";
 import FrameSVG from "../../../resources/svg/rules/Frame.svg";
-import TicketsSVG from "../../../resources/svg/f7_tickets.svg";
-import GroupSVG from "../../../resources/svg/Group.svg";
 
 import {
   EventHeaderProps,
@@ -28,7 +26,7 @@ import {
 } from "./type";
 import Divider from "@mui/material/Divider";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { hostData, introData, lineUpData } from "./data";
+import { hostData, introData, lineUpData, booklist } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonFooter, IonPage } from "@ionic/react";
 import {
@@ -191,9 +189,18 @@ const Rules = () => (
   </div>
 );
 
-const BookList: React.FC<BookListProps> = ({ svg, title, subTitle }) => {
+const BookList: React.FC<BookListProps> = ({
+  svg,
+  title,
+  subTitle,
+  className,
+  onClick,
+}) => {
   return (
-    <div className="flex my-3 items-center">
+    <div
+      className={`flex my-1 items-center p-1 ${className}`}
+      onClick={onClick}
+    >
       <div className="flex items-center justify-center h-[74px] w-[74px] bg-white bg-opacity-10 rounded-2xl">
         <img src={svg} />
       </div>
@@ -215,6 +222,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
 
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
+  const [selectedBook, setSelectedBook] = useState("booklist1");
 
   // Using useCallback to memoize the handlers
   const handleOpen = useCallback(() => setIsBookingModal(true), []);
@@ -258,11 +266,6 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           <Rules />
         </div>
 
-        <IonFooter className="bg-primaryContainer px-8 py-4 flex items-center justify-between">
-          <TextOnlyButton text="Starting from $345" />
-          <LargeDefaultButton text="Book" onClick={handleOpen} />
-        </IonFooter>
-
         <SwipeableDrawer
           container={container}
           anchor="bottom"
@@ -277,30 +280,45 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
               borderTopRightRadius: "25px",
               border: 0,
             },
+            "& .MuiBackdrop-root": {
+              backdropFilter: "blur(2px)",
+            },
           }}
         >
           <div className="h-2 w-14 bg-white bg-opacity-50 absolute top-4 left-[calc(50%-25px)] rounded-xl" />
           <div className="bg-filterContainer p-4 text-white flex flex-col">
             <Divider className="!border-white h-0 opacity-20 !mt-6" />
-            <BookList
-              svg={TicketsSVG}
-              title="Ticket"
-              subTitle="From $20"
-            ></BookList>
-            <BookList
-              svg={GroupSVG}
-              title="VIP Table"
-              subTitle="Upon Request"
-            ></BookList>
-            <BookList
-              svg={TicketsSVG}
-              title="Guestlist"
-              subTitle="$20 ~ $40"
-            ></BookList>
-            <LargeDefaultButton text="Book"></LargeDefaultButton>
+            <div className="py-1">
+              {booklist.map((item, index) => {
+                return (
+                  <BookList
+                    key={"booklist" + index}
+                    svg={item.svg}
+                    title={item.title}
+                    subTitle={item.subTitle}
+                    className={
+                      selectedBook === "booklist" + index
+                        ? "bg-white bg-opacity-10 rounded-[20px]"
+                        : ""
+                    }
+                    onClick={() => setSelectedBook("booklist" + index)}
+                  ></BookList>
+                );
+              })}
+            </div>
+            <LargeDefaultButton
+              text="Book"
+              onClick={handleClose}
+            ></LargeDefaultButton>
           </div>
         </SwipeableDrawer>
       </IonContent>
+      <IonFooter className="bg-primaryContainer px-8 py-4 items-center grid grid-cols-3 gap-1">
+        <div className="col-span-2">
+          <TextOnlyButton text="Starting from $345" />
+        </div>
+        <LargeDefaultButton text="Book" onClick={handleOpen} />
+      </IonFooter>
     </IonPage>
   );
 };
