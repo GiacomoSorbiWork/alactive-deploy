@@ -25,7 +25,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const handleClick = () => {
     if (isCard) {
-      history.push(`/event-view`);
+      history.push(`/event-detail`);
     } else if (selectFunc) {
       selectFunc(cardId); // Pass cardId directly
     }

@@ -3,6 +3,7 @@ import { Route, Redirect, Switch, useHistory } from "react-router-dom";
 import { IonRouterOutlet } from "@ionic/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "./components/Loading";
+import HostingEvent from "./pages/HostingEvent";
 
 // Lazy load the components
 const Home = lazy(() => import("./pages/Home"));
@@ -40,6 +41,7 @@ const RouterPart: React.FC = () => {
             <>
               <Route exact path="/" component={OnBoarding} />
               <Route exact path="/host-detail" component={HostDetail} />
+              <Route exact path="/host-events" component={HostingEvent} />
               <Route exact path="/event-detail" component={EventDetail} />
               <Route exact path="/event-view" component={EventMediaView} />
               <Route exact path="/dashboard" component={DashBoard} />

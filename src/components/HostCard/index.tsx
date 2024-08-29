@@ -9,7 +9,7 @@ const HostCard: React.FC<HostCardProps> = ({ imgUrl, title, subTitle }) => {
     <div
       className="relative w-full h-[242px] rounded-md overflow-hidden bg-cover bg-center text-white border border-white border-opacity-10"
       style={{ backgroundImage: `url(${imgUrl})` }}
-      onClick={() => history.push(`/host-detail`)}
+      onClick={() => history.push(`/host-events`)}
     >
       <div className="absolute bottom-3 left-3">
         <div className="flex gap-1">
