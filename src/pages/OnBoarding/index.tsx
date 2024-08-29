@@ -13,6 +13,18 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
+// import { useAuth0 } from "@auth0/auth0-react";
+// import { useQuery, useMutation } from "@apollo/client";
+// import { DO_I_EXIST, CREATE_USER } from "../../API/Graphql/queries";
+
+// interface UserdataType {
+//   name: string;
+//   handle: string;
+//   dob: string;
+//   musicPreferences: string[];
+//   favoriteEvents: string[];
+//   budget: number;
+// }
 
 const OnBoarding: React.FC = () => {
   const [step, setStep] = useState<number>(1);
@@ -39,6 +51,14 @@ const OnBoarding: React.FC = () => {
     "Big Room",
   ];
   const history = useHistory();
+  // const { getAccessTokenSilently, user } = useAuth0();
+  // const { data, error } = useQuery(DO_I_EXIST, {
+  //   variables: { sub: user?.sub || "" },
+  // });
+  // if (error) {
+  //   console.error("Error in doIExist query:", error);
+  // }
+  // const [createUser] = useMutation(CREATE_USER);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setRangeValue(newValue as number[]);
@@ -51,6 +71,26 @@ const OnBoarding: React.FC = () => {
       history.push("/home");
     }
   }, [step, history]);
+
+  // const handleOnboardingSubmit = async (userData: UserdataType) => {
+  //   if (!data?.doIExist) {
+  //     try {
+  //       const token = await getAccessTokenSilently();
+  //       await createUser({
+  //         variables: { input: userData },
+  //         context: {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         },
+  //       });
+  //       // Handle success (e.g., navigate to a different page)
+  //     } catch (error) {
+  //       console.error("Error creating user:", error);
+  //       // Handle error (e.g., show error message)
+  //     }
+  //   }
+  // };
 
   const handleNext = useCallback((): void => {
     const isNameValid = name.trim() !== "";
@@ -72,11 +112,21 @@ const OnBoarding: React.FC = () => {
       return;
     }
 
-    if (step === 6)
-      setTimeout(() => {
-        history.push("/dashboard");
-      }, 2000); // simulate loading delay
+    if (step === 6) {
+      // const userdata = {
+      //   name: name,
+      //   handle: handle,
+      //   dob: date!.toISOString(),
+      //   musicPreferences: eventCardSelectedList,
+      //   favoriteEvents: favoriteList,
+      //   budget: rangeValue[1],
+      // };
+      // handleOnboardingSubmit(userdata);
 
+      setTimeout(() => {
+        history.push("/dashboard"); // Navigate after delay
+      }, 2000); // simulate loading delay
+    }
     setStep((prev) => prev + 1);
     setLastStep((prev) => Math.max(prev, step + 1));
   }, [step, name, handle, date, eventCardSelectedList, favoriteList, history]);
@@ -150,17 +200,16 @@ const OnBoarding: React.FC = () => {
       <IonContent>
         <div className="p-8 flex flex-col">
           {step === 1 && (
-            // <Form
-            //   title="Nice to meet you. And your name is?"
-            //   label="Your Name"
-            //   value={name}
-            //   placeholderText="My name is..."
-            //   helperText="For example, Stefano Alberto Proietti"
-            //   onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            //     setName(e.target.value)
-            //   }
-            // />
-            <LoadingSpinner />
+            <Form
+              title="Nice to meet you. And your name is?"
+              label="Your Name"
+              value={name}
+              placeholderText="My name is..."
+              helperText="For example, Stefano Alberto Proietti"
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setName(e.target.value)
+              }
+            />
           )}
           {step === 2 && (
             <Form

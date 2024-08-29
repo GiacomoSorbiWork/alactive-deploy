@@ -1,6 +1,5 @@
 /* From Uiverse.io by Smit-Prajapati */
 .loader {
-  --size: 250px;
   --duration: 2s;
   --logo-color: grey;
   --background: linear-gradient(
@@ -8,8 +7,6 @@
     rgba(50, 50, 50, 0.2) 0%,
     rgba(100, 100, 100, 0.2) 100%
   );
-  height: var(--size);
-  aspect-ratio: 1;
   background: black;
   position: relative;
 }
