@@ -68,6 +68,7 @@ const DashBoard: React.FC = () => {
   const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
     useVideoControls();
   const history = useHistory();
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
 
   const handleGoEventDetail = () => {
     history.push("/event-detail");
@@ -86,10 +87,15 @@ const DashBoard: React.FC = () => {
           Your browser does not support the video tag.
         </video>
         <div className="relative z-10 h-full flex items-end">
-          <div className="absolute top-7 w-full flex justify-between px-4">
-            <p className="text-title-small font-bold">Tailored</p>
+          <div className="absolute top-7 w-full flex items-center justify-between px-4">
+            <p className="text-[27px] font-bold">Tailored</p>
             <div className="flex gap-1">
-              <img className="h-6" src={SearchSVG} alt="Page Info" />
+              <img
+                className="h-6"
+                src={SearchSVG}
+                alt="Page Info"
+                onClick={() => setFilterModalVisible(true)}
+              />
               <img className="h-6" src={PageInfoSVG} alt="Page Info" />
             </div>
           </div>
@@ -126,19 +132,19 @@ const DashBoard: React.FC = () => {
             <div className="flex animate-marquee gap-3">
               {[...Array(3)].map((_, index) => (
                 <React.Fragment key={index}>
-                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                     <img src={CreditSVG} alt="Credit Card" />
                     <p className="text-label-small font-medium ml-2">
                       Starting from $200
                     </p>
                   </div>
-                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                     <img src={CalendarSVG} alt="Calendar" />
                     <p className="text-label-small font-medium ml-2">
                       09/23/2022
                     </p>
                   </div>
-                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                     <img src={MusicSVG} alt="Music" className="h-[17px]" />
                     <p className="text-label-small font-medium ml-2">
                       Commerical
@@ -149,7 +155,7 @@ const DashBoard: React.FC = () => {
             </div>
           </div>
         </div>
-        <SwipeableEdgeDrawer />
+        <SwipeableEdgeDrawer openState={filterModalVisible} />
         <FooterBar></FooterBar>
       </IonContent>
     </IonPage>

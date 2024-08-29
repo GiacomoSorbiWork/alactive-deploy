@@ -11,7 +11,7 @@ const FooterBar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <div className="backdrop-blur-md grid grid-cols-3 justify-around items-center fixed bottom-0 w-full z-20 border-t border-white border-opacity-35 py-2 px-4">
+    <div className="backdrop-blur-md grid grid-cols-3 bg-black bg-opacity-60 justify-around items-center fixed bottom-0 w-full z-20 border-t border-white border-opacity-35 py-2 px-4">
       <Link to="/dashboard" className="p-2 flex flex-col items-center">
         <img
           src={location.pathname === "/dashboard" ? ActiveHomeSVG : HomeSVG}

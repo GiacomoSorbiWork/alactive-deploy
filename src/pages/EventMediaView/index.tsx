@@ -6,9 +6,8 @@ import ArrowBack from "../../components/ArrowBack";
 
 const items: Media[] = [
   {
-    type: "image",
-    src: "https://t4.ftcdn.net/jpg/08/19/24/63/240_F_819246328_2nfWzjhKYjhnl1yURFR0NL1oToq8FDnn.jpg",
-    alt: "Image 1",
+    type: "video",
+    src: "https://cdn-useast1.kapwing.com/teams/66d02f84c6bd60d470fa78c1/jobs/66d03c088fb3458ee6d5999d/final_66d030dcd82c876254b328af_266394.mp4?GoogleAccessId=prod-sa-videoprocessing%40kapwing-prod.iam.gserviceaccount.com&Expires=1724951727&Signature=U8ygiAJvYpbBlewapMHrzaExgCmffWkKOGb5F0QANQlhXiPPkMr8H3yiN4stLaAZxUJBDn6q3T2wg5UoJqiu2vMyhrf1jWBZEU3mb%2Fa6BJfpc3%2BlJzv3AfRkLIST2f1tbNgldOT1a33aQewYPspI7ZVy0mjXk2RiVz2DK3pmYijjkNP8siCRlKc2CN7j8UPG6AX9N9z4OZVcEW1HQp7CTlOpePKe9bz5NJcR2doOMPiqliD1FChtentgqgbA5JP5AXTSwz6OdtXrZCxcjrldaXvpw6Ha1bAOsfVlYU83DoDUPDkHRGrJkfEwvFnIBZNQcjydNwl%2BcchVrd18SACnQw%3D%3D#t=0.01",
   },
   {
     type: "video",

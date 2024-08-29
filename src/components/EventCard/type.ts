@@ -4,11 +4,12 @@ export interface EventCardProps {
 	cardId?: string;
 	title: string;
 	titleLogo?: string;
-	date: string;
-	location: string;
+	date?: string;
+	location?: string;
 	musicType?: string;
-	price: string | number;
+	price?: string | number;
 	purpose?: string;
 	isChecked?: boolean;
 	selectFunc?: (item?: string) => void | undefined;
+	nextURL?: string;
 }

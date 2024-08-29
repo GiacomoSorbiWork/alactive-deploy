@@ -81,9 +81,10 @@ const useTouchToOpenDrawer = (
   }, [setOpen]);
 };
 
-const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
-  window,
-}) => {
+const SwipeableEdgeDrawer: React.FC<{
+  window?: () => Window;
+  openState?: boolean;
+}> = ({ window, openState = false }) => {
   const [open, setOpen] = useState(false);
   const container = window ? window().document.body : undefined;
   const [openComponent, setOpenComponent] = useState<string | null>(null);
@@ -98,6 +99,10 @@ const SwipeableEdgeDrawer: React.FC<{ window?: () => Window }> = ({
       prevComponent === componentName ? null : componentName
     );
   };
+
+  useEffect(() => {
+    setOpen(openState);
+  }, [openState]);
 
   useTouchToOpenDrawer(setOpen);
 
