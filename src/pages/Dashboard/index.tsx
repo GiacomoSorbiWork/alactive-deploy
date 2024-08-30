@@ -69,7 +69,6 @@ const DashBoard: React.FC = () => {
     useVideoControls();
   const history = useHistory();
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [videoTime, setVideoTime] = useState(0); // State to store video time
 
   const touchStartX = useRef(0); // To store the initial touch X coordinate
   const touchEndX = useRef(0); // To store the final touch X coordinate
@@ -109,32 +108,6 @@ const DashBoard: React.FC = () => {
     history.push("/event-detail");
   };
 
-  useEffect(() => {
-    const handleVideoTimeUpdate = () => {
-      if (videoRef.current) {
-        setVideoTime(videoRef.current.currentTime);
-      }
-    };
-
-    const currentVideoRef = videoRef.current;
-    if (currentVideoRef) {
-      currentVideoRef.addEventListener("timeupdate", handleVideoTimeUpdate);
-      return () => {
-        currentVideoRef.removeEventListener(
-          "timeupdate",
-          handleVideoTimeUpdate
-        );
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = videoTime; // Set video time when component mounts
-      videoRef.current.play(); // Ensure video plays
-    }
-  }, [videoTime]);
-
   return (
     <IonPage>
       <IonContent fullscreen={true} onClick={() => togglePlayback(videoRef)}>
@@ -142,6 +115,7 @@ const DashBoard: React.FC = () => {
           ref={videoRef}
           muted={isMuted}
           playsInline
+          autoPlay
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src={VIDEO_URL} type="video/mp4" />
