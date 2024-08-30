@@ -9,7 +9,7 @@ const HostCard: React.FC<HostCardProps> = ({ imgUrl, title, subTitle }) => {
     <div
       className="relative w-full h-[242px] rounded-md overflow-hidden bg-cover bg-center text-white"
       style={{ backgroundImage: `url(${imgUrl})` }}
-      onClick={() => history.push(`/host-events`)}
+      onClick={() => history.push(`/host-detail`)}
     >
       <div className="bg-cardGradient h-full w-full  border border-white border-opacity-10">
         <div className="absolute bottom-3 left-3">

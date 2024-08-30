@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import SwipeableEdgeDrawer from "../../components/SwipeableEdgeDrawer";
 import HostAvatarSVG from "../../../resources/svg/Host Avatar.svg";
 import FavoriteSVG from "../../../resources/svg/favorite.svg";
@@ -70,25 +70,34 @@ const DashBoard: React.FC = () => {
   const history = useHistory();
   const [filterModalVisible, setFilterModalVisible] = useState(false);
 
-  const touchStartX = useRef(0); // To store the initial touch X coordinate
-  const touchEndX = useRef(0); // To store the final touch X coordinate
+  const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  const handleTouchStart = (e: TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    touchStart.current.x = e.touches[0].clientX;
+    touchStart.current.y = e.touches[0].clientY;
+  }, []);
 
-  const handleTouchMove = (e: TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    touchEnd.current.x = e.touches[0].clientX;
+    touchEnd.current.y = e.touches[0].clientY;
+  }, []);
 
-  const handleTouchEnd = () => {
-    if (
-      touchEndX.current != 0 &&
-      touchEndX.current - touchStartX.current < 50
-    ) {
-      handleGoEventDetail();
+  const handleTouchEnd = useCallback(() => {
+    const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
+    const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
+
+    if (swipeDistanceX > 50 && swipeDistanceY < 10) {
+      const isSwipeLeft = touchEnd.current.x < touchStart.current.x;
+
+      if (isSwipeLeft) {
+        handleGoEventDetail(); // Trigger action for right swipe
+      } else {
+        // Optionally add action for left swipe
+        console.log("Right swipe detected");
+      }
     }
-  };
+  }, []);
 
   useEffect(() => {
     const currentScrollRef = scrollRef.current;

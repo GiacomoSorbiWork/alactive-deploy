@@ -132,7 +132,6 @@ const OnBoarding: React.FC = () => {
   }, [step, name, handle, date, eventCardSelectedList, favoriteList, history]);
 
   const isActive = useCallback((): boolean => {
-    console.log(date !== null && isValidDate(date));
     return (
       (step === 1 && name.trim() !== "") ||
       (step === 2 && handle.trim().startsWith("@") && handle.length > 1) ||
@@ -296,7 +295,7 @@ const OnBoarding: React.FC = () => {
               <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
                 All done! Let the fun begin...
               </h1>
-              <div className="mt-[25vh]">
+              <div className="mt-[10vh]">
                 <LoadingSpinner />
               </div>
             </div>
