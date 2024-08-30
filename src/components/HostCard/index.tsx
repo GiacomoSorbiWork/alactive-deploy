@@ -7,7 +7,7 @@ const HostCard: React.FC<HostCardProps> = ({ imgUrl, title, subTitle }) => {
   const history = useHistory();
   return (
     <div
-      className="relative w-full h-[242px] rounded-md overflow-hidden bg-cover bg-center text-white"
+      className="relative w-full h-[242px] rounded-[16px] overflow-hidden bg-cover bg-center text-white"
       style={{ backgroundImage: `url(${imgUrl})` }}
       onClick={() => history.push(`/host-detail`)}
     >

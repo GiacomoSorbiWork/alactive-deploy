@@ -10,7 +10,6 @@ import {
   Divider,
   Box,
 } from "@mui/material";
-import ArrowBack from "../../components/ArrowBack";
 import FooterBar from "../../components/FooterBar";
 import { ProfileType, ProfileListType } from "./type";
 import LogOutSVG from "../../../resources/svg/exit-to-app-rounded.svg";
@@ -20,6 +19,11 @@ import DocumentSVG from "../../../resources/svg/document.svg";
 import RecycleSVG from "../../../resources/svg/recycle.svg";
 import ArrowRightSVG from "../../../resources/svg/arrow-right.svg";
 import { useAuth0 } from "@auth0/auth0-react";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 const ProfileList: React.FC<ProfileListType> = ({
   img,
@@ -55,11 +59,14 @@ const Profile: React.FC<ProfileType> = ({
   imgUrl = "https://t4.ftcdn.net/jpg/07/90/04/33/240_F_790043387_sjkrr01wF935RYQzWHsqePxZ1SDantUJ.jpg",
   title = "Stefano Alberto Profietti",
   subTitle = "@stefanoproietti",
-  birthday = "12 March",
+  birthday = "12/3/1990",
 }) => {
   const { logout } = useAuth0();
 
   const [open, setOpen] = useState(false);
+  const [birth, setBirth] = useState(dayjs(birthday));
+  const [selectBirthVisible, setSelectBirthVisible] = useState(false); // Control visibility of the DatePicker
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -80,7 +87,6 @@ const Profile: React.FC<ProfileType> = ({
           className="relative w-full h-1/2 overflow-hidden bg-cover bg-center text-white"
           style={{ backgroundImage: `url(${imgUrl})` }}
         >
-          <ArrowBack />
           <Box className="absolute bottom-7 text-white p-4">
             <p className="text-title-medium font-semibold w-5/6 leading-snug">
               {title}
@@ -92,9 +98,28 @@ const Profile: React.FC<ProfileType> = ({
           <ProfileList
             img={BirthSVG}
             title="Date of Birth"
-            text={birthday}
+            text={birth.format("D MMMM")} // Format the birthday for display
             arrowVisible
+            onClick={() => {
+              setSelectBirthVisible(true); // Show the Date Picker
+            }}
           />
+
+          <div className="hidden">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  open={selectBirthVisible}
+                  value={birth}
+                  onChange={(newValue) => {
+                    setBirth(dayjs(newValue)); // Set the new birth date directly
+                  }}
+                  onClose={() => setSelectBirthVisible(false)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+
           <p className="text-title-small mt-2 font-bold">Boring Stuff</p>
           <Divider className="!border-white h-0 opacity-20" />
           <ProfileList img={HammerSVG} title="Terms of Service" />

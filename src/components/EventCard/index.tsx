@@ -91,7 +91,7 @@ const EventCard: React.FC<EventCardProps> = ({
         <>
           {isCard ? (
             <span className="absolute bottom-2 left-2 p-1 bg-white bg-opacity-20 rounded-md text-[10px] font-medium">
-              $FROM {price}
+              {price}
             </span>
           ) : (
             <div className="absolute bottom-4 left-4 flex gap-3 overflow-hidden">

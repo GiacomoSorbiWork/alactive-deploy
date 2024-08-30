@@ -14,7 +14,7 @@ const Favorite: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <h2 className="text-[24px] mt-12 font-bold mb-6 text-white text-center m-3">
+        <h2 className="text-[24px] mt-5 font-bold mb-3 text-white text-center m-3">
           Favorites
         </h2>
         <div className="mt-0">
@@ -87,17 +87,17 @@ const Favorite: React.FC = () => {
               <HostCard
                 imgUrl="https://t4.ftcdn.net/jpg/08/19/24/63/240_F_819246328_2nfWzjhKYjhnl1yURFR0NL1oToq8FDnn.jpg"
                 title="Maroto"
-                subTitle="NightClub"
+                subTitle="Nightclub"
               />
               <HostCard
                 imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
                 title="Maroto"
-                subTitle="NightClub"
+                subTitle="Nightclub"
               />
               <HostCard
                 imgUrl="https://t4.ftcdn.net/jpg/07/90/04/33/240_F_790043387_sjkrr01wF935RYQzWHsqePxZ1SDantUJ.jpg"
                 title="Maroto"
-                subTitle="NightClub"
+                subTitle="Nightclub"
               />
             </div>
           )}
