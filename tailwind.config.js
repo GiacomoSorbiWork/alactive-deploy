@@ -16,6 +16,7 @@ export default {
       },
       backgroundImage: {
         cardGradient: "linear-gradient(#00000000, #00000000, #000000e6)",
+        eventGradient: "linear-gradient(#00000000, #000000)",
       },
       fontWeight: {
         semibold: "600",

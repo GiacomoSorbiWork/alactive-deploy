@@ -31,6 +31,7 @@ import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import {
   LargeDefaultButton,
+  RoundedButton,
   TextOnlyButton,
 } from "../../subComponents/Buttons";
 
@@ -186,6 +187,10 @@ const Rules = () => (
     <IconText img={ContextualSVG} text={"Id’s required"} />
     <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
     <IconText img={CreditSVG} text={"The venue doesn’t accept credit cards"} />
+    <div className="h-[76px] bg-eventGradient mt-[-76px] absolute w-full"></div>
+    <div className="flex justify-center p-2">
+      <RoundedButton />
+    </div>
   </div>
 );
 
