@@ -5,5 +5,6 @@ export type Media = {
 };
 
 export interface MediaViewProps {
-	items: Media[];
+	items: Array<{ type: string; src: string; alt?: string }>;
+	handleIndexChange?: (index: number) => void; // Optional function
 }

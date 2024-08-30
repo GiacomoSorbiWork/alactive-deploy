@@ -9,10 +9,12 @@ const HostingEvent: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <ArrowBack />
-        <h2 className="text-[24px] mt-12 font-bold mb-6 text-white text-center m-3">
-          Hosting Events
-        </h2>
+        <div className="relative felx items-center">
+          <ArrowBack className="top-[-20px]" />
+          <h2 className="text-[24px] mt-12 font-bold mb-6 text-white text-center m-3">
+            Hosting Events
+          </h2>
+        </div>
       </IonHeader>
       <IonContent fullscreen={true}>
         <div className="p-4 text-white overflow-y-auto mb-[75px]">

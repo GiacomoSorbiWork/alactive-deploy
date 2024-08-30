@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MediaView from "../../components/MediaView";
 import { Media } from "../../components/MediaView/type";
 import { IonContent, IonPage } from "@ionic/react";
@@ -21,12 +21,24 @@ const items: Media[] = [
 ];
 
 const EventMediaView: React.FC = () => {
+  const [index, setIndex] = useState(1);
+
+  const handleIndexChange = (i: number) => {
+    setIndex(i);
+  };
+
   return (
     <IonPage>
       <IonContent fullscreen={true}>
         <div className="flex justify-center h-full">
           <ArrowBack />
-          <MediaView items={items}></MediaView>
+          <span className="absolute top-5 right-4">
+            {index + 1}/{items.length}
+          </span>
+          <MediaView
+            items={items}
+            handleIndexChange={(index) => handleIndexChange(index)} // Correctly pass the function reference
+          ></MediaView>
         </div>
       </IonContent>
     </IonPage>
