@@ -8,7 +8,7 @@ import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
-import SearchSVG from "../../../resources/svg/search.svg";
+// import SearchSVG from "../../../resources/svg/search.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
@@ -68,7 +68,7 @@ const DashBoard: React.FC = () => {
   const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
     useVideoControls();
   const history = useHistory();
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  // const [filterModalVisible, setFilterModalVisible] = useState(false);
 
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -140,12 +140,12 @@ const DashBoard: React.FC = () => {
               Tailored
             </p>
             <div className="flex gap-1">
-              <img
+              {/* <img
                 className="h-6"
                 src={SearchSVG}
                 alt="Page Info"
                 onClick={() => setFilterModalVisible(true)}
-              />
+              /> */}
               <img className="h-6" src={PageInfoSVG} alt="Page Info" />
             </div>
           </div>
@@ -196,7 +196,8 @@ const DashBoard: React.FC = () => {
             </div>
           </div>
         </div>
-        <SwipeableEdgeDrawer openState={filterModalVisible} />
+        <SwipeableEdgeDrawer />
+        {/* <SwipeableEdgeDrawer openState={filterModalVisible} /> */}
         <FooterBar></FooterBar>
       </IonContent>
     </IonPage>

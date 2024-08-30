@@ -26,10 +26,17 @@ input:focus-visible {
 } */
 
 .MuiPaper-root {
-  background-color: var(--secondary-container-color) !important;
+  background-color: #353535 !important;
 }
 .MuiTypography-root {
-  color: white !important;
+  color: #e5e5e5 !important;
+}
+.MuiPickersDay-root {
+  border-color: #e5e5e5 !important;
+  color: #e5e5e5 !important;
+}
+.MuiSvgIcon-root {
+  color: #e5e5e5 !important;
 }
 
 ion-header {
