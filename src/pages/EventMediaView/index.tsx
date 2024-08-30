@@ -21,7 +21,7 @@ const items: Media[] = [
 ];
 
 const EventMediaView: React.FC = () => {
-  const [index, setIndex] = useState(1);
+  const [index, setIndex] = useState(0);
 
   const handleIndexChange = (i: number) => {
     setIndex(i);
