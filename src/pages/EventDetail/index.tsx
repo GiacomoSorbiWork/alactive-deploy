@@ -279,6 +279,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             "& .MuiPaper-root": {
               borderTopLeftRadius: "25px",
               borderTopRightRadius: "25px",
+              height: "auto",
               border: 0,
             },
             "& .MuiBackdrop-root": {
