@@ -50,13 +50,18 @@ export default {
         small: "8px",
       },
       keyframes: {
-        marquee: {
+        marqueeDashboard: {
           "0%": { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(-142.5%)" },
+        },
+        marqueeEventCard: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50.7%)" },
         },
       },
       animation: {
-        marquee: "marquee 10s linear infinite",
+        marqueeDashboard: "marqueeDashboard 10s linear infinite",
+        marqueeEventCard: "marqueeEventCard 10s linear infinite",
       },
     },
   },

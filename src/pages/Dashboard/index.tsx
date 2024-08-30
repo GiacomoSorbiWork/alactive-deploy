@@ -126,13 +126,19 @@ const DashBoard: React.FC = () => {
           playsInline
           autoPlay
           className="absolute inset-0 w-full h-full object-cover"
+          loop
         >
           <source src={VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="relative z-10 h-full flex items-end" ref={scrollRef}>
           <div className="absolute top-7 w-full flex items-center justify-between px-4">
-            <p className="text-[27px] font-bold">Tailored</p>
+            <p
+              className="text-[27px] font-bold"
+              onClick={() => history.push("host-detail")}
+            >
+              Tailored
+            </p>
             <div className="flex gap-1">
               <img
                 className="h-6"
@@ -164,7 +170,7 @@ const DashBoard: React.FC = () => {
         <div className="absolute bottom-[90px] left-4">
           <p className="text-title-small font-bold my-2">Week 15 Ibiza</p>
           <div className="overflow-hidden w-[75vw]">
-            <div className="flex animate-marquee gap-3">
+            <div className="flex animate-marqueeDashboard gap-3">
               {[...Array(3)].map((_, index) => (
                 <React.Fragment key={index}>
                   <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">

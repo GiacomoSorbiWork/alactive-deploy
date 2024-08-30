@@ -269,14 +269,14 @@ const OnBoarding: React.FC = () => {
                 {musicList.map((music, index) => (
                   <button
                     key={"music-" + index}
-                    className={`border border-solid border-white ${
+                    className={`border-2 border-solid border-white px-3 py-1 ${
                       !favoriteList.includes(music)
-                        ? "bg-transparent "
-                        : "bg-[var(--secondary-color)] "
-                    } rounded-big p-2`}
+                        ? "bg-transparent"
+                        : "bg-[var(--secondary-color)]"
+                    } rounded-[20px] p-2`}
                     onClick={() => toggleFavorite(music)}
                   >
-                    {music}
+                    <span className="text-body-medium font-bold">{music}</span>
                   </button>
                 ))}
               </div>

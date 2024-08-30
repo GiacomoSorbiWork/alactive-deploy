@@ -95,22 +95,22 @@ const EventCard: React.FC<EventCardProps> = ({
             </span>
           ) : (
             <div className="absolute bottom-4 left-4 flex gap-3 overflow-hidden">
-              <div className="flex animate-marquee gap-3">
+              <div className="flex animate-marqueeEventCard gap-3">
                 {[...Array(2)].map((_, index) => (
                   <React.Fragment key={index}>
-                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
                       <img src={CreditSVG} alt="Credit Card" />
                       <p className="text-label-small font-medium ml-2">
                         Starting from ${price}
                       </p>
                     </div>
-                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
                       <img src={CalendarSVG} alt="Calendar" />
                       <p className="text-label-small font-medium ml-2">
                         {date}
                       </p>
                     </div>
-                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-90 rounded-3xl">
+                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
                       <img src={MusicSVG} alt="Music" className="h-[17px]" />
                       <p className="text-label-small font-medium ml-2">
                         {musicType}
