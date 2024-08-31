@@ -90,7 +90,9 @@ const SwipeableEdgeDrawer: React.FC<{
   const [openComponent, setOpenComponent] = useState<string | null>(null);
 
   const [location, setLocation] = useState<string>("");
-  const [selectedMonth, setSelectedMonth] = useState<Dayjs | null>(null);
+  const [selectedRange, setSelectedRange] = useState<
+    [Dayjs | null, Dayjs | null]
+  >([null, null]);
   const [selectedYear, setSelectedYear] = useState<Dayjs | null>(null);
   const [budget, setBudget] = useState<number[]>([80, 2000]);
 
@@ -117,7 +119,7 @@ const SwipeableEdgeDrawer: React.FC<{
     // Perform the search action
     console.log("Search with filters", {
       location,
-      selectedMonth,
+      selectedMonth: selectedRange,
       selectedYear,
       budget,
     });
@@ -125,7 +127,7 @@ const SwipeableEdgeDrawer: React.FC<{
 
   const handleClearFilters = () => {
     setLocation("");
-    setSelectedMonth(null);
+    setSelectedRange([null, null]);
     setSelectedYear(null);
     setBudget([80, 2000]);
   };
@@ -186,10 +188,8 @@ const SwipeableEdgeDrawer: React.FC<{
           <When
             isOpen={openComponent === "When"}
             onToggle={() => handleToggle("When")}
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-            selectedYear={selectedYear}
-            setSelectedYear={setSelectedYear}
+            selectedRange={selectedRange}
+            setSelectedRange={setSelectedRange}
           />
           <Divider className="!border-white h-0 opacity-20" />
           <Budget

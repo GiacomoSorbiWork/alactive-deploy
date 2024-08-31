@@ -38,6 +38,14 @@ input:focus-visible {
 .MuiSvgIcon-root {
   color: #e5e5e5 !important;
 }
+.MuiInputBase-root {
+  color: #e5e5e5 !important;
+}
+
+.MuiDateRangeCalendar-root
+  > div:first-child:not(.MuiDateRangeCalendar-monthContainer) {
+  display: none;
+}
 
 @keyframes wiggle {
   0%,

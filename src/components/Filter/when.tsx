@@ -1,23 +1,11 @@
-import React, { useState, FC, MouseEvent } from "react";
+import React, { FC } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { IconButton, Box, Typography } from "@mui/material";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { Box, Typography } from "@mui/material";
 import { keyframes, styled } from "@mui/material/styles";
-import CloseIcon from "@mui/icons-material/Close";
-import { WhenProps, DatePickerFieldProps } from "./type";
-
-const TextBox = styled(Typography)(() => ({
-  color: "white",
-  fontSize: "14px",
-  fontWeight: "100",
-}));
-
-const StyledIconButton = styled(IconButton)(() => ({
-  color: "black",
-  width: "15px",
-  height: "15px",
-}));
+import { WhenProps } from "./type";
+import { Dayjs } from "dayjs";
 
 // Define keyframes for animation
 const fadeIn = keyframes`  
@@ -36,111 +24,40 @@ const AnimatedBox = styled(Box)(() => ({
   animation: `${fadeIn} 0.5s ease-out`,
 }));
 
-// DatePickerField Component
-const DatePickerField: FC<DatePickerFieldProps> = ({
-  label,
-  value,
-  onChange,
-  onClear,
-}) => {
-  const [openModel, setOpenModel] = useState(false);
-
-  const handleOpen = () => {
-    if (!openModel) setOpenModel(true);
-  };
-
-  const handleClose = () => {
-    setOpenModel(false);
-  };
-
-  const handleClear = (e: MouseEvent) => {
-    e.stopPropagation();
-    onClear();
-    handleClose();
-  };
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div
-        className="flex items-center justify-between bg-secondaryContainer rounded-big py-[5px] px-2 flex-grow cursor-pointer min-h-[35px]"
-        onClick={handleOpen}
-      >
-        <TextBox>{label}</TextBox>
-        {value && (
-          <div className="flex items-center justify-between p-[6px] bg-white bg-opacity-10 rounded-big">
-            <TextBox sx={{ fontSize: "12px" }}>
-              {value.format(label === "Month" ? "MMMM" : "YYYY")}
-            </TextBox>
-            <StyledIconButton size="small" onClick={handleClear}>
-              <CloseIcon
-                style={{
-                  width: "15px",
-                  height: "15px",
-                  color: "white",
-                  marginLeft: "5px",
-                }}
-              />
-            </StyledIconButton>
-          </div>
-        )}
-        <Box hidden>
-          <DatePicker
-            open={openModel}
-            views={[label.toLowerCase() === "month" ? "day" : "year"]}
-            value={value}
-            onChange={(newValue) => {
-              onChange(newValue);
-              handleClose();
-            }}
-            onClose={handleClose}
-          />
-        </Box>
-      </div>
-    </LocalizationProvider>
-  );
-};
-
-// When Component
-
+// DateRangePicker Component
 const When: FC<WhenProps> = ({
   isOpen,
   onToggle,
-  selectedMonth,
-  setSelectedMonth,
-  selectedYear,
-  setSelectedYear,
+  selectedRange,
+  setSelectedRange,
 }) => {
   return (
     <div className="my-6 text-white">
-      {!isOpen ? (
-        <div
-          onClick={onToggle}
-          className="cursor-pointer flex justify-between items-center"
-        >
-          <p className="text-body-medium font-semibold">When</p>
-          <span className="text-body-small opacity-50 mr-2">
-            {selectedMonth ? selectedMonth.format("MMMM") : ""}
-            {selectedMonth && selectedYear ? ", " : ""}
-            {selectedYear ? selectedYear.format("YYYY") : ""}
-          </span>
-        </div>
-      ) : (
+      <div onClick={onToggle} className="cursor-pointer flex justify-between">
+        <Typography className="text-body-medium font-semibold">When</Typography>
+        <span className="text-body-small opacity-50 mr-2">
+          {selectedRange[0] ? selectedRange[0].format("MMMM D") : ""}
+          {selectedRange[0] && selectedRange[1] ? " - " : ""}
+          {selectedRange[1] ? selectedRange[1].format("MMMM D") : ""}
+        </span>
+      </div>
+      {isOpen && (
         <AnimatedBox>
-          <p className="text-body-medium mb-2">When</p>
-          <div className="flex justify-between items-center w-full gap-big">
-            <DatePickerField
-              label="Month"
-              value={selectedMonth}
-              onChange={setSelectedMonth}
-              onClear={() => setSelectedMonth(null)}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateRangePicker
+              value={selectedRange}
+              onChange={(newValue: [Dayjs | null, Dayjs | null]) =>
+                (setSelectedRange ?? (() => {}))(newValue)
+              }
+              localeText={{ start: "Start", end: "End" }}
+              className="pt-4"
+              sx={{
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#ffffff3b",
+                },
+              }}
             />
-            <DatePickerField
-              label="Year"
-              value={selectedYear}
-              onChange={setSelectedYear}
-              onClear={() => setSelectedYear(null)}
-            />
-          </div>
+          </LocalizationProvider>
         </AnimatedBox>
       )}
     </div>

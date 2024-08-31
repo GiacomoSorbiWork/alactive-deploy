@@ -17,15 +17,6 @@ export interface LocationProps {
 export interface WhenProps {
 	isOpen: boolean;
 	onToggle: () => void;
-	selectedMonth: Dayjs | null;
-	setSelectedMonth: (value: Dayjs | null) => void;
-	selectedYear: Dayjs | null;
-	setSelectedYear: (value: Dayjs | null) => void;
-}
-
-export interface DatePickerFieldProps {
-	label: "Month" | "Year";
-	value: Dayjs | null;
-	onChange: (newValue: Dayjs | null) => void;
-	onClear: () => void;
+	selectedRange: [Dayjs | null, Dayjs | null];
+	setSelectedRange?: (value: [Dayjs | null, Dayjs | null]) => void;
 }
