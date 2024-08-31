@@ -137,7 +137,7 @@ const HostDetail: React.FC = () => {
                   />
                 </div>
               </div> */}
-              <div className="mt-7">
+              <div className="mt-2">
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
                 <div className="overflow-x-auto w-full">
                   <div className="flex w-max gap-4 ">
