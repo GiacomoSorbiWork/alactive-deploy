@@ -12,4 +12,5 @@ export interface EventCardProps {
 	isChecked?: boolean;
 	selectFunc?: (item?: string) => void | undefined;
 	nextURL?: string;
+	className?: string;
 }

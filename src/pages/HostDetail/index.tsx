@@ -125,19 +125,33 @@ const HostDetail: React.FC = () => {
                     src="https://via.placeholder.com/800x600"
                     alt="Highlight"
                   />
+                  <img
+                    className="w-screen h-auto object-cover rounded-md"
+                    src="https://via.placeholder.com/800x600"
+                    alt="Highlight"
+                  />
+                  <EventCard
+                    title={event.title}
+                    imgUrl={event.imgUrl}
+                    nextURL="event-view"
+                  />
                 </div>
               </div> */}
               <div className="mt-7">
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {detailData.map((event, index) => (
-                    <EventCard
-                      title={event.title}
-                      imgUrl={event.imgUrl}
-                      key={index}
-                      nextURL="event-view"
-                    />
-                  ))}
+                <div className="overflow-x-auto w-full">
+                  <div className="flex w-max gap-4 ">
+                    {detailData.map((event, index) => (
+                      <div key={index}>
+                        <EventCard
+                          title={event.title}
+                          imgUrl={event.imgUrl}
+                          nextURL="event-view"
+                          className="w-[44.3vw]"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </>
