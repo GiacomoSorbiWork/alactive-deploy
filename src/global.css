@@ -39,6 +39,19 @@ input:focus-visible {
   color: #e5e5e5 !important;
 }
 
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
 ion-header {
   background-color: var(--primary-color);
 }
