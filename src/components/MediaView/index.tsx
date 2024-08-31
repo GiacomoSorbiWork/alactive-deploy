@@ -10,9 +10,9 @@ const HorizontalScroll: React.FC<MediaViewProps> = ({
   const handleScroll = () => {
     if (!scrollRef.current) return;
 
-    const scrollLeft = scrollRef.current.scrollLeft;
-    const itemWidth = scrollRef.current.clientWidth;
-    const index = Math.round(scrollLeft / itemWidth);
+    const scrollLeft = scrollRef.current.scrollTop;
+    const itemHeight = scrollRef.current.clientHeight;
+    const index = Math.round(scrollLeft / itemHeight);
 
     // Check if handleIndexChange is defined before calling it
     if (handleIndexChange) {
@@ -36,7 +36,7 @@ const HorizontalScroll: React.FC<MediaViewProps> = ({
 
   return (
     <div
-      className="flex flex-row overflow-x-auto snap-x snap-mandatory scroll-smooth"
+      className="flex flex-col overflow-y-auto snap-y snap-mandatory scroll-smooth"
       ref={scrollRef}
       style={{ height: "100vh", width: "100vw" }}
     >
