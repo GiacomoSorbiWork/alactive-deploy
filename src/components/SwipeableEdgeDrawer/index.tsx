@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { IonFooter } from "@ionic/react";
 import { Global, css } from "@emotion/react";
 import { styled } from "@mui/material/styles";
@@ -43,48 +37,11 @@ const Puller = styled("div")({
   left: "calc(50% - 25px)",
 });
 
-const useTouchToOpenDrawer = (
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-) => {
-  const startY = useRef<number | null>(null);
-
-  useEffect(() => {
-    const handleTouchStart = (event: TouchEvent) => {
-      startY.current = event.touches[0].clientY;
-    };
-
-    const handleTouchMove = (event: TouchEvent) => {
-      if (startY.current === null) return;
-      const currentY = event.touches[0].clientY;
-      const diff = startY.current - currentY;
-      if (diff > 30) {
-        setOpen(true);
-        startY.current = null;
-      }
-    };
-
-    const handleTouchEnd = () => {
-      startY.current = null;
-    };
-
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchend", handleTouchEnd);
-    window.addEventListener("touchcancel", handleTouchEnd);
-
-    return () => {
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchend", handleTouchEnd);
-      window.removeEventListener("touchcancel", handleTouchEnd);
-    };
-  }, [setOpen]);
-};
-
 const SwipeableEdgeDrawer: React.FC<{
   window?: () => Window;
+  onClose?: () => void;
   openState?: boolean;
-}> = ({ window, openState = false }) => {
+}> = ({ window, openState = false, onClose }) => {
   const [open, setOpen] = useState(false);
   const container = window ? window().document.body : undefined;
   const [openComponent, setOpenComponent] = useState<string | null>(null);
@@ -105,15 +62,6 @@ const SwipeableEdgeDrawer: React.FC<{
   useEffect(() => {
     setOpen(openState);
   }, [openState]);
-
-  useTouchToOpenDrawer(setOpen);
-
-  const handleToggleDrawer = useCallback(
-    (newOpen: boolean) => () => {
-      setOpen(newOpen);
-    },
-    []
-  );
 
   const handleNext = () => {
     // Perform the search action
@@ -149,8 +97,8 @@ const SwipeableEdgeDrawer: React.FC<{
         container={container}
         anchor="bottom"
         open={open}
-        onClose={handleToggleDrawer(false)}
-        onOpen={handleToggleDrawer(true)}
+        onClose={onClose ?? (() => {})}
+        onOpen={() => {}}
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
         ModalProps={{ keepMounted: true }} // Keeps the drawer mounted for better performance

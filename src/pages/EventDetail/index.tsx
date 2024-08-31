@@ -349,7 +349,10 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
       </IonContent>
       <IonFooter className="bg-primaryContainer p-4 items-center grid grid-cols-3 gap-1">
         <div className="col-span-2">
-          <TextOnlyButton text="Starting from $345" />
+          <TextOnlyButton
+            text="Starting from $345"
+            className="!text-body-medium leading-[22px]"
+          />
         </div>
         <LargeDefaultButton
           text="Book"

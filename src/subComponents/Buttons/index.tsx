@@ -111,12 +111,15 @@ const SmallDisabledIconButton: React.FC<ButtonProps> = ({
 const TextOnlyButton: React.FC<ButtonProps> = ({
   text = "Clear Filters",
   onClick,
+  className,
 }) => (
   <button
-    className="min-h-[48px] flex items-center justify-center p-clear bg-transparent"
+    className={`min-h-[48px] flex items-center justify-center p-clear bg-transparent`}
     onClick={onClick}
   >
-    <span className="font-medium text-body-small leading-[16.94px]">
+    <span
+      className={`font-medium text-body-small leading-[16.94px] ${className}`}
+    >
       {text}
     </span>
   </button>
