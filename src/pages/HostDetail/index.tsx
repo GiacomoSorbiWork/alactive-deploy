@@ -147,7 +147,7 @@ const HostDetail: React.FC = () => {
                           title={event.title}
                           imgUrl={event.imgUrl}
                           nextURL="event-view"
-                          className="w-[44.3vw]"
+                          className="!w-[44.3vw]"
                         />
                       </div>
                     ))}
