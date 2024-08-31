@@ -15,7 +15,7 @@ import {
 import LoadingSpinner from "../../components/Loading";
 // import { useAuth0 } from "@auth0/auth0-react";
 // import { useQuery, useMutation } from "@apollo/client";
-// import { DO_I_EXIST, CREATE_USER } from "../../API/Graphql/queries";
+// import { RecommendMe, SetLike } from "../../API/Graphql/queries";
 
 // interface UserdataType {
 //   name: string;
@@ -52,13 +52,11 @@ const OnBoarding: React.FC = () => {
   ];
   const history = useHistory();
   // const { getAccessTokenSilently, user } = useAuth0();
-  // const { data, error } = useQuery(DO_I_EXIST, {
-  //   variables: { sub: user?.sub || "" },
-  // });
+  // const { data, error } = useQuery(RecommendMe);
   // if (error) {
-  //   console.error("Error in doIExist query:", error);
+  //   console.error("Error in query:", error);
   // }
-  // const [createUser] = useMutation(CREATE_USER);
+  // const [createUser] = useMutation(SetLike);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setRangeValue(newValue as number[]);
@@ -232,7 +230,7 @@ const OnBoarding: React.FC = () => {
           )}
           {step === 4 && (
             <>
-              <div className="flex flex-col overflow-y-auto snap-y snap-mandatory scroll-smooth h-screen">
+              <div className="overflow-y-auto snap-y snap-mandatory scroll-smooth h-[60vh]">
                 <EventCard
                   videoUrl="https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aMMwUnH5kfSTj56rB5Rp3RjRyLnTSo11ugDGbxe410xllYK5LNQ0wzQKhsgXmsvzU5PGvMST8QEzsxY086~pZcPYMqIkhj0UOKkCK4I1PSH6YW59FI3~OKAFxDrh7H6E5DoCgFw0Dsg4DD~ovArSwsF3JywwyzL-WNrUwfuLhwHYIDC14Y9P3RPXey0Urk1ERbR6gXLrB94JluZZqsjvqGtERIZqPS1vxPpGbQ-C4J58kgmm7qVfiUugqW5jjbPkkXDBFF~KFj1ziiZxfC1tDnJzqiz1V6gTd3cTlD-kI86GEzd9rSbGalJ0qEyxIGBn5C4B7fycA43vK-4KA2sB~A__"
                   title="Black Coffee Minimal House Event"
@@ -255,6 +253,18 @@ const OnBoarding: React.FC = () => {
                   isChecked={eventCardSelectedList.includes("black002")}
                   selectFunc={handleSelectedEvent}
                   cardId="black002"
+                  musicType="Hip-Hop"
+                />
+                <EventCard
+                  imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
+                  title="Black Coffee Minimal House Event"
+                  date="30/05/2024"
+                  location="New York, NY"
+                  price="200"
+                  purpose="Registration"
+                  isChecked={eventCardSelectedList.includes("black003")}
+                  selectFunc={handleSelectedEvent}
+                  cardId="black003"
                   musicType="Hip-Hop"
                 />
               </div>

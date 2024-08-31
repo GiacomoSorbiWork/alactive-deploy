@@ -34,7 +34,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <div
-      className={`relative w-full ${
+      className={`relative w-full snap-start ${
         isCard ? "h-64" : "h-[55vh] mb-4"
       } rounded-2xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30`}
       onClick={handleClick}
