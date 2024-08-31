@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useCallback } from "react";
+import React, { useState, ChangeEvent, useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { ProgressBar } from "../../components/ProgressBar";
 import Form from "../../components/Form";
@@ -13,7 +13,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
-// import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 // import { useQuery, useMutation } from "@apollo/client";
 // import { RecommendMe, SetLike } from "../../API/Graphql/queries";
 
@@ -51,13 +51,16 @@ const OnBoarding: React.FC = () => {
     "Big Room",
   ];
   const history = useHistory();
-  // const { getAccessTokenSilently, user } = useAuth0();
+  const { isAuthenticated } = useAuth0();
   // const { data, error } = useQuery(RecommendMe);
   // if (error) {
   //   console.error("Error in query:", error);
   // }
   // const [createUser] = useMutation(SetLike);
 
+  useEffect(() => {
+    if (isAuthenticated) history.push("/dashboard");
+  });
   const handleChange = (event: Event, newValue: number | number[]) => {
     setRangeValue(newValue as number[]);
   };
@@ -66,7 +69,7 @@ const OnBoarding: React.FC = () => {
     if (step > 1) {
       setStep(step - 1);
     } else {
-      history.push("/home");
+      history.push("/login");
     }
   }, [step, history]);
 
@@ -94,7 +97,7 @@ const OnBoarding: React.FC = () => {
     const isNameValid = name.trim() !== "";
     const isHandleValid = handle.trim().startsWith("@") && handle.length > 1;
     const isDateValid = date !== null && isValidDate(date);
-    const isEventSelected = eventCardSelectedList.length > 1;
+    const isEventSelected = eventCardSelectedList.length >= 1;
     const isFavoriteSelected = favoriteList.length > 0;
 
     const isFormValid =
@@ -123,7 +126,7 @@ const OnBoarding: React.FC = () => {
 
       setTimeout(() => {
         history.push("/dashboard"); // Navigate after delay
-      }, 2000); // simulate loading delay
+      }, 1000); // simulate loading delay
     }
     setStep((prev) => prev + 1);
     setLastStep((prev) => Math.max(prev, step + 1));
@@ -134,7 +137,7 @@ const OnBoarding: React.FC = () => {
       (step === 1 && name.trim() !== "") ||
       (step === 2 && handle.trim().startsWith("@") && handle.length > 1) ||
       (step === 3 && date !== null && isValidDate(date)) ||
-      (step === 4 && eventCardSelectedList.length > 1) ||
+      (step === 4 && eventCardSelectedList.length >= 1) ||
       (step === 5 && favoriteList.length > 0) ||
       step === 6
     );

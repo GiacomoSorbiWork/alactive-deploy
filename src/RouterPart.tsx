@@ -6,7 +6,7 @@ import Loading from "./components/Loading";
 import HostingEvent from "./pages/HostingEvent";
 
 // Lazy load the components
-const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import("./pages/Login"));
 const OnBoarding = lazy(() => import("./pages/OnBoarding"));
 const HostDetail = lazy(() => import("./pages/HostDetail"));
 const EventDetail = lazy(() => import("./pages/EventDetail"));
@@ -21,7 +21,7 @@ const RouterPart: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      history.push("/home");
+      history.push("/login");
     }
   }, [isLoading, isAuthenticated, history]);
 
@@ -36,10 +36,11 @@ const RouterPart: React.FC = () => {
     <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
       <Suspense fallback={<Loading />}>
         <Switch>
-          <Route exact path="/home" component={Home} />
+          <Route exact path="/login" component={Login} />
           {isAuthenticated ? (
             <>
               <Route exact path="/" component={OnBoarding} />
+              <Route exact path="/onBoarding" component={OnBoarding} />
               <Route exact path="/host-detail" component={HostDetail} />
               <Route exact path="/host-events" component={HostingEvent} />
               <Route exact path="/event-detail" component={EventDetail} />
@@ -53,7 +54,7 @@ const RouterPart: React.FC = () => {
             </>
           ) : (
             <Route path="*">
-              <Redirect to="/home" />
+              <Redirect to="/login" />
             </Route>
           )}
         </Switch>
