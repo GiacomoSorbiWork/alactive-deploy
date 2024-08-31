@@ -165,35 +165,54 @@ const IconText: React.FC<IconTextProps> = ({
   </>
 );
 
-const Rules = () => (
-  <div>
-    <p className="text-title-small font-semibold mt-6 mb-4">Rules</p>
-    <p className="text-body-medium leading-none">
-      We ask every guest who will attend the event to follow the specific
-      guidelines.
-    </p>
-    <p className="text-body-medium font-semibold my-6">The Essentials</p>
-    <IconText
-      img={FrameSVG}
-      text={
-        "Smart/casual: Dress / Dark jeans or chinos, button-down shirts, casual loafers, polos or clean sneakers"
-      }
-      dividerState={false}
-    />
-    <p className="text-body-medium font-semibold my-6">More on rules</p>
-    <Divider className="!border-white h-0 opacity-20" />
-    <IconText img={PersonManSVG} text={"Minimum age 21"} />
-    <IconText img={SmokeSVG} text={"Prohibited to smoke"} />
-    <IconText img={PhotographySVG} text={"Prohibited to make pictures"} />
-    <IconText img={ContextualSVG} text={"Id’s required"} />
-    <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
-    <IconText img={CreditSVG} text={"The venue doesn’t accept credit cards"} />
-    <div className="h-[76px] bg-eventGradient mt-[-76px] absolute w-full"></div>
-    <div className="flex justify-center p-2">
-      <RoundedButton />
+const Rules = () => {
+  const [showMoreVisible, setShowMoreVisible] = useState(true);
+  return (
+    <div>
+      <p className="text-title-small font-semibold mt-6 mb-4">Rules</p>
+      <p className="text-body-medium leading-none">
+        We ask every guest who will attend the event to follow the specific
+        guidelines.
+      </p>
+      <p className="text-body-medium font-semibold my-6">The Essentials</p>
+      <IconText
+        img={FrameSVG}
+        text={
+          "Smart/casual: Dress / Dark jeans or chinos, button-down shirts, casual loafers, polos or clean sneakers"
+        }
+        dividerState={false}
+      />
+      <p className="text-body-medium font-semibold my-6">More on rules</p>
+      <Divider className="!border-white h-0 opacity-20" />
+      <IconText img={PersonManSVG} text={"Minimum age 21"} />
+      <IconText img={SmokeSVG} text={"Prohibited to smoke"} />
+      <IconText img={PhotographySVG} text={"Prohibited to make pictures"} />
+      <IconText img={ContextualSVG} text={"Id’s required"} />
+      <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
+      <IconText
+        img={CreditSVG}
+        text={"The venue doesn’t accept credit cards"}
+      />
+      {!showMoreVisible && (
+        <>
+          <IconText img={ContextualSVG} text={"Id’s required"} />
+          <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
+        </>
+      )}
+
+      {showMoreVisible && (
+        <>
+          <div className="h-[76px] bg-eventGradient mt-[-76px] absolute w-full"></div>
+          <div className="flex justify-center p-2">
+            <RoundedButton
+              onClick={() => setShowMoreVisible(!showMoreVisible)}
+            />
+          </div>
+        </>
+      )}
     </div>
-  </div>
-);
+  );
+};
 
 const BookList: React.FC<BookListProps> = ({
   svg,
@@ -332,7 +351,11 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
         <div className="col-span-2">
           <TextOnlyButton text="Starting from $345" />
         </div>
-        <LargeDefaultButton text="Book" className="ml-4" onClick={handleOpen} />
+        <LargeDefaultButton
+          text="Book"
+          className="ml-4 !rounded-[12px]"
+          onClick={handleOpen}
+        />
       </IonFooter>
     </IonPage>
   );
