@@ -9,6 +9,8 @@ import YouTubeSVG from "../../../resources/svg/social/youtube-app-white-icon.svg
 import InstagamSVG from "../../../resources/svg/social/instagram-white-icon.svg";
 import LinkdinSVG from "../../../resources/svg/social/linkedin-app-white-icon.svg";
 import LineSVG from "../../../resources/svg/social/link-svgrepo-com.svg";
+import LikeSVG from "../../../resources/svg/favorite.svg";
+import LikedSVG from "../../../resources/svg/liked.svg";
 import { UserHeaderProps, SocialIconProps } from "./type";
 import { detailData } from "./data";
 import ArrowBack from "../../components/ArrowBack";
@@ -40,6 +42,7 @@ const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
 
 const HostDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
+  const [Liked, setLiked] = useState(false);
   const history = useHistory();
   const handleTabClick = (index: number) => {
     setActiveTab(index);
@@ -55,6 +58,11 @@ const HostDetail: React.FC = () => {
     <IonPage>
       <IonContent fullscreen={true}>
         <ArrowBack />
+        <img
+          className="absolute right-4 top-6 z-20"
+          src={Liked ? LikedSVG : LikeSVG}
+          onClick={() => setLiked((prev) => !prev)}
+        />
         <CarouselComponent items={items} />
         <UserHeader {...userInfo} />
         <div className="mt-0">

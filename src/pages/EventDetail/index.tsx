@@ -14,7 +14,8 @@ import ContextualSVG from "../../../resources/svg/rules/contextual_token.svg";
 import PhotographySVG from "../../../resources/svg/rules/no_photography.svg";
 import SmokeSVG from "../../../resources/svg/rules/smoke_free.svg";
 import FrameSVG from "../../../resources/svg/rules/Frame.svg";
-
+import LikeSVG from "../../../resources/svg/favorite.svg";
+import LikedSVG from "../../../resources/svg/liked.svg";
 import {
   EventHeaderProps,
   HostProps,
@@ -228,6 +229,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState("booklist0");
+  const [Liked, setLiked] = useState(false);
 
   // Using useCallback to memoize the handlers
   const handleOpen = useCallback(() => setIsBookingModal(true), []);
@@ -238,6 +240,11 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
       <IonHeader></IonHeader>
       <IonContent fullscreen={true}>
         <ArrowBack />
+        <img
+          className="absolute right-4 top-6 z-20"
+          src={Liked ? LikedSVG : LikeSVG}
+          onClick={() => setLiked((prev) => !prev)}
+        />
         <CarouselComponent items={items} />
         <div className="p-4">
           <EventHeader {...eventInfo} />
