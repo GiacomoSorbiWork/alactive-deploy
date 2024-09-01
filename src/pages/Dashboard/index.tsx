@@ -67,7 +67,10 @@ const useVideoControls = (initialState = { muted: true, liked: false }) => {
 
 const DashBoard: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const swipButton = useRef<HTMLButtonElement>(null);
+  const swipeButtonsRef = useRef<(HTMLButtonElement | null)[]>([]); // Array of refs for swipe buttons
+  const [selectedSwipIndex, setSelectedSwipIndex] = useState<number | null>(
+    null
+  );
   const videoRef = useRef<HTMLVideoElement>(null);
   const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
     useVideoControls();
@@ -81,17 +84,19 @@ const DashBoard: React.FC = () => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, []);
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
+  const handleTouchMove = useCallback((e: TouchEvent, index: number) => {
+    setSelectedSwipIndex(index);
     touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
 
-    const swipButtonElement = swipButton.current;
+    const swipButtonElement = swipeButtonsRef.current[index];
     if (swipButtonElement) {
       const deltaX = touchEnd.current.x - touchStart.current.x;
       swipButtonElement.style.transform = `translateX(${deltaX}px)`;
     }
   }, []);
 
-  const handleTouchEnd = useCallback(() => {
+  const handleTouchEnd = useCallback((index: number) => {
+    setSelectedSwipIndex(null);
     const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
     const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
     if (swipeDistanceX > 50 && swipeDistanceY < 10) {
@@ -102,25 +107,28 @@ const DashBoard: React.FC = () => {
     }
 
     // Reset the button position after touch end
-    const swipButtonElement = swipButton.current;
+    const swipButtonElement = swipeButtonsRef.current[index];
     if (swipButtonElement) {
       swipButtonElement.style.transform = `translateX(0)`;
     }
   }, []);
 
   useEffect(() => {
-    const currentScrollRef = swipButton.current;
-    if (currentScrollRef) {
-      currentScrollRef.addEventListener("touchstart", handleTouchStart);
-      currentScrollRef.addEventListener("touchmove", handleTouchMove);
-      currentScrollRef.addEventListener("touchend", handleTouchEnd);
+    swipeButtonsRef.current.forEach((button, index) => {
+      if (button) {
+        button.addEventListener("touchstart", handleTouchStart);
+        button.addEventListener("touchmove", (e) => handleTouchMove(e, index));
+        button.addEventListener("touchend", () => handleTouchEnd(index));
 
-      return () => {
-        currentScrollRef.removeEventListener("touchstart", handleTouchStart);
-        currentScrollRef.removeEventListener("touchmove", handleTouchMove);
-        currentScrollRef.removeEventListener("touchend", handleTouchEnd);
-      };
-    }
+        return () => {
+          button.removeEventListener("touchstart", handleTouchStart);
+          button.removeEventListener("touchmove", (e) =>
+            handleTouchMove(e, index)
+          );
+          button.removeEventListener("touchend", () => handleTouchEnd(index));
+        };
+      }
+    });
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   const handleGoEventDetail = () => {
@@ -137,14 +145,14 @@ const DashBoard: React.FC = () => {
           {VIDEO_URLS.map((video, index) => (
             <div
               key={index + "-container"}
-              className="relative snap-center h-screen" // Ensuring each video takes full height
+              className="relative snap-center h-screen"
             >
               <video
                 ref={videoRef}
                 muted={isMuted}
                 playsInline
                 autoPlay
-                className={`inset-0 object-cover w-full h-full absolute top-0`} // Keeping the video at the top
+                className={`inset-0 object-cover w-full h-full absolute top-0`}
                 loop
               >
                 <source src={video} type="video/mp4" />
@@ -170,8 +178,10 @@ const DashBoard: React.FC = () => {
                 </div>
 
                 <button
-                  ref={swipButton}
-                  className="absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 animate-wiggle"
+                  ref={(el) => (swipeButtonsRef.current[index] = el)} // Assigning ref dynamically
+                  className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 ${
+                    index !== selectedSwipIndex ? "animate-wiggle" : ""
+                  }`}
                 >
                   <img src={ArrowLeft} alt="Swipe for Details" />
                   <p className="text-body-small font-semibold leading-[17px]">
