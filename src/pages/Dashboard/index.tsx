@@ -9,7 +9,6 @@ import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import PageInfoSVG from "../../../resources/svg/page_info.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
-import SearchSVG from "../../../resources/svg/search.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
@@ -38,7 +37,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
   </button>
 );
 
-const useVideoControls = (initialState = { muted: false, liked: false }) => {
+const useVideoControls = (initialState = { muted: true, liked: false }) => {
   const [isMuted, setIsMuted] = useState(initialState.muted);
   const [isLiked, setIsLiked] = useState(initialState.liked);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -163,11 +162,10 @@ const DashBoard: React.FC = () => {
                   <div className="flex gap-1">
                     <img
                       className="h-6"
-                      src={SearchSVG}
-                      onClick={() => setFilterVisible(true)}
+                      src={PageInfoSVG}
                       alt="Page Info"
+                      onClick={() => setFilterVisible(true)}
                     />
-                    <img className="h-6" src={PageInfoSVG} alt="Page Info" />
                   </div>
                 </div>
 
