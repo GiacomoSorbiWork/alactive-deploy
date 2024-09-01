@@ -24,6 +24,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { gql, useQuery } from "@apollo/client";
+
+const QUERY_ME = gql`
+  query me {
+    me {
+      handle
+      name
+      avatar
+      birthday
+    }
+  }
+`
 
 const ProfileList: React.FC<ProfileListType> = ({
   img,
@@ -80,6 +92,8 @@ const Profile: React.FC<ProfileType> = ({
     logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
+  const { loading, error, data } = useQuery(QUERY_ME);
+
   return (
     <IonPage>
       <IonContent>
@@ -98,7 +112,7 @@ const Profile: React.FC<ProfileType> = ({
           <ProfileList
             img={BirthSVG}
             title="Date of Birth"
-            text={birth.format("D MMMM")} // Format the birthday for display
+            text={loading ? 'Loading...' : (error ? 'Error' : data?.me?.birthday)} // Format the birthday for display
             arrowVisible
             onClick={() => {
               setSelectBirthVisible(true); // Show the Date Picker
