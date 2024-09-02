@@ -68,9 +68,6 @@ const useVideoControls = (initialState = { muted: true, liked: false }) => {
 const DashBoard: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const swipeButtonsRef = useRef<(HTMLButtonElement | null)[]>([]); // Array of refs for swipe buttons
-  const [selectedSwipIndex, setSelectedSwipIndex] = useState<number | null>(
-    null
-  );
   const videoRef = useRef<HTMLVideoElement>(null);
   const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
     useVideoControls();
@@ -84,19 +81,11 @@ const DashBoard: React.FC = () => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, []);
 
-  const handleTouchMove = useCallback((e: TouchEvent, index: number) => {
-    setSelectedSwipIndex(index);
+  const handleTouchMove = useCallback((e: TouchEvent) => {
     touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-
-    const swipButtonElement = swipeButtonsRef.current[index];
-    if (swipButtonElement) {
-      const deltaX = touchEnd.current.x - touchStart.current.x;
-      swipButtonElement.style.transform = `translateX(${deltaX}px)`;
-    }
   }, []);
 
   const handleTouchEnd = useCallback((index: number) => {
-    setSelectedSwipIndex(null);
     const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
     const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
     if (swipeDistanceX > 50 && swipeDistanceY < 10) {
@@ -117,14 +106,12 @@ const DashBoard: React.FC = () => {
     swipeButtonsRef.current.forEach((button, index) => {
       if (button) {
         button.addEventListener("touchstart", handleTouchStart);
-        button.addEventListener("touchmove", (e) => handleTouchMove(e, index));
+        button.addEventListener("touchmove", (e) => handleTouchMove(e));
         button.addEventListener("touchend", () => handleTouchEnd(index));
 
         return () => {
           button.removeEventListener("touchstart", handleTouchStart);
-          button.removeEventListener("touchmove", (e) =>
-            handleTouchMove(e, index)
-          );
+          button.removeEventListener("touchmove", (e) => handleTouchMove(e));
           button.removeEventListener("touchend", () => handleTouchEnd(index));
         };
       }
@@ -152,7 +139,7 @@ const DashBoard: React.FC = () => {
                 muted={isMuted}
                 playsInline
                 autoPlay
-                className={`inset-0 object-cover w-full h-full absolute top-0`}
+                className={`inset-0 object-cover w-full h-screen absolute top-0`}
                 loop
               >
                 <source src={video} type="video/mp4" />
@@ -179,9 +166,7 @@ const DashBoard: React.FC = () => {
 
                 <button
                   ref={(el) => (swipeButtonsRef.current[index] = el)} // Assigning ref dynamically
-                  className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 ${
-                    index !== selectedSwipIndex ? "animate-wiggle" : ""
-                  }`}
+                  className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 animate-wiggle`}
                 >
                   <img src={ArrowLeft} alt="Swipe for Details" />
                   <p className="text-body-small font-semibold leading-[17px]">
