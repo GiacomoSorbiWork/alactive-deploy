@@ -6,7 +6,12 @@ import FooterBar from "../../components/FooterBar";
 import Logo from "../../../resources/shortcut.svg";
 import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
-import { AccessPolicy, Event, Likeable, Host } from "../../__generated__/graphql";
+import {
+  AccessPolicy,
+  Event,
+  Likeable,
+  Host,
+} from "../../__generated__/graphql";
 import moment from "moment";
 
 const QUERY_LIKED = gql(`
@@ -47,19 +52,22 @@ const Favorite: React.FC = () => {
   const { loading, error, data } = useQuery(QUERY_LIKED);
 
   const extractMinPrice = (policies: AccessPolicy[]) => {
-    const policy = policies.reduce((min, policy) => {
-      const minPrice = parseFloat(policy.minPrice);
-      return minPrice < min.minPrice
-        ? { minPrice: minPrice, currency: policy.currency } 
-        : min
-    }, { minPrice: Infinity, currency: '' });
+    const policy = policies.reduce(
+      (min, policy) => {
+        const minPrice = parseFloat(policy.minPrice);
+        return minPrice < min.minPrice
+          ? { minPrice: minPrice, currency: policy.currency }
+          : min;
+      },
+      { minPrice: Infinity, currency: "" }
+    );
 
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: policy.currency,
-        maximumFractionDigits: 0
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: policy.currency,
+      maximumFractionDigits: 0,
     }).format(Math.round(policy.minPrice));
-  }
+  };
 
   return (
     <IonPage>
@@ -107,37 +115,41 @@ const Favorite: React.FC = () => {
           {activeTab === 0 && (
             <div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {data && data.me.likes
-                  .filter((liked): liked is Event => { return liked.__typename === "Event" })
-                  .map(event => (
-                    <EventCard 
-                      key={event.id}
-                      imgUrl={event.media[0]}
-                      title={event.name}
-                      date={moment(event.datetime).format('D MMM')}
-                      location={event.hostedAt.municipality}
-                      price={`FROM ${extractMinPrice(event.accessPolicies)}`}
-                      // TODO: Address optional unwrapping once we know whether avatar is always present.
-                      titleLogo={event.hostedAt.avatar}
-                    />
-                  ))
-                }
+                {data &&
+                  data.me.likes
+                    .filter((liked): liked is Event => {
+                      return liked.__typename === "Event";
+                    })
+                    .map((event) => (
+                      <EventCard
+                        key={event.id}
+                        imgUrl={event.media[0]}
+                        title={event.name}
+                        date={moment(event.datetime).format("D MMM")}
+                        location={event.hostedAt.municipality}
+                        price={`FROM ${extractMinPrice(event.accessPolicies)}`}
+                        // TODO: Address optional unwrapping once we know whether avatar is always present.
+                        titleLogo={event.hostedAt.avatar}
+                      />
+                    ))}
               </div>
             </div>
           )}
           {activeTab === 1 && (
             <div className="flex flex-col gap-4">
-              {data && data.me.likes
-                .filter((liked): liked is Host => { return liked.__typename == "Host" })
-                .map(host => (
-                  <HostCard
-                    key={host.id}
-                    imgUrl={host.avatar}
-                    title={host.name}
-                    subTitle="Nightclub"
-                  />
-                ))
-              }
+              {data &&
+                data.me.likes
+                  .filter((liked): liked is Host => {
+                    return liked.__typename == "Host";
+                  })
+                  .map((host) => (
+                    <HostCard
+                      key={host.id}
+                      imgUrl={host.avatar || ""}
+                      title={host.name}
+                      subTitle="Nightclub"
+                    />
+                  ))}
             </div>
           )}
         </div>
