@@ -24,6 +24,24 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { gql, useMutation, useQuery } from "@apollo/client";
+
+const QUERY_ME = gql`
+  query me {
+    me {
+      handle
+      name
+      avatar
+      birthday
+    }
+  }
+`
+
+const MUTATION_DELETE = gql`
+  mutation deleteAccount {
+    deleteUser
+  }
+`
 
 const ProfileList: React.FC<ProfileListType> = ({
   img,
@@ -55,16 +73,11 @@ const ProfileList: React.FC<ProfileListType> = ({
   </div>
 );
 
-const Profile: React.FC<ProfileType> = ({
-  imgUrl = "https://t4.ftcdn.net/jpg/07/90/04/33/240_F_790043387_sjkrr01wF935RYQzWHsqePxZ1SDantUJ.jpg",
-  title = "Stefano Alberto Profietti",
-  subTitle = "@stefanoproietti",
-  birthday = "12/3/1990",
-}) => {
+const Profile: React.FC<ProfileType> = () => {
   const { logout } = useAuth0();
 
   const [open, setOpen] = useState(false);
-  const [birth, setBirth] = useState(dayjs(birthday));
+  // const [birth, setBirth] = useState(dayjs(data?.me?.birthday));
   const [selectBirthVisible, setSelectBirthVisible] = useState(false); // Control visibility of the DatePicker
 
   const handleOpen = () => {
@@ -77,35 +90,46 @@ const Profile: React.FC<ProfileType> = ({
 
   const handleConfirm = () => {
     setOpen(false);
+    useMutation(MUTATION_DELETE);
+
+    // TODO: I have no idea how to delete an Auth0 account here.
     logout({ logoutParams: { returnTo: window.location.origin } });
   };
+
+  const handleLogout = () => {
+    logout({ logoutParams: { returnTo: window.location.origin } });
+  };
+
+  const { loading, error, data } = useQuery(QUERY_ME);
 
   return (
     <IonPage>
       <IonContent>
         <div
           className="relative w-full h-1/2 overflow-hidden bg-cover bg-center text-white"
-          style={{ backgroundImage: `url(${imgUrl})` }}
+          style={{
+            backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.6) 100%), url(${data?.me?.avatar})`,
+          }}
         >
           <Box className="absolute bottom-7 text-white p-4">
             <p className="text-title-medium font-semibold w-5/6 leading-snug">
-              {title}
+              {data?.me?.name}
             </p>
-            <p className="text-body-small mt-2">{subTitle}</p>
+            <p className="text-body-small mt-2">@{data?.me?.handle}</p>
           </Box>
         </div>
         <div className="text-white px-4 rounded-t-rounded relative mt-[-35px] bg-primaryContainer pb-[75px]">
           <ProfileList
             img={BirthSVG}
             title="Date of Birth"
-            text={birth.format("D MMMM")} // Format the birthday for display
+            text={loading ? 'Loading...' : (error ? 'Error' : data?.me?.birthday)} // Format the birthday for display
             arrowVisible
             onClick={() => {
               setSelectBirthVisible(true); // Show the Date Picker
             }}
           />
 
-          <div className="hidden">
+          {/* <div className="hidden">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["DatePicker"]}>
                 <DatePicker
@@ -118,21 +142,21 @@ const Profile: React.FC<ProfileType> = ({
                 />
               </DemoContainer>
             </LocalizationProvider>
-          </div>
+          </div> */}
 
           <p className="text-title-small mt-2 font-bold">Boring Stuff</p>
           <Divider className="!border-white h-0 opacity-20" />
           <ProfileList img={HammerSVG} title="Terms of Service" />
           <ProfileList img={DocumentSVG} title="Privacy Policy" />
-          <ProfileList img={LogOutSVG} title="Log out" onClick={handleOpen} />
+          <ProfileList img={LogOutSVG} title="Log out" onClick={logout} />
           <p className="text-title-small mt-2 font-bold">Danger Zone</p>
           <Divider className="!border-white h-0 opacity-20" />
-          <ProfileList img={RecycleSVG} title="Delete Account" type="delete" />
+          <ProfileList img={RecycleSVG} title="Delete Account" type="delete" onClick={handleOpen} />
         </div>
         <FooterBar />
       </IonContent>
 
-      {/* Logout Confirmation Modal */}
+      {/* Account Deletion Confirmation Modal */}
       <Dialog
         open={open}
         onClose={handleClose}
