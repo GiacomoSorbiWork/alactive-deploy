@@ -200,8 +200,11 @@ const DashBoard: React.FC = () => {
                 ref={videoRef}
                 muted={isMuted}
                 playsInline
-                // autoPlay
-                className={`snap-center inset-0 object-cover w-full h-screen absolute top-[calc(${index}*100vh)]`}
+                autoPlay
+                className={`snap-center inset-0 object-cover w-full h-screen absolute`}
+                style={{
+                  top: `calc(${index} * 100vh)`,
+                }}
                 loop
               >
                 <source src={video} type="video/mp4" />

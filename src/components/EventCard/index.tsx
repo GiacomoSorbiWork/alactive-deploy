@@ -44,6 +44,7 @@ const EventCard: React.FC<EventCardProps> = ({
         <video
           className="absolute inset-0 w-full h-full object-cover"
           src={videoUrl}
+          autoPlay
           loop
           muted
         />
