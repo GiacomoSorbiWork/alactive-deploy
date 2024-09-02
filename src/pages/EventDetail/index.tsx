@@ -42,11 +42,11 @@ const EventHeader: React.FC<EventHeaderProps> = ({
   date,
   startingTime,
 }) => (
-  <div className="mb-6 mt-[-16px]">
+  <div className="mb-6 mt-[-10px]">
     <p className="text-[30px] font-bold">{title}</p>
-    <p className="text-[18px] font-medium my-[19px]">{subtitle}</p>
+    <p className="text-[18px] font-medium mt-[5px] mb-[19px]">{subtitle}</p>
     <div>
-      <div className="flex items-center mb-[16px]">
+      <div className="flex items-center mb-4">
         <img src={CalendarSVG} alt="" />
         <p className="text-body-small font-medium ml-2">{date}</p>
       </div>
@@ -79,7 +79,7 @@ const MusicGenres: React.FC<MusicGenresProps> = ({ fields }) => (
 const LineUp: React.FC<LineUpProps> = ({ avatar, userName }) => (
   <div className="flex flex-col items-center">
     <img
-      className="h-24 w-24 rounded-full border border-white border-opacity-20 p-px"
+      className="h-24 w-24 rounded-full border border-white border-opacity-20"
       src={avatar}
     />
     <p className="text-body-small font-medium">{userName}</p>
@@ -100,7 +100,7 @@ const IntroduceGroup: React.FC<IntroduceGroupProps> = ({
       <div className="flex items-center mt-[-23px]">
         <img
           src={imgUrl}
-          className="h-24 w-24 rounded-full border border-white border-opacity-20 p-px"
+          className="h-24 w-24 rounded-full border border-white border-opacity-20"
           alt="Group"
         />
         <div className="flex flex-col ml-4">
@@ -135,7 +135,7 @@ const Host: React.FC<HostProps> = ({ imgUrl, title, subTitle, text }) => (
         <div className="relative">
           <img
             src={imgUrl}
-            className="h-24 w-24 rounded-full border border-white border-opacity-20 p-px"
+            className="h-24 w-24 rounded-full border border-white border-opacity-20"
             alt="Group"
           />
           <img
@@ -174,7 +174,7 @@ const Rules = () => {
         We ask every guest who will attend the event to follow the specific
         guidelines.
       </p>
-      <p className="text-body-medium font-semibold my-6">The Essentials</p>
+      <p className="text-body-medium font-semibold mt-6 mb-1">The Essentials</p>
       <IconText
         img={FrameSVG}
         text={
@@ -182,7 +182,7 @@ const Rules = () => {
         }
         dividerState={false}
       />
-      <p className="text-body-medium font-semibold my-6">More on rules</p>
+      <p className="text-body-medium font-semibold mt-1 mb-6">More on rules</p>
       <Divider className="!border-white h-0 opacity-20" />
       <IconText img={PersonManSVG} text={"Minimum age 21"} />
       <IconText img={SmokeSVG} text={"Prohibited to smoke"} />
@@ -294,7 +294,6 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           ))}
           <Divider className="!border-white h-0 opacity-20" />
           <Host {...hostData} />
-          <Divider className="!border-white h-0 opacity-20" />
           <Rules />
         </div>
 
