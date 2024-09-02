@@ -66,9 +66,9 @@ root.render(
         domain="alactive-dev.uk.auth0.com"
         clientId="09K9jptGf6apeXpCpoKKTRUEjwfW9RsW"
         authorizationParams={{
-          redirect_uri: "http://localhost:5173/",
+          // redirect_uri: "http://localhost:5173/",
           audience: "http://v1.api.alactive.app/graphql",
-          // redirect_uri: "https://alactive-deploy.vercel.app",
+          redirect_uri: "https://alactive-deploy.vercel.app",
         }}
       >
         <ApolloProviderWithAuth0>
