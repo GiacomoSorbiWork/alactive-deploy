@@ -30,7 +30,8 @@ const ApolloProviderWithAuth0 = ({ children }: { children: React.ReactNode }) =>
   const { getAccessTokenSilently } = useAuth0();
 
   const httpLink = createHttpLink({
-    uri: "https://v1.api.alactive.app/graphql",
+    uri: "https://localhost/graphql",
+    // uri: "https://v1.api.alactive.app/graphql",
   });
 
   const authLink = setContext(async (_, { headers }) => {
