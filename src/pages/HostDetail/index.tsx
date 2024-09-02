@@ -70,7 +70,7 @@ const HostDetail: React.FC = () => {
             <div className="flex flex-col items-center">
               <button
                 onClick={() => handleTabClick(0)}
-                className={`text-body-small font-medium py-2 px-4 ${
+                className={`text-body-small font-medium px-4 ${
                   activeTab === 0
                     ? " text-activeButton"
                     : "text-white text-opacity-65"
@@ -85,7 +85,7 @@ const HostDetail: React.FC = () => {
             <div className="flex flex-col items-center">
               <button
                 onClick={() => handleTabClick(1)}
-                className={`text-body-small font-medium py-2 px-4 ${
+                className={`text-body-small font-medium px-4 ${
                   activeTab === 1
                     ? "text-activeButton"
                     : "text-white text-opacity-65"
@@ -99,7 +99,7 @@ const HostDetail: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="p-4 text-white">
+        <div className="mt-4 p-4 text-white">
           {activeTab === 0 && (
             <>
               <div>
