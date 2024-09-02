@@ -68,31 +68,44 @@ const useVideoControls = (initialState = { muted: true, liked: false }) => {
 
 const DashBoard: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const swipeButtonsRef = useRef<(HTMLButtonElement | null)[]>([]); // Array of refs for swipe buttons
+  const swipeButtonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const eventDetailRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
-    useVideoControls();
   const history = useHistory();
 
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [filterVisible, setFilterVisible] = useState(false);
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [filterVisible, setFilterVisible] = useState(false);
 
-  const handleTouchStart = useCallback((e: TouchEvent, index: number) => {
-    setCurrentVideoIndex(index);
-    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  }, []);
+  const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
+    useVideoControls();
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
+  // Helper function to handle navigating to the event detail page
+  const handleGoEventDetail = useCallback(() => {
+    history.push("/event-detail");
+  }, [history]);
+
+  // Function to handle touch start on swipe buttons
+  const handleSwipeButtonTouchStart = useCallback(
+    (e: TouchEvent, index: number) => {
+      setCurrentVideoIndex(index);
+      touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    },
+    []
+  );
+
+  // Function to handle touch move on swipe buttons
+  const handleSwipeButtonTouchMove = useCallback((e: TouchEvent) => {
     touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     const deltaX = touchEnd.current.x - touchStart.current.x;
-    if (eventDetailRef.current && window.innerWidth >= Math.abs(deltaX))
+    if (eventDetailRef.current && window.innerWidth >= Math.abs(deltaX)) {
       eventDetailRef.current.style.transform = `translateX(${deltaX}px)`;
+    }
   }, []);
 
-  const handleTouchEnd = useCallback(() => {
+  // Function to handle touch end on swipe buttons
+  const handleSwipeButtonTouchEnd = useCallback(() => {
     const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
     const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
 
@@ -100,50 +113,81 @@ const DashBoard: React.FC = () => {
       const isSwipeLeft = touchEnd.current.x < touchStart.current.x;
 
       if (isSwipeLeft && eventDetailRef.current) {
-        // Animate to left when swiped
+        // Animate to the left when swiped
         eventDetailRef.current.style.transform = `translateX(-100%)`; // Move to left
-        setTimeout(() => {
-          handleGoEventDetail();
-        }, 300);
+        setTimeout(handleGoEventDetail, 300);
       }
-    } else {
-      if (eventDetailRef.current) {
-        // Reset position if not an effective swipe
-        eventDetailRef.current.style.transform = `translateX(0)`;
-      }
+    } else if (eventDetailRef.current) {
+      // Reset position if not an effective swipe
+      eventDetailRef.current.style.transform = `translateX(0)`;
     }
-  }, []);
+  }, [handleGoEventDetail]);
 
+  // Effect to handle adding and removing touch events on swipe buttons
   useEffect(() => {
     swipeButtonsRef.current.forEach((button, index) => {
       if (button) {
-        button.addEventListener("touchstart", (e) =>
-          handleTouchStart(e, index)
-        );
-        button.addEventListener("touchmove", (e) => handleTouchMove(e));
-        button.addEventListener("touchend", () => handleTouchEnd());
+        const touchStartHandler = (e: TouchEvent) =>
+          handleSwipeButtonTouchStart(e, index);
+        button.addEventListener("touchstart", touchStartHandler);
+        button.addEventListener("touchmove", handleSwipeButtonTouchMove);
+        button.addEventListener("touchend", handleSwipeButtonTouchEnd);
 
         return () => {
-          button.removeEventListener("touchstart", (e) =>
-            handleTouchStart(e, index)
-          );
-          button.removeEventListener("touchmove", (e) => handleTouchMove(e));
-          button.removeEventListener("touchend", () => handleTouchEnd());
+          button.removeEventListener("touchstart", touchStartHandler);
+          button.removeEventListener("touchmove", handleSwipeButtonTouchMove);
+          button.removeEventListener("touchend", handleSwipeButtonTouchEnd);
         };
       }
     });
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [
+    handleSwipeButtonTouchStart,
+    handleSwipeButtonTouchMove,
+    handleSwipeButtonTouchEnd,
+  ]);
 
+  // Function to handle touch events on the scrollable container
+  const handleScrollTouchStart = useCallback((e: TouchEvent) => {
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const handleScrollTouchMove = useCallback((e: TouchEvent) => {
+    touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const handleScrollTouchEnd = useCallback(() => {
+    const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
+    const scrollDistance =
+      swipeDistanceY < 100 ? window.innerHeight : -window.innerHeight;
+
+    scrollRef.current?.scrollBy({
+      top: scrollDistance,
+      behavior: "instant",
+    });
+  }, []);
+
+  // Effect to manage touch events on the scrollable container
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (element) {
+      element.addEventListener("touchstart", handleScrollTouchStart);
+      element.addEventListener("touchmove", handleScrollTouchMove);
+      element.addEventListener("touchend", handleScrollTouchEnd);
+
+      return () => {
+        element.removeEventListener("touchstart", handleScrollTouchStart);
+        element.removeEventListener("touchmove", handleScrollTouchMove);
+        element.removeEventListener("touchend", handleScrollTouchEnd);
+      };
+    }
+  }, [handleScrollTouchStart, handleScrollTouchMove, handleScrollTouchEnd]);
+
+  // Effect to add smooth transition to the event detail element
   useEffect(() => {
     if (eventDetailRef.current) {
-      // Smooth transition for transform
       eventDetailRef.current.style.transition = "transform 0.3s ease";
     }
-  }, [eventDetailRef.current?.style.transform]);
-
-  const handleGoEventDetail = () => {
-    history.push("/event-detail");
-  };
+  }, []);
 
   return (
     <IonPage>
