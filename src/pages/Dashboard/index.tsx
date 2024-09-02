@@ -38,7 +38,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
   </button>
 );
 
-const useVideoControls = (initialState = { muted: true, liked: false }) => {
+const useVideoControls = (initialState = { muted: false, liked: false }) => {
   const [isMuted, setIsMuted] = useState(initialState.muted);
   const [isLiked, setIsLiked] = useState(initialState.liked);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -157,13 +157,19 @@ const DashBoard: React.FC = () => {
 
   const handleScrollTouchEnd = useCallback(() => {
     const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
-    const scrollDistance =
-      swipeDistanceY < 100 ? window.innerHeight : -window.innerHeight;
 
-    scrollRef.current?.scrollBy({
-      top: scrollDistance,
-      behavior: "instant",
-    });
+    if (swipeDistanceY < 100) {
+      scrollRef.current?.scrollBy({
+        top: window.innerHeight,
+        behavior: "instant",
+      });
+    }
+    if (swipeDistanceY > 100) {
+      scrollRef.current?.scrollBy({
+        top: -window.innerHeight,
+        behavior: "instant",
+      });
+    }
   }, []);
 
   // Effect to manage touch events on the scrollable container
@@ -205,7 +211,7 @@ const DashBoard: React.FC = () => {
                 ref={videoRef}
                 muted={isMuted}
                 playsInline
-                // autoPlay
+                autoPlay
                 className={`inset-0 object-cover w-full h-screen absolute top-0`}
                 loop
               >
