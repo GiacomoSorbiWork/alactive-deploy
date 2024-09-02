@@ -26,7 +26,7 @@ const theme = createTheme({
   },
 });
 
-const ApolloProviderWithAuth0 = ({ children }) => {
+const ApolloProviderWithAuth0 = ({ children }: { children: React.ReactNode }) => {
   const { getAccessTokenSilently } = useAuth0();
 
   const httpLink = createHttpLink({
