@@ -5,13 +5,7 @@ import Form from "../../components/Form";
 import RangeSlider from "../../components/DataRanger";
 import EventCard from "../../components/EventCard";
 import { LargeDefaultButton, BackButton } from "../../subComponents/Buttons";
-import {
-  IonContent,
-  IonFooter,
-  IonHeader,
-  IonPage,
-  IonToolbar,
-} from "@ionic/react";
+import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 import { useAuth0 } from "@auth0/auth0-react";
 // import { useQuery, useMutation } from "@apollo/client";
@@ -210,7 +204,6 @@ const OnBoarding: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar />
         {step < 7 && <ProgressBar progress={step} />}
         {step === 4 && (
           <div className="p-8 pb-0 flex flex-col">
