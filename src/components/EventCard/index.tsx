@@ -72,7 +72,11 @@ const EventCard: React.FC<EventCardProps> = ({
         )}
         <div className="flex">
           {titleLogo && (
-            <img src={titleLogo} className="w-6 h-6" alt="Title Logo" />
+            <img
+              src={titleLogo}
+              className="w-[21px] h-[18px] border-2 border-[#595959] border-opacity-20 border-solid rounded-full mr-[6px]"
+              alt="Title Logo"
+            />
           )}
           <h2
             className={`${

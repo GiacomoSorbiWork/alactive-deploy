@@ -3,7 +3,7 @@ import EventCard from "../../components/EventCard";
 import HostCard from "../../components/HostCard";
 import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
-import Logo from "../../../resources/shortcut.svg";
+import MarkImage from "../../../resources/profile-mark.png";
 
 const Favorite: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -63,7 +63,7 @@ const Favorite: React.FC = () => {
                   date="29 Apr"
                   location="New York, NY"
                   price="FROM $200"
-                  titleLogo={Logo}
+                  titleLogo={MarkImage}
                 />
                 <EventCard
                   imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
@@ -78,6 +78,7 @@ const Favorite: React.FC = () => {
                   date="12 Oct"
                   location="New York, NY"
                   price="FROM $200"
+                  titleLogo={MarkImage}
                 />
               </div>
             </div>
