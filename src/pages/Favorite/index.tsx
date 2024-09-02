@@ -6,7 +6,7 @@ import FooterBar from "../../components/FooterBar";
 import Logo from "../../../resources/shortcut.svg";
 import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
-import { AccessPolicy, Event, Likeable } from "../../__generated__/graphql";
+import { AccessPolicy, Event, Likeable, Host } from "../../__generated__/graphql";
 import moment from "moment";
 
 const QUERY_LIKED = gql(`
@@ -24,6 +24,7 @@ const QUERY_LIKED = gql(`
             currency
           }
           hostedAt {
+            avatar
             municipality
           }
         }
@@ -107,7 +108,7 @@ const Favorite: React.FC = () => {
             <div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {data && data.me.likes
-                  .filter((liked): liked is Event => {return liked.__typename === "Event"})
+                  .filter((liked): liked is Event => { return liked.__typename === "Event" })
                   .map(event => (
                     <EventCard 
                       key={event.id}
@@ -116,6 +117,8 @@ const Favorite: React.FC = () => {
                       date={moment(event.datetime).format('D MMM')}
                       location={event.hostedAt.municipality}
                       price={`FROM ${extractMinPrice(event.accessPolicies)}`}
+                      // TODO: Address optional unwrapping once we know whether avatar is always present.
+                      titleLogo={event.hostedAt.avatar}
                     />
                   ))
                 }
@@ -124,21 +127,17 @@ const Favorite: React.FC = () => {
           )}
           {activeTab === 1 && (
             <div className="flex flex-col gap-4">
-              <HostCard
-                imgUrl="https://t4.ftcdn.net/jpg/08/19/24/63/240_F_819246328_2nfWzjhKYjhnl1yURFR0NL1oToq8FDnn.jpg"
-                title="Maroto"
-                subTitle="Nightclub"
-              />
-              <HostCard
-                imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                title="Maroto"
-                subTitle="Nightclub"
-              />
-              <HostCard
-                imgUrl="https://t4.ftcdn.net/jpg/07/90/04/33/240_F_790043387_sjkrr01wF935RYQzWHsqePxZ1SDantUJ.jpg"
-                title="Maroto"
-                subTitle="Nightclub"
-              />
+              {data && data.me.likes
+                .filter((liked): liked is Host => { return liked.__typename == "Host" })
+                .map(host => (
+                  <HostCard
+                    key={host.id}
+                    imgUrl={host.avatar}
+                    title={host.name}
+                    subTitle="Nightclub"
+                  />
+                ))
+              }
             </div>
           )}
         </div>
