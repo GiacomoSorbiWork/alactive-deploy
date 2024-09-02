@@ -14,10 +14,11 @@ import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
 import { IconButtonProps } from "./type";
+import EventDetail from "../EventDetail";
 
 const VIDEO_URLS = [
-  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aMMwUnH5kfSTj56rB5Rp3RjRyLnTSo11ugDGbxe410xllYK5LNQ0wzQKhsgXmsvzU5PGvMST8QEzsxY086~pZcPYMqIkhj0UOKkCK4I1PSH6YW59FI3~OKAFxDrh7H6E5DoCgFw0Dsg4DD~ovArSwsF3JywwyzL-WNrUwfuLhwHYIDC14Y9P3RPXey0Urk1ERbR6gXLrB94JluZZqsjvqGtERIZqPS1vxPpGbQ-C4J58kgmm7qVfiUugqW5jjbPkkXDBFF~KFj1ziiZxfC1tDnJzqiz1V6gTd3cTlD-kI86GEzd9rSbGalJ0qEyxIGBn5C4B7fycA43vK-4KA2sB~A__",
-  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aMMwUnH5kfSTj56rB5Rp3RjRyLnTSo11ugDGbxe410xllYK5LNQ0wzQKhsgXmsvzU5PGvMST8QEzsxY086~pZcPYMqIkhj0UOKkCK4I1PSH6YW59FI3~OKAFxDrh7H6E5DoCgFw0Dsg4DD~ovArSwsF3JywwyzL-WNrUwfuLhwHYIDC14Y9P3RPXey0Urk1ERbR6gXLrB94JluZZqsjvqGtERIZqPS1vxPpGbQ-C4J58kgmm7qVfiUugqW5jjbPkkXDBFF~KFj1ziiZxfC1tDnJzqiz1V6gTd3cTlD-kI86GEzd9rSbGalJ0qEyxIGBn5C4B7fycA43vK-4KA2sB~A__",
+  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__",
+  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__",
 ];
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
@@ -37,7 +38,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
   </button>
 );
 
-const useVideoControls = (initialState = { muted: true, liked: false }) => {
+const useVideoControls = (initialState = { muted: false, liked: false }) => {
   const [isMuted, setIsMuted] = useState(initialState.muted);
   const [isLiked, setIsLiked] = useState(initialState.liked);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -67,84 +68,151 @@ const useVideoControls = (initialState = { muted: true, liked: false }) => {
 
 const DashBoard: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const swipButton = useRef<HTMLButtonElement>(null);
+  const swipeButtonsRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const eventDetailRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
-    useVideoControls();
   const history = useHistory();
 
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [filterVisible, setFilterVisible] = useState(false);
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [filterVisible, setFilterVisible] = useState(false);
 
-  const handleTouchStart = useCallback((e: TouchEvent) => {
+  const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
+    useVideoControls();
+
+  // Helper function to handle navigating to the event detail page
+  const handleGoEventDetail = useCallback(() => {
+    history.push("/event-detail");
+  }, [history]);
+
+  // Function to handle touch start on swipe buttons
+  const handleSwipeButtonTouchStart = useCallback(
+    (e: TouchEvent, index: number) => {
+      setCurrentVideoIndex(index);
+      touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    },
+    []
+  );
+
+  // Function to handle touch move on swipe buttons
+  const handleSwipeButtonTouchMove = useCallback((e: TouchEvent) => {
+    touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    const deltaX = touchEnd.current.x - touchStart.current.x;
+    if (eventDetailRef.current && window.innerWidth >= Math.abs(deltaX)) {
+      eventDetailRef.current.style.transform = `translateX(${deltaX}px)`;
+    }
+  }, []);
+
+  // Function to handle touch end on swipe buttons
+  const handleSwipeButtonTouchEnd = useCallback(() => {
+    const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
+    const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
+
+    if (swipeDistanceX > 50 && swipeDistanceY < 10) {
+      const isSwipeLeft = touchEnd.current.x < touchStart.current.x;
+
+      if (isSwipeLeft && eventDetailRef.current) {
+        // Animate to the left when swiped
+        eventDetailRef.current.style.transform = `translateX(-100%)`; // Move to left
+        setTimeout(handleGoEventDetail, 300);
+      }
+    } else if (eventDetailRef.current) {
+      // Reset position if not an effective swipe
+      eventDetailRef.current.style.transform = `translateX(0)`;
+    }
+  }, [handleGoEventDetail]);
+
+  // Effect to handle adding and removing touch events on swipe buttons
+  useEffect(() => {
+    swipeButtonsRef.current.forEach((button, index) => {
+      if (button) {
+        const touchStartHandler = (e: TouchEvent) =>
+          handleSwipeButtonTouchStart(e, index);
+        button.addEventListener("touchstart", touchStartHandler);
+        button.addEventListener("touchmove", handleSwipeButtonTouchMove);
+        button.addEventListener("touchend", handleSwipeButtonTouchEnd);
+
+        return () => {
+          button.removeEventListener("touchstart", touchStartHandler);
+          button.removeEventListener("touchmove", handleSwipeButtonTouchMove);
+          button.removeEventListener("touchend", handleSwipeButtonTouchEnd);
+        };
+      }
+    });
+  }, [
+    handleSwipeButtonTouchStart,
+    handleSwipeButtonTouchMove,
+    handleSwipeButtonTouchEnd,
+  ]);
+
+  // Function to handle touch events on the scrollable container
+  const handleScrollTouchStart = useCallback((e: TouchEvent) => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, []);
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
+  const handleScrollTouchMove = useCallback((e: TouchEvent) => {
     touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
 
-    const swipButtonElement = swipButton.current;
-    if (swipButtonElement) {
-      const deltaX = touchEnd.current.x - touchStart.current.x;
-      swipButtonElement.style.transform = `translateX(${deltaX}px)`;
+  const handleScrollTouchEnd = useCallback(() => {
+    const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
+
+    if (swipeDistanceY < 100) {
+      scrollRef.current?.scrollBy({
+        top: window.innerHeight,
+        behavior: "instant",
+      });
+    }
+    if (swipeDistanceY > 100) {
+      scrollRef.current?.scrollBy({
+        top: -window.innerHeight,
+        behavior: "instant",
+      });
     }
   }, []);
 
-  const handleTouchEnd = useCallback(() => {
-    const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
-    const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
-    if (swipeDistanceX > 50 && swipeDistanceY < 10) {
-      const isSwipeLeft = touchEnd.current.x < touchStart.current.x;
-      if (isSwipeLeft) {
-        handleGoEventDetail();
-      }
-    }
-
-    // Reset the button position after touch end
-    const swipButtonElement = swipButton.current;
-    if (swipButtonElement) {
-      swipButtonElement.style.transform = `translateX(0)`;
-    }
-  }, []);
-
+  // Effect to manage touch events on the scrollable container
   useEffect(() => {
-    const currentScrollRef = swipButton.current;
-    if (currentScrollRef) {
-      currentScrollRef.addEventListener("touchstart", handleTouchStart);
-      currentScrollRef.addEventListener("touchmove", handleTouchMove);
-      currentScrollRef.addEventListener("touchend", handleTouchEnd);
+    const element = scrollRef.current;
+    if (element) {
+      element.addEventListener("touchstart", handleScrollTouchStart);
+      element.addEventListener("touchmove", handleScrollTouchMove);
+      element.addEventListener("touchend", handleScrollTouchEnd);
 
       return () => {
-        currentScrollRef.removeEventListener("touchstart", handleTouchStart);
-        currentScrollRef.removeEventListener("touchmove", handleTouchMove);
-        currentScrollRef.removeEventListener("touchend", handleTouchEnd);
+        element.removeEventListener("touchstart", handleScrollTouchStart);
+        element.removeEventListener("touchmove", handleScrollTouchMove);
+        element.removeEventListener("touchend", handleScrollTouchEnd);
       };
     }
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [handleScrollTouchStart, handleScrollTouchMove, handleScrollTouchEnd]);
 
-  const handleGoEventDetail = () => {
-    history.push("/event-detail");
-  };
+  // Effect to add smooth transition to the event detail element
+  useEffect(() => {
+    if (eventDetailRef.current) {
+      eventDetailRef.current.style.transition = "transform 0.3s ease";
+    }
+  }, []);
 
   return (
     <IonPage>
       <IonContent fullscreen={true} onClick={() => togglePlayback(videoRef)}>
         <div
-          className="relative h-screen overflow-y-auto snap-y snap-mandatory"
+          className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
           ref={scrollRef}
         >
           {VIDEO_URLS.map((video, index) => (
             <div
               key={index + "-container"}
-              className="relative snap-center h-screen" // Ensuring each video takes full height
+              className="relative snap-center h-screen"
             >
               <video
                 ref={videoRef}
                 muted={isMuted}
                 playsInline
                 autoPlay
-                className={`inset-0 object-cover w-full h-full absolute top-0`} // Keeping the video at the top
+                className={`inset-0 object-cover w-full h-screen absolute top-0`}
                 loop
               >
                 <source src={video} type="video/mp4" />
@@ -170,8 +238,8 @@ const DashBoard: React.FC = () => {
                 </div>
 
                 <button
-                  ref={swipButton}
-                  className="absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 animate-wiggle"
+                  ref={(el) => (swipeButtonsRef.current[index] = el)} // Assigning ref dynamically
+                  className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 animate-wiggle`}
                 >
                   <img src={ArrowLeft} alt="Swipe for Details" />
                   <p className="text-body-small font-semibold leading-[17px]">
@@ -238,6 +306,12 @@ const DashBoard: React.FC = () => {
             openState={filterVisible}
             onClose={() => setFilterVisible(false)}
           />
+          <div
+            ref={eventDetailRef}
+            className={`absolute top-[calc(${currentVideoIndex}*100vh)] left-full h-full w-full`}
+          >
+            <EventDetail />
+          </div>
         </div>
       </IonContent>
     </IonPage>

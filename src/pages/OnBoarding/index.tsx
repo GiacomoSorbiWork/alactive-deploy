@@ -51,7 +51,7 @@ const OnBoarding: React.FC = () => {
     "Big Room",
   ];
   const history = useHistory();
-  const { isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
   // const { data, error } = useQuery(RecommendMe);
   // if (error) {
   //   console.error("Error in query:", error);
@@ -59,8 +59,17 @@ const OnBoarding: React.FC = () => {
   // const [createUser] = useMutation(SetLike);
 
   useEffect(() => {
-    if (isAuthenticated) history.push("/dashboard");
+    interface User {
+      name: string;
+    }
+    const userInfo = JSON.parse(localStorage.getItem("users") || "[]");
+    const foundUser = userInfo.find((item: User) => item.name === user?.name);
+
+    if (foundUser) {
+      history.push("/dashboard");
+    }
   });
+
   const handleChange = (event: Event, newValue: number | number[]) => {
     setRangeValue(newValue as number[]);
   };
@@ -125,8 +134,22 @@ const OnBoarding: React.FC = () => {
       // handleOnboardingSubmit(userdata);
 
       setTimeout(() => {
-        history.push("/dashboard"); // Navigate after delay
-      }, 1000); // simulate loading delay
+        try {
+          const userInfo = JSON.parse(localStorage.getItem("users") || "[]");
+
+          if (Array.isArray(userInfo) && userInfo.length > 0) {
+            const tempUser = { ...user, userName: name, handle: handle };
+            userInfo.push(tempUser);
+
+            localStorage.setItem("users", JSON.stringify(userInfo));
+          }
+
+          history.push("/dashboard");
+        } catch (error) {
+          console.error("Error updating user information:", error);
+          // Handle the error appropriately (e.g., show an error message to the user)
+        }
+      }, 1000);
     }
     setStep((prev) => prev + 1);
     setLastStep((prev) => Math.max(prev, step + 1));
@@ -198,7 +221,7 @@ const OnBoarding: React.FC = () => {
         )}
       </IonHeader>
       <IonContent>
-        <div className="p-8 flex flex-col">
+        <div className="p-8 flex flex-col h-full">
           {step === 1 && (
             <Form
               title="Nice to meet you. And your name is?"
@@ -233,7 +256,7 @@ const OnBoarding: React.FC = () => {
           )}
           {step === 4 && (
             <>
-              <div className="overflow-y-auto snap-y snap-mandatory scroll-smooth h-[60vh]">
+              <div className="overflow-y-auto snap-y snap-mandatory scroll-smooth h-full">
                 <EventCard
                   videoUrl="https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aMMwUnH5kfSTj56rB5Rp3RjRyLnTSo11ugDGbxe410xllYK5LNQ0wzQKhsgXmsvzU5PGvMST8QEzsxY086~pZcPYMqIkhj0UOKkCK4I1PSH6YW59FI3~OKAFxDrh7H6E5DoCgFw0Dsg4DD~ovArSwsF3JywwyzL-WNrUwfuLhwHYIDC14Y9P3RPXey0Urk1ERbR6gXLrB94JluZZqsjvqGtERIZqPS1vxPpGbQ-C4J58kgmm7qVfiUugqW5jjbPkkXDBFF~KFj1ziiZxfC1tDnJzqiz1V6gTd3cTlD-kI86GEzd9rSbGalJ0qEyxIGBn5C4B7fycA43vK-4KA2sB~A__"
                   title="Black Coffee Minimal House Event"
@@ -244,6 +267,7 @@ const OnBoarding: React.FC = () => {
                   isChecked={eventCardSelectedList.includes("black001")}
                   selectFunc={handleSelectedEvent}
                   cardId="black001"
+                  className="!h-[calc(100%-85px)]"
                   musicType="Commerical"
                 />
                 <EventCard
@@ -257,6 +281,7 @@ const OnBoarding: React.FC = () => {
                   selectFunc={handleSelectedEvent}
                   cardId="black002"
                   musicType="Hip-Hop"
+                  className="!h-[calc(100%-85px)]"
                 />
                 <EventCard
                   imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
@@ -269,6 +294,7 @@ const OnBoarding: React.FC = () => {
                   selectFunc={handleSelectedEvent}
                   cardId="black003"
                   musicType="Hip-Hop"
+                  className="!h-[calc(100%-85px)]"
                 />
               </div>
             </>
