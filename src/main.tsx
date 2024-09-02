@@ -4,8 +4,13 @@ import App from "./App";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./global.css";
-import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client";
-import { setContext } from '@apollo/client/link/context';
+import {
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
@@ -26,7 +31,9 @@ const theme = createTheme({
   },
 });
 
-const ApolloProviderWithAuth0 = ({ children }) => {
+const ApolloProviderWithAuth0: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { getAccessTokenSilently } = useAuth0();
 
   const httpLink = createHttpLink({
@@ -60,7 +67,7 @@ root.render(
         clientId="09K9jptGf6apeXpCpoKKTRUEjwfW9RsW"
         authorizationParams={{
           redirect_uri: "http://localhost:5173/",
-          audience: "http://v1.api.alactive.app/graphql"
+          audience: "http://v1.api.alactive.app/graphql",
           // redirect_uri: "https://alactive-deploy.vercel.app",
         }}
       >
