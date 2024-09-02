@@ -14,10 +14,11 @@ import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
 import { IconButtonProps } from "./type";
+import EventDetail from "../EventDetail";
 
 const VIDEO_URLS = [
-  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aMMwUnH5kfSTj56rB5Rp3RjRyLnTSo11ugDGbxe410xllYK5LNQ0wzQKhsgXmsvzU5PGvMST8QEzsxY086~pZcPYMqIkhj0UOKkCK4I1PSH6YW59FI3~OKAFxDrh7H6E5DoCgFw0Dsg4DD~ovArSwsF3JywwyzL-WNrUwfuLhwHYIDC14Y9P3RPXey0Urk1ERbR6gXLrB94JluZZqsjvqGtERIZqPS1vxPpGbQ-C4J58kgmm7qVfiUugqW5jjbPkkXDBFF~KFj1ziiZxfC1tDnJzqiz1V6gTd3cTlD-kI86GEzd9rSbGalJ0qEyxIGBn5C4B7fycA43vK-4KA2sB~A__",
-  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1725235200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aMMwUnH5kfSTj56rB5Rp3RjRyLnTSo11ugDGbxe410xllYK5LNQ0wzQKhsgXmsvzU5PGvMST8QEzsxY086~pZcPYMqIkhj0UOKkCK4I1PSH6YW59FI3~OKAFxDrh7H6E5DoCgFw0Dsg4DD~ovArSwsF3JywwyzL-WNrUwfuLhwHYIDC14Y9P3RPXey0Urk1ERbR6gXLrB94JluZZqsjvqGtERIZqPS1vxPpGbQ-C4J58kgmm7qVfiUugqW5jjbPkkXDBFF~KFj1ziiZxfC1tDnJzqiz1V6gTd3cTlD-kI86GEzd9rSbGalJ0qEyxIGBn5C4B7fycA43vK-4KA2sB~A__",
+  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__",
+  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__",
 ];
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
@@ -68,7 +69,9 @@ const useVideoControls = (initialState = { muted: true, liked: false }) => {
 const DashBoard: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const swipeButtonsRef = useRef<(HTMLButtonElement | null)[]>([]); // Array of refs for swipe buttons
+  const eventDetailRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
     useVideoControls();
   const history = useHistory();
@@ -77,46 +80,66 @@ const DashBoard: React.FC = () => {
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [filterVisible, setFilterVisible] = useState(false);
 
-  const handleTouchStart = useCallback((e: TouchEvent) => {
+  const handleTouchStart = useCallback((e: TouchEvent, index: number) => {
+    setCurrentVideoIndex(index);
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, []);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    const deltaX = touchEnd.current.x - touchStart.current.x;
+    if (eventDetailRef.current && window.innerWidth >= Math.abs(deltaX))
+      eventDetailRef.current.style.transform = `translateX(${deltaX}px)`;
   }, []);
 
-  const handleTouchEnd = useCallback((index: number) => {
+  const handleTouchEnd = useCallback(() => {
     const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
     const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
+
     if (swipeDistanceX > 50 && swipeDistanceY < 10) {
       const isSwipeLeft = touchEnd.current.x < touchStart.current.x;
-      if (isSwipeLeft) {
-        handleGoEventDetail();
-      }
-    }
 
-    // Reset the button position after touch end
-    const swipButtonElement = swipeButtonsRef.current[index];
-    if (swipButtonElement) {
-      swipButtonElement.style.transform = `translateX(0)`;
+      if (isSwipeLeft && eventDetailRef.current) {
+        // Animate to left when swiped
+        eventDetailRef.current.style.transform = `translateX(-100%)`; // Move to left
+        setTimeout(() => {
+          handleGoEventDetail();
+        }, 300);
+      }
+    } else {
+      if (eventDetailRef.current) {
+        // Reset position if not an effective swipe
+        eventDetailRef.current.style.transform = `translateX(0)`;
+      }
     }
   }, []);
 
   useEffect(() => {
     swipeButtonsRef.current.forEach((button, index) => {
       if (button) {
-        button.addEventListener("touchstart", handleTouchStart);
+        button.addEventListener("touchstart", (e) =>
+          handleTouchStart(e, index)
+        );
         button.addEventListener("touchmove", (e) => handleTouchMove(e));
-        button.addEventListener("touchend", () => handleTouchEnd(index));
+        button.addEventListener("touchend", () => handleTouchEnd());
 
         return () => {
-          button.removeEventListener("touchstart", handleTouchStart);
+          button.removeEventListener("touchstart", (e) =>
+            handleTouchStart(e, index)
+          );
           button.removeEventListener("touchmove", (e) => handleTouchMove(e));
-          button.removeEventListener("touchend", () => handleTouchEnd(index));
+          button.removeEventListener("touchend", () => handleTouchEnd());
         };
       }
     });
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+
+  useEffect(() => {
+    if (eventDetailRef.current) {
+      // Smooth transition for transform
+      eventDetailRef.current.style.transition = "transform 0.3s ease";
+    }
+  }, [eventDetailRef.current?.style.transform]);
 
   const handleGoEventDetail = () => {
     history.push("/event-detail");
@@ -126,7 +149,7 @@ const DashBoard: React.FC = () => {
     <IonPage>
       <IonContent fullscreen={true} onClick={() => togglePlayback(videoRef)}>
         <div
-          className="relative h-screen overflow-y-auto snap-y snap-mandatory"
+          className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
           ref={scrollRef}
         >
           {VIDEO_URLS.map((video, index) => (
@@ -138,7 +161,7 @@ const DashBoard: React.FC = () => {
                 ref={videoRef}
                 muted={isMuted}
                 playsInline
-                autoPlay
+                // autoPlay
                 className={`inset-0 object-cover w-full h-screen absolute top-0`}
                 loop
               >
@@ -233,6 +256,12 @@ const DashBoard: React.FC = () => {
             openState={filterVisible}
             onClose={() => setFilterVisible(false)}
           />
+          <div
+            ref={eventDetailRef}
+            className={`absolute top-[calc(${currentVideoIndex}*100vh)] left-full h-full w-full`}
+          >
+            <EventDetail />
+          </div>
         </div>
       </IonContent>
     </IonPage>
