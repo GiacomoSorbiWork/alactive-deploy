@@ -39,7 +39,7 @@ const QUERY_ME = gql`
 
 const MUTATION_DELETE = gql`
   mutation deleteAccount {
-    deleteUser
+    deleteMe
   }
 `
 

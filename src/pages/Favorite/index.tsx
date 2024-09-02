@@ -3,7 +3,39 @@ import EventCard from "../../components/EventCard";
 import HostCard from "../../components/HostCard";
 import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
-import MarkImage from "../../../resources/profile-mark.png";
+import Logo from "../../../resources/shortcut.svg";
+import { useQuery } from "@apollo/client";
+import { gql } from "../../__generated__/gql";
+import { AccessPolicy, Event, Likeable, Host } from "../../__generated__/graphql";
+import moment from "moment";
+
+const QUERY_LIKED = gql(`
+  query liked {
+    me {
+      authID
+      likes {
+        id
+        ... on Event {
+          name
+          media
+          datetime
+          accessPolicies {
+            minPrice
+            currency
+          }
+          hostedAt {
+            avatar
+            municipality
+          }
+        }
+        ... on Host {
+          name
+          avatar
+        }
+      }
+    }
+  }
+`);
 
 const Favorite: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -11,6 +43,24 @@ const Favorite: React.FC = () => {
   const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
+
+  const { loading, error, data } = useQuery(QUERY_LIKED);
+
+  const extractMinPrice = (policies: AccessPolicy[]) => {
+    const policy = policies.reduce((min, policy) => {
+      const minPrice = parseFloat(policy.minPrice);
+      return minPrice < min.minPrice
+        ? { minPrice: minPrice, currency: policy.currency } 
+        : min
+    }, { minPrice: Infinity, currency: '' });
+
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: policy.currency,
+        maximumFractionDigits: 0
+    }).format(Math.round(policy.minPrice));
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -57,49 +107,37 @@ const Favorite: React.FC = () => {
           {activeTab === 0 && (
             <div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <EventCard
-                  imgUrl="https://t4.ftcdn.net/jpg/08/19/24/63/240_F_819246328_2nfWzjhKYjhnl1yURFR0NL1oToq8FDnn.jpg"
-                  title="Sample Event 1"
-                  date="29 Apr"
-                  location="New York, NY"
-                  price="FROM $200"
-                  titleLogo={MarkImage}
-                />
-                <EventCard
-                  imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                  title="Sample Event 2"
-                  date="23 Aug"
-                  location="Los Angeles, CA"
-                  price="FROM $75"
-                />
-                <EventCard
-                  imgUrl="https://t4.ftcdn.net/jpg/07/90/04/33/240_F_790043387_sjkrr01wF935RYQzWHsqePxZ1SDantUJ.jpg"
-                  title="Sample Event 1"
-                  date="12 Oct"
-                  location="New York, NY"
-                  price="FROM $200"
-                  titleLogo={MarkImage}
-                />
+                {data && data.me.likes
+                  .filter((liked): liked is Event => { return liked.__typename === "Event" })
+                  .map(event => (
+                    <EventCard 
+                      key={event.id}
+                      imgUrl={event.media[0]}
+                      title={event.name}
+                      date={moment(event.datetime).format('D MMM')}
+                      location={event.hostedAt.municipality}
+                      price={`FROM ${extractMinPrice(event.accessPolicies)}`}
+                      // TODO: Address optional unwrapping once we know whether avatar is always present.
+                      titleLogo={event.hostedAt.avatar}
+                    />
+                  ))
+                }
               </div>
             </div>
           )}
           {activeTab === 1 && (
             <div className="flex flex-col gap-4">
-              <HostCard
-                imgUrl="https://t4.ftcdn.net/jpg/08/19/24/63/240_F_819246328_2nfWzjhKYjhnl1yURFR0NL1oToq8FDnn.jpg"
-                title="Maroto"
-                subTitle="Nightclub"
-              />
-              <HostCard
-                imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                title="Maroto"
-                subTitle="Nightclub"
-              />
-              <HostCard
-                imgUrl="https://t4.ftcdn.net/jpg/07/90/04/33/240_F_790043387_sjkrr01wF935RYQzWHsqePxZ1SDantUJ.jpg"
-                title="Maroto"
-                subTitle="Nightclub"
-              />
+              {data && data.me.likes
+                .filter((liked): liked is Host => { return liked.__typename == "Host" })
+                .map(host => (
+                  <HostCard
+                    key={host.id}
+                    imgUrl={host.avatar}
+                    title={host.name}
+                    subTitle="Nightclub"
+                  />
+                ))
+              }
             </div>
           )}
         </div>
