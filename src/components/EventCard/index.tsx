@@ -36,14 +36,15 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div
       className={`relative w-full snap-start ${
-        isCard ? "h-64" : "h-[55vh] mb-4"
-      } rounded-2xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30 ${className}`}
+        isCard ? "h-[300px] min-w-[190px]" : "h-[55vh] mb-4"
+      } rounded-xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30 ${className}`}
       onClick={handleClick}
     >
       {videoUrl ? (
         <video
           className="absolute inset-0 w-full h-full object-cover"
           src={videoUrl}
+          autoPlay
           loop
           muted
         />
@@ -72,7 +73,11 @@ const EventCard: React.FC<EventCardProps> = ({
         )}
         <div className="flex">
           {titleLogo && (
-            <img src={titleLogo} className="w-6 h-6" alt="Title Logo" />
+            <img
+              src={titleLogo}
+              className="w-[21px] h-[18px] border-2 border-[#595959] border-opacity-20 border-solid rounded-full mr-[6px]"
+              alt="Title Logo"
+            />
           )}
           <h2
             className={`${

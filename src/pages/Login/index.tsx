@@ -56,16 +56,16 @@ const Login: React.FC = () => {
   }, 1000);
   return (
     <IonPage>
-      <IonContent fullscreen={true}>
-        <div>
+      <IonContent>
+        <div className="h-full">
           {!isClicked ? (
             <div className="bg-activeButton h-screen flex justify-center items-center cursor-pointer">
               <img src={logo} alt="logo" className="h-[180px]" />
             </div>
           ) : (
-            <div className="bg-primaryContainer h-screen flex flex-col">
-              <div className="flex flex-col items-center justify-center min-h-screen bg-black p-4">
-                <img src={logo} alt="logo" className="h-[180px] mb-14" />
+            <div className="bg-primaryContainer h-full flex flex-col">
+              <div className="flex flex-col items-center justify-center h-full bg-black p-4">
+                <img src={logo} alt="logo" className="h-[180px]" />
               </div>
             </div>
           )}

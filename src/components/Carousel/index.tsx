@@ -9,14 +9,15 @@ const CarouselItem: React.FC<ItemProps> = ({ item }) => {
   return (
     <Paper
       style={{
-        padding: "20px",
         textAlign: "center",
         backgroundImage: `url(${item.imgPath})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         height: "400px",
       }}
-    ></Paper>
+    >
+      <div className="bg-detailImageGradient h-full w-full p-[20px]" />
+    </Paper>
   );
 };
 
