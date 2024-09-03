@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { IonContent, IonFooter, IonPage } from "@ionic/react";
 import { LargeDefaultButton } from "../../subComponents/Buttons";
 import logo from "../../../resources/logo.svg";
