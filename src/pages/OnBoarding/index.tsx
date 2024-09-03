@@ -8,6 +8,7 @@ import { LargeDefaultButton, BackButton } from "../../subComponents/Buttons";
 import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 import { useAuth0 } from "@auth0/auth0-react";
+import { eventCardsData } from "./data";
 // import { useQuery, useMutation } from "@apollo/client";
 // import { RecommendMe, SetLike } from "../../API/Graphql/queries";
 
@@ -250,45 +251,23 @@ const OnBoarding: React.FC = () => {
           {step === 4 && (
             <>
               <div className="overflow-y-auto snap-y snap-mandatory scroll-smooth h-full">
-                <EventCard
-                  videoUrl="https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__"
-                  title="Black Coffee Minimal House Event"
-                  date="30/05/2024"
-                  location="New York, NY"
-                  price="200"
-                  purpose="Registration"
-                  isChecked={eventCardSelectedList.includes("black001")}
-                  selectFunc={handleSelectedEvent}
-                  cardId="black001"
-                  className="!h-[calc(100%-85px)]"
-                  musicType="Commerical"
-                />
-                <EventCard
-                  imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                  title="Black Coffee Minimal House Event"
-                  date="30/05/2024"
-                  location="New York, NY"
-                  price="200"
-                  purpose="Registration"
-                  isChecked={eventCardSelectedList.includes("black002")}
-                  selectFunc={handleSelectedEvent}
-                  cardId="black002"
-                  musicType="Hip-Hop"
-                  className="!h-[calc(100%-85px)]"
-                />
-                <EventCard
-                  imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                  title="Black Coffee Minimal House Event"
-                  date="30/05/2024"
-                  location="New York, NY"
-                  price="200"
-                  purpose="Registration"
-                  isChecked={eventCardSelectedList.includes("black003")}
-                  selectFunc={handleSelectedEvent}
-                  cardId="black003"
-                  musicType="Hip-Hop"
-                  className="!h-[calc(100%-85px)]"
-                />
+                {eventCardsData.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    videoUrl={event.videoUrl}
+                    imgUrl={event.imgUrl}
+                    title={event.title}
+                    date={event.date}
+                    location={event.location}
+                    price={event.price}
+                    purpose={event.purpose}
+                    isChecked={eventCardSelectedList.includes(event.id)}
+                    selectFunc={handleSelectedEvent}
+                    cardId={event.id}
+                    musicType={event.musicType}
+                    className="!h-[calc(100%-85px)]"
+                  />
+                ))}
               </div>
             </>
           )}

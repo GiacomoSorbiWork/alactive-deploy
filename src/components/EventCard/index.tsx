@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { EventCardProps } from "./type";
 import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
@@ -24,6 +24,7 @@ const EventCard: React.FC<EventCardProps> = ({
 }) => {
   const history = useHistory();
   const isCard = purpose === "card";
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const handleClick = () => {
     if (isCard) {
@@ -32,6 +33,35 @@ const EventCard: React.FC<EventCardProps> = ({
       selectFunc(cardId);
     }
   };
+
+  // Handle video playback based on visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            video.play();
+          } else {
+            video.pause();
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Adjust the threshold as needed
+      }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -42,11 +72,10 @@ const EventCard: React.FC<EventCardProps> = ({
     >
       {videoUrl ? (
         <video
+          ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover"
           src={videoUrl}
-          autoPlay
           loop
-          muted
         />
       ) : (
         <div
