@@ -70,14 +70,13 @@ const DashBoard: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const swipeButtonsRef = useRef<HTMLButtonElement | null>(null);
   const eventDetailRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRefs = useRef<HTMLVideoElement[]>([]);
   const history = useHistory();
   const [filterVisible, setFilterVisible] = useState(false);
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
-    useVideoControls();
+  const { isMuted, isLiked, toggleMute, toggleLike } = useVideoControls();
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
@@ -137,6 +136,35 @@ const DashBoard: React.FC = () => {
     handleSwipeButtonTouchEnd,
   ]);
 
+  // Handle video playback based on visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            video.play();
+          } else {
+            video.pause();
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Adjust the threshold as needed
+      }
+    );
+
+    videoRefs.current.forEach((video) => {
+      if (video) observer.observe(video);
+    });
+
+    return () => {
+      videoRefs.current.forEach((video) => {
+        if (video) observer.unobserve(video);
+      });
+    };
+  }, []);
+
   // Function to handle touch events on the scrollable container
   const handleScrollTouchStart = useCallback((e: TouchEvent) => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -188,7 +216,7 @@ const DashBoard: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen={true} onClick={() => togglePlayback(videoRef)}>
+      <IonContent fullscreen={true}>
         <div className="relative h-screen">
           <div
             className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
@@ -197,10 +225,11 @@ const DashBoard: React.FC = () => {
             {VIDEO_URLS.map((video, index) => (
               <video
                 key={index + "-container"}
-                ref={videoRef}
+                ref={(el) => {
+                  if (el) videoRefs.current[index] = el;
+                }}
                 muted={isMuted}
                 playsInline
-                autoPlay
                 className={`snap-center inset-0 object-cover w-full h-screen absolute`}
                 style={{
                   top: `calc(${index} * 100vh)`,
@@ -215,7 +244,7 @@ const DashBoard: React.FC = () => {
           <>
             <p
               className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
-              onClick={() => history.push("host-detail")}
+              onClick={() => history.push("event-detail")}
             >
               Tailored
             </p>
