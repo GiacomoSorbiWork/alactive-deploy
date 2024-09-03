@@ -212,6 +212,11 @@ const DashBoard: React.FC = () => {
     if (eventDetailRef.current) {
       eventDetailRef.current.style.transition = "transform 0.3s ease";
     }
+    setTimeout(() => {
+      if (swipeButtonsRef.current) {
+        swipeButtonsRef.current.style.display = "none";
+      }
+    }, 5000);
   }, []);
 
   return (
