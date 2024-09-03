@@ -67,7 +67,7 @@ root.render(
         authorizationParams={{
           // redirect_uri: "http://localhost:5173/",
           audience: "http://v1.api.alactive.app/graphql",
-          redirect_uri: "https://alactive-deploy.vercel.app",
+          redirect_uri: "https://mobile.alactive.app",
         }}
       >
         <ApolloProviderWithAuth0>
