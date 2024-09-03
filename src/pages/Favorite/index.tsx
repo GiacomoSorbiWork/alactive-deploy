@@ -131,7 +131,7 @@ const Favorite: React.FC = () => {
                 .map(host => (
                   <HostCard
                     key={host.id}
-                    imgUrl={host.avatar}
+                    imgUrl={host.avatar ?? ''}
                     title={host.name}
                     subTitle="Nightclub"
                   />

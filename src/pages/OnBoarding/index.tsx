@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 import { gql } from "../../__generated__";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import { AccessPolicy } from "../../__generated__/graphql";
 
@@ -51,6 +51,22 @@ const QUERY_GET_EVENTS = gql(`
   }
 `);
 
+const MUTATION_CREATE_USER = gql(`
+  mutation CreateUser($handle: String!, $name: String!, $birthday: LocalDate!) {
+    createUser(handle: $handle, name: $name, birthday: $birthday, links: []) {
+      authID
+    }
+  }
+`);
+
+const MUTATION_LIKE_EVENT = gql(`
+  mutation LikeEvent($target: String!) {
+    setLike(target: $target, like: true) {
+      authID
+    }
+  }
+`);
+
 const OnBoarding: React.FC = () => {
   const [step, setStep] = useState<number>(1);
   const [lastStep, setLastStep] = useState<number>(1);
@@ -66,6 +82,19 @@ const OnBoarding: React.FC = () => {
   });
 
   const history = useHistory();
+
+  const { data: eventsData } = useQuery(QUERY_GET_EVENTS);
+
+  const [createUser] = useMutation(MUTATION_CREATE_USER, {
+    variables: {
+      handle: userInput.handle.slice(1),
+      name: userInput.name,
+      birthday: userInput.dob && !isNaN(userInput.dob.getTime()) 
+        ? userInput.dob.toISOString().split('T')[0] : ''
+    }
+  });
+
+  const [likeEvent] = useMutation(MUTATION_LIKE_EVENT);
 
   const isValidDob = (date: Date): boolean => {
     const today = new Date();
@@ -99,47 +128,27 @@ const OnBoarding: React.FC = () => {
     [step, history]
   );
 
-  const handleNext = useCallback((): void => {
-    console.log(isActive)
+  const handleNext = useCallback(async (): Promise<void> => {
     if (!isActive) {
       alert("Please fill out all fields correctly.");
       return;
     }
 
     if (step === 6) {
+      await createUser();
+      userInput.favoriteEventIDs.forEach((eventID) => {
+        likeEvent({ variables: { target: eventID } });
+      });
 
-      // TODO: Implement the logic to save the user information
-
-      // setTimeout(() => {
-      //   try {
-      //     const userInfo = JSON.parse(localStorage.getItem("users") || "[]");
-
-      //     if (Array.isArray(userInfo) && userInfo.length > 0) {
-      //       const tempUser = { ...user, userName: name, handle: handle };
-      //       userInfo.push(tempUser);
-
-      //       localStorage.setItem("users", JSON.stringify(userInfo));
-      //     }
-
-      //     history.push("/dashboard");
-      //   } catch (error) {
-      //     console.error("Error updating user information:", error);
-      //     // Handle the error appropriately (e.g., show an error message to the user)
-      //   }
-      // }, 1000);
+      history.push("/dashboard");
     }
 
     setStep((prev) => prev + 1);
     setLastStep((prev) => Math.max(prev, step + 1));
   }, [step, history, isActive]);
 
-  const { data: eventsData } = useQuery(QUERY_GET_EVENTS);
-
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("Name:", e.target.value);
-    console.log("User Input:", userInput);
     setUserInput((prev) => ({ ...prev, name: e.target.value }));
-    console.log("User Input:", userInput);
   }
 
   const onHandleChange = (e: ChangeEvent<HTMLInputElement>) => {
