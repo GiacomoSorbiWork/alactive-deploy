@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useCallback, useEffect } from "react";
+import React, { useState, ChangeEvent, useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { ProgressBar } from "../../components/ProgressBar";
 import Form from "../../components/Form";
@@ -10,163 +10,64 @@ import {
   IonFooter,
   IonHeader,
   IonPage,
-  IonToolbar,
 } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
-import { useAuth0 } from "@auth0/auth0-react";
-// import { useQuery, useMutation } from "@apollo/client";
-// import { RecommendMe, SetLike } from "../../API/Graphql/queries";
+import { gql } from "../../__generated__";
+import { useQuery } from "@apollo/client";
+import moment from "moment";
+import { AccessPolicy } from "../../__generated__/graphql";
 
-// interface UserdataType {
-//   name: string;
-//   handle: string;
-//   dob: string;
-//   musicPreferences: string[];
-//   favoriteEvents: string[];
-//   budget: number;
-// }
+interface UserInputType {
+  name: string;
+  acceptMarketing: boolean;
+  handle: string;
+  dob: Date | null;
+  budget: number[];
+  musicGenres: string[];
+  favoriteEventIDs: string[];
+}
+
+const musicList = [
+  "Commercial", "Reggaeton", "Hip-Hop", "EDM", "House", "Techno", "Bass Music", "Tech-House", 
+  "Afro-House", "Trance", "Big Room",
+];
+
+const QUERY_GET_EVENTS = gql(`
+  query RecommendMe {
+    recommendMe {
+      id
+      name
+      video
+      datetime
+      accessPolicies {
+        minPrice
+        currency
+      }
+      hostedAt {
+        municipality
+      }
+      musicGenres
+    }
+  }
+`);
 
 const OnBoarding: React.FC = () => {
   const [step, setStep] = useState<number>(1);
   const [lastStep, setLastStep] = useState<number>(1);
-  const [name, setName] = useState<string>("");
-  const [handle, setHandle] = useState<string>("@");
-  const [date, setDate] = useState<Date | null>(null);
-  const [rangeValue, setRangeValue] = useState<number[]>([80, 2000]);
-  const [eventCardSelectedList, setEventCardSelectedList] = useState<string[]>(
-    []
-  );
-  const [favoriteList, setFavorite] = useState<string[]>([]);
-  const musicList = [
-    "Commercial",
-    "Reggaeton",
-    "Hip-Hop",
-    "EDM",
-    "House",
-    "Techno",
-    "Bass Music",
-    "Tech-House",
-    "Afro-House",
-    "Trance",
-    "Big Room",
-  ];
-  const history = useHistory();
-  const { user } = useAuth0();
-  // const { data, error } = useQuery(RecommendMe);
-  // if (error) {
-  //   console.error("Error in query:", error);
-  // }
-  // const [createUser] = useMutation(SetLike);
 
-  useEffect(() => {
-    interface User {
-      name: string;
-    }
-    const userInfo = JSON.parse(localStorage.getItem("users") || "[]");
-    const foundUser = userInfo.find((item: User) => item.name === user?.name);
-
-    if (foundUser) {
-      history.push("/dashboard");
-    }
+  const [userInput, setUserInput] = useState<UserInputType>({
+    name: "",
+    acceptMarketing: false,
+    handle: "@",
+    dob: null,
+    budget: [0, 50],
+    musicGenres: [],
+    favoriteEventIDs: [],
   });
 
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setRangeValue(newValue as number[]);
-  };
+  const history = useHistory();
 
-  const handleBack = useCallback((): void => {
-    if (step > 1) {
-      setStep(step - 1);
-    } else {
-      history.push("/login");
-    }
-  }, [step, history]);
-
-  // const handleOnboardingSubmit = async (userData: UserdataType) => {
-  //   if (!data?.doIExist) {
-  //     try {
-  //       const token = await getAccessTokenSilently();
-  //       await createUser({
-  //         variables: { input: userData },
-  //         context: {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         },
-  //       });
-  //       // Handle success (e.g., navigate to a different page)
-  //     } catch (error) {
-  //       console.error("Error creating user:", error);
-  //       // Handle error (e.g., show error message)
-  //     }
-  //   }
-  // };
-
-  const handleNext = useCallback((): void => {
-    const isNameValid = name.trim() !== "";
-    const isHandleValid = handle.trim().startsWith("@") && handle.length > 1;
-    const isDateValid = date !== null && isValidDate(date);
-    const isEventSelected = eventCardSelectedList.length >= 1;
-    const isFavoriteSelected = favoriteList.length > 0;
-
-    const isFormValid =
-      (step === 1 && isNameValid) ||
-      (step === 2 && isHandleValid) ||
-      (step === 3 && isDateValid) ||
-      (step === 4 && isEventSelected) ||
-      (step === 5 && isFavoriteSelected) ||
-      step === 6;
-
-    if (!isFormValid) {
-      alert("Please fill out all fields correctly.");
-      return;
-    }
-
-    if (step === 6) {
-      // const userdata = {
-      //   name: name,
-      //   handle: handle,
-      //   dob: date!.toISOString(),
-      //   musicPreferences: eventCardSelectedList,
-      //   favoriteEvents: favoriteList,
-      //   budget: rangeValue[1],
-      // };
-      // handleOnboardingSubmit(userdata);
-
-      setTimeout(() => {
-        try {
-          const userInfo = JSON.parse(localStorage.getItem("users") || "[]");
-
-          if (Array.isArray(userInfo) && userInfo.length > 0) {
-            const tempUser = { ...user, userName: name, handle: handle };
-            userInfo.push(tempUser);
-
-            localStorage.setItem("users", JSON.stringify(userInfo));
-          }
-
-          history.push("/dashboard");
-        } catch (error) {
-          console.error("Error updating user information:", error);
-          // Handle the error appropriately (e.g., show an error message to the user)
-        }
-      }, 1000);
-    }
-    setStep((prev) => prev + 1);
-    setLastStep((prev) => Math.max(prev, step + 1));
-  }, [step, name, handle, date, eventCardSelectedList, favoriteList, history]);
-
-  const isActive = useCallback((): boolean => {
-    return (
-      (step === 1 && name.trim() !== "") ||
-      (step === 2 && handle.trim().startsWith("@") && handle.length > 1) ||
-      (step === 3 && date !== null && isValidDate(date)) ||
-      (step === 4 && eventCardSelectedList.length >= 1) ||
-      (step === 5 && favoriteList.length > 0) ||
-      step === 6
-    );
-  }, [step, name, handle, date, eventCardSelectedList, favoriteList]);
-
-  const isValidDate = (date: Date): boolean => {
+  const isValidDob = (date: Date): boolean => {
     const today = new Date();
     const age = today.getFullYear() - date.getFullYear();
     const monthDifference = today.getMonth() - date.getMonth();
@@ -178,39 +79,105 @@ const OnBoarding: React.FC = () => {
     );
   };
 
-  const handleSelectedEvent = (selectedItem?: string): void => {
+  const isActive = useMemo(
+    () => (
+      (step === 1 && userInput.name.trim() !== "") ||
+      (step === 2 && 
+        userInput.handle.trim().startsWith("@") && 
+        userInput.handle.length > 1 &&
+        /^[A-Za-z0-9._-]+$/.test(userInput.handle.slice(1))
+      ) ||
+      (step === 3 && userInput.dob !== null && isValidDob(userInput.dob)) ||
+      (step === 4 && userInput.favoriteEventIDs.length > 0) ||
+      (step === 5 && userInput.musicGenres.length > 0) ||
+      step === 6
+    ), [step, userInput]
+  );
+
+  const handleBack = useCallback(
+    () => (step > 1) ? setStep(step - 1) : history.push("/login"), 
+    [step, history]
+  );
+
+  const handleNext = useCallback((): void => {
+    console.log(isActive)
+    if (!isActive) {
+      alert("Please fill out all fields correctly.");
+      return;
+    }
+
+    if (step === 6) {
+      
+      // TODO: Implement the logic to save the user information
+
+      // setTimeout(() => {
+      //   try {
+      //     const userInfo = JSON.parse(localStorage.getItem("users") || "[]");
+
+      //     if (Array.isArray(userInfo) && userInfo.length > 0) {
+      //       const tempUser = { ...user, userName: name, handle: handle };
+      //       userInfo.push(tempUser);
+
+      //       localStorage.setItem("users", JSON.stringify(userInfo));
+      //     }
+
+      //     history.push("/dashboard");
+      //   } catch (error) {
+      //     console.error("Error updating user information:", error);
+      //     // Handle the error appropriately (e.g., show an error message to the user)
+      //   }
+      // }, 1000);
+    }
+
+    setStep((prev) => prev + 1);
+    setLastStep((prev) => Math.max(prev, step + 1));
+  }, [step, history, isActive]);
+
+  const { data: eventsData } = useQuery(QUERY_GET_EVENTS);
+
+  const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log("Name:", e.target.value);
+    console.log("User Input:", userInput);
+    setUserInput((prev) => ({ ...prev, name: e.target.value }));
+    console.log("User Input:", userInput);
+  }
+
+  const onHandleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUserInput((prev) => ({ ...prev, handle: value.startsWith("@") ? value : "@" + value }));
+  }
+
+  const onDobChange = (date: Date | null) => {
+    setUserInput((prev) => ({ ...prev, dob: date }));
+  }
+
+  const onSelectEvent = (selectedItem?: string) => {
     if (!selectedItem) return;
 
-    setEventCardSelectedList((prevList) => {
-      if (prevList.includes(selectedItem)) {
-        return prevList.filter((item) => item !== selectedItem);
-      } else {
-        return [...prevList, selectedItem];
-      }
-    });
-  };
+    setUserInput((prev) => ({
+      ...prev,
+      favoriteEventIDs: prev.favoriteEventIDs.includes(selectedItem)
+        ? prev.favoriteEventIDs.filter((item) => item !== selectedItem)
+        : [...prev.favoriteEventIDs, selectedItem],
+    }));
+  }
 
-  const toggleFavorite = (music: string) => {
-    setFavorite((prevList) =>
-      prevList.includes(music)
-        ? prevList.filter((item) => item !== music)
-        : [...prevList, music]
-    );
-  };
+  const onToggleMusicGenre = (genre: string) => {
+    setUserInput((prev) => ({
+      ...prev,
+      musicGenres: prev.musicGenres.includes(genre)
+        ? prev.musicGenres.filter((item) => item !== genre)
+        : [...prev.musicGenres, genre],
+    }));
+  }
 
-  const handleHandleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.startsWith("@")) {
-      setHandle(value);
-    } else {
-      setHandle("@" + value);
-    }
+  const onBudgetChange = (event: Event, newValue: number | number[]) => {
+    setUserInput((prev) => ({ ...prev, budget: newValue as number[] }));
   };
 
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar />
         {step < 7 && <ProgressBar progress={step} />}
         {step === 4 && (
           <div className="p-8 pb-0 flex flex-col">
@@ -220,28 +187,27 @@ const OnBoarding: React.FC = () => {
           </div>
         )}
       </IonHeader>
-      <IonContent>
+      <IonContent scrollY={step === 4}>
         <div className="p-8 flex flex-col h-full">
           {step === 1 && (
             <Form
               title="Nice to meet you. And your name is?"
               label="Your Name"
-              value={name}
+              value={userInput.name}
               placeholderText="My name is..."
               helperText="For example, Stefano Alberto Proietti"
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setName(e.target.value)
-              }
+              onChange={onNameChange}
             />
           )}
           {step === 2 && (
             <Form
               title="Great. What will your username be?"
               label="Your Handle"
-              value={handle}
+              value={userInput.handle}
               placeholderText="My handle is..."
               helperText="For example, @stefano"
-              onChange={handleHandleChange}
+              onChange={onHandleChange}
+              visibleCheckboxes={false}
             />
           )}
           {step === 3 && (
@@ -249,55 +215,61 @@ const OnBoarding: React.FC = () => {
               title="Nice. When do we send you a gift?"
               label="Birthday"
               helperText="Your birthday will not be public, and we will only use it to confirm your age."
-              value={date}
-              onDateChange={setDate}
+              value={userInput.dob}
+              onDateChange={onDobChange}
               visibleCheckboxes={false}
             />
           )}
           {step === 4 && (
-            <>
-              <div className="overflow-y-auto snap-y snap-mandatory scroll-smooth h-full">
-                <EventCard
-                  videoUrl="https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__"
-                  title="Black Coffee Minimal House Event"
-                  date="30/05/2024"
-                  location="New York, NY"
-                  price="200"
-                  purpose="Registration"
-                  isChecked={eventCardSelectedList.includes("black001")}
-                  selectFunc={handleSelectedEvent}
-                  cardId="black001"
-                  className="!h-[calc(100%-85px)]"
-                  musicType="Commerical"
-                />
-                <EventCard
-                  imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                  title="Black Coffee Minimal House Event"
-                  date="30/05/2024"
-                  location="New York, NY"
-                  price="200"
-                  purpose="Registration"
-                  isChecked={eventCardSelectedList.includes("black002")}
-                  selectFunc={handleSelectedEvent}
-                  cardId="black002"
-                  musicType="Hip-Hop"
-                  className="!h-[calc(100%-85px)]"
-                />
-                <EventCard
-                  imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                  title="Black Coffee Minimal House Event"
-                  date="30/05/2024"
-                  location="New York, NY"
-                  price="200"
-                  purpose="Registration"
-                  isChecked={eventCardSelectedList.includes("black003")}
-                  selectFunc={handleSelectedEvent}
-                  cardId="black003"
-                  musicType="Hip-Hop"
-                  className="!h-[calc(100%-85px)]"
-                />
-              </div>
-            </>
+            <div className="overflow-y-auto snap-y snap-mandatory scroll-smooth h-full">
+              {eventsData && eventsData.recommendMe.slice(0, 10).map((event) => {
+                const extractMinPrice = (policies: AccessPolicy[]) => {
+                  const policy = policies.reduce((min, policy) => {
+                    const minPrice = parseFloat(policy.minPrice);
+                    return minPrice < min.minPrice
+                      ? { minPrice: minPrice, currency: policy.currency } 
+                      : min
+                  }, { minPrice: Infinity, currency: '' });
+              
+                  return new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: policy.currency,
+                      maximumFractionDigits: 0
+                  }).format(Math.round(policy.minPrice));
+                }
+                
+                return (
+                  <EventCard
+                    key={event.id}
+                    videoUrl={event.video}
+                    title={event.name}
+                    date={moment(event.datetime).format('D MMM')}
+                    location={event.hostedAt.municipality}
+                    price={extractMinPrice(event.accessPolicies as AccessPolicy[])}
+                    purpose="Registration"
+                    isChecked={userInput.favoriteEventIDs.includes(event.id)}
+                    selectFunc={onSelectEvent}
+                    cardId={event.id}
+                    className="!h-[calc(100%-85px)]"
+                    musicType={event.musicGenres[0]}
+                  />
+                )
+              })}
+{/*               
+              <EventCard
+                imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
+                title="Black Coffee Minimal House Event"
+                date="30/05/2024"
+                location="New York, NY"
+                price="200"
+                purpose="Registration"
+                isChecked={eventCardSelectedList.includes("black003")}
+                selectFunc={handleSelectedEvent}
+                cardId="black003"
+                musicType="Hip-Hop"
+                className="!h-[calc(100%-85px)]"
+              /> */}
+            </div>
           )}
           {step === 5 && (
             <div>
@@ -305,17 +277,17 @@ const OnBoarding: React.FC = () => {
                 {"What kind of music do you like?"}
               </h1>
               <div className="flex flex-wrap gap-3">
-                {musicList.map((music, index) => (
+                {musicList.map((musicGenre) => (
                   <button
-                    key={"music-" + index}
+                    key={musicGenre}
                     className={`border-2 border-solid border-white px-3 py-1 ${
-                      !favoriteList.includes(music)
+                      !userInput.musicGenres.includes(musicGenre)
                         ? "bg-transparent"
                         : "bg-[var(--secondary-color)]"
                     } rounded-[20px] p-2`}
-                    onClick={() => toggleFavorite(music)}
+                    onClick={() => onToggleMusicGenre(musicGenre)}
                   >
-                    <span className="text-body-medium font-bold">{music}</span>
+                    <span className="text-body-medium font-bold">{musicGenre}</span>
                   </button>
                 ))}
               </div>
@@ -326,7 +298,7 @@ const OnBoarding: React.FC = () => {
               <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
                 {"What’s your budget for a night out at a nightlife event?"}
               </h1>
-              <RangeSlider value={rangeValue} onChange={handleChange} />
+              <RangeSlider value={userInput.budget} onChange={onBudgetChange} />
             </div>
           )}
           {step === 7 && (
@@ -347,7 +319,7 @@ const OnBoarding: React.FC = () => {
               text="Continue"
               className="w-full"
               onClick={handleNext}
-              state={isActive() ? "isActive" : "disabled"}
+              state={isActive ? "isActive" : "disabled"}
             />
             {lastStep > step && (
               <BackButton onClick={handleNext} state="noBack isActive" />
@@ -363,7 +335,7 @@ const OnBoarding: React.FC = () => {
               text="Continue"
               className="w-full"
               onClick={handleNext}
-              state={isActive() ? "isActive" : "disabled"}
+              state={isActive ? "isActive" : "disabled"}
             />
             {lastStep > step && (
               <BackButton onClick={handleNext} state="noBack isActive" />

@@ -36,7 +36,7 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div
       className={`relative w-full snap-start ${
-        isCard ? "h-[300px] min-w-[190px]" : "h-[55vh] mb-4"
+        isCard ? "w-full max-w-[364px] h-[calc(100vw*550/364)]"  : "h-[55vh] mb-4"
       } rounded-xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30 ${className}`}
       onClick={handleClick}
     >
@@ -107,7 +107,7 @@ const EventCard: React.FC<EventCardProps> = ({
                     <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
                       <img src={CreditSVG} alt="Credit Card" />
                       <p className="text-label-small font-medium ml-2">
-                        Starting from ${price}
+                        Starting from {price}
                       </p>
                     </div>
                     <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">

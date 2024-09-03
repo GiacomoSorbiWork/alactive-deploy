@@ -3,10 +3,9 @@ import EventCard from "../../components/EventCard";
 import HostCard from "../../components/HostCard";
 import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
-import Logo from "../../../resources/shortcut.svg";
 import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
-import { AccessPolicy, Event, Likeable, Host } from "../../__generated__/graphql";
+import { AccessPolicy, Event, Host } from "../../__generated__/graphql";
 import moment from "moment";
 
 const QUERY_LIKED = gql(`
@@ -44,7 +43,7 @@ const Favorite: React.FC = () => {
     setActiveTab(index);
   };
 
-  const { loading, error, data } = useQuery(QUERY_LIKED);
+  const { data } = useQuery(QUERY_LIKED);
 
   const extractMinPrice = (policies: AccessPolicy[]) => {
     const policy = policies.reduce((min, policy) => {
