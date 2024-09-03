@@ -4,6 +4,8 @@ import { IonRouterOutlet } from "@ionic/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "./components/Loading";
 import HostingEvent from "./pages/HostingEvent";
+import { gql } from "./__generated__";
+import { useQuery } from "@apollo/client";
 
 // Lazy load the components
 const Login = lazy(() => import("./pages/Login"));
@@ -15,9 +17,17 @@ const Profile = lazy(() => import("./pages/Profile"));
 const Favorite = lazy(() => import("./pages/Favorite"));
 const EventMediaView = lazy(() => import("./pages/EventMediaView"));
 
+const QUERY_DOL_EXIST = gql(`
+  query doIExist {
+    doIExist 
+ 	}
+`);
+
 const RouterPart: React.FC = () => {
   const { isAuthenticated, isLoading, error } = useAuth0();
   const history = useHistory();
+
+  const { data: dolExist } = useQuery(QUERY_DOL_EXIST);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -25,7 +35,12 @@ const RouterPart: React.FC = () => {
     }
   }, [isLoading, isAuthenticated, history]);
 
-  if (isLoading) return <Loading />;
+  useEffect(() => {
+    if (dolExist) history.push("/dashboard");
+    else history.push("/onBoarding");
+  }, [dolExist]);
+
+  if (isLoading || dolExist == undefined) return <Loading />;
 
   if (error) {
     console.error("Authentication error:", error);
