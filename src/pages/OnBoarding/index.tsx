@@ -107,7 +107,7 @@ const OnBoarding: React.FC = () => {
     }
 
     if (step === 6) {
-      
+
       // TODO: Implement the logic to save the user information
 
       // setTimeout(() => {
@@ -255,20 +255,6 @@ const OnBoarding: React.FC = () => {
                   />
                 )
               })}
-{/*               
-              <EventCard
-                imgUrl="https://t3.ftcdn.net/jpg/07/40/76/48/240_F_740764831_GIRbum3PNYK0bKMOGXjoOPBhnaBkWNzo.jpg"
-                title="Black Coffee Minimal House Event"
-                date="30/05/2024"
-                location="New York, NY"
-                price="200"
-                purpose="Registration"
-                isChecked={eventCardSelectedList.includes("black003")}
-                selectFunc={handleSelectedEvent}
-                cardId="black003"
-                musicType="Hip-Hop"
-                className="!h-[calc(100%-85px)]"
-              /> */}
             </div>
           )}
           {step === 5 && (
@@ -296,7 +282,7 @@ const OnBoarding: React.FC = () => {
           {step === 6 && (
             <div>
               <h1 className="text-title-large font-bold leading-[120%] tracking-[0.5px]">
-                {"What’s your budget for a night out at a nightlife event?"}
+                {"How much would you spend on a night out?"}
               </h1>
               <RangeSlider value={userInput.budget} onChange={onBudgetChange} />
             </div>

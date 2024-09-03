@@ -61,7 +61,7 @@ export default function RangeSlider({ value, onChange }: RangeSliderProps) {
       <CustomSlider
         getAriaLabel={() => "Price range"}
         value={value}
-        max={3000}
+        max={300}
         onChange={onChange}
         valueLabelDisplay="auto"
         getAriaValueText={valuetext}
