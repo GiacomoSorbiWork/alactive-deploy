@@ -3,7 +3,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { ProgressBarProps } from "./type";
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
-  const limit = 8;
+  const limit = 7;
 
   // Ensure the progress value is clamped between 0 and the defined limit
   const clampedProgress = Math.max(0, Math.min(progress, limit));

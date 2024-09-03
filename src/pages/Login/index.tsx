@@ -14,14 +14,16 @@ const Login: React.FC = () => {
             <img src={logo} alt="logo" className="h-[180px]" />
         </div>
       </IonContent>
-      <IonFooter className="p-4 mb-4">
-        <LargeDefaultButton
-          text="Continue"
-          className="w-full"
-          onClick={() => loginWithRedirect()}
-          state={"isActive"}
-        />
-      </IonFooter>
+      {isClicked && (
+        <IonFooter className="p-4 mb-4">
+          <LargeDefaultButton
+            text="Continue"
+            className="w-full"
+            onClick={() => loginWithRedirect()}
+            state={"isActive"}
+          />
+        </IonFooter>
+      )}
     </IonPage>
   );
 };

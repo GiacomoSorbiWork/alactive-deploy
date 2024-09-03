@@ -18,7 +18,7 @@ import EventDetail from "../EventDetail";
 
 const VIDEO_URLS = [
   "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__",
-  "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__",
+  "https://videos.pexels.com/video-files/1824697/1824697-hd_1920_1080_30fps.mp4",
 ];
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
@@ -70,14 +70,13 @@ const DashBoard: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const swipeButtonsRef = useRef<HTMLButtonElement | null>(null);
   const eventDetailRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRefs = useRef<HTMLVideoElement[]>([]);
   const history = useHistory();
   const [filterVisible, setFilterVisible] = useState(false);
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  const { isMuted, isLiked, toggleMute, toggleLike, togglePlayback } =
-    useVideoControls();
+  const { isMuted, isLiked, toggleMute, toggleLike } = useVideoControls();
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
@@ -137,6 +136,35 @@ const DashBoard: React.FC = () => {
     handleSwipeButtonTouchEnd,
   ]);
 
+  // Handle video playback based on visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            video.play();
+          } else {
+            video.pause();
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Adjust the threshold as needed
+      }
+    );
+
+    videoRefs.current.forEach((video) => {
+      if (video) observer.observe(video);
+    });
+
+    return () => {
+      videoRefs.current.forEach((video) => {
+        if (video) observer.unobserve(video);
+      });
+    };
+  }, []);
+
   // Function to handle touch events on the scrollable container
   const handleScrollTouchStart = useCallback((e: TouchEvent) => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -149,13 +177,13 @@ const DashBoard: React.FC = () => {
   const handleScrollTouchEnd = useCallback(() => {
     const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
 
-    if (swipeDistanceY < 100) {
+    if (swipeDistanceY < 0) {
       scrollRef.current?.scrollBy({
         top: window.innerHeight,
         behavior: "instant",
       });
     }
-    if (swipeDistanceY > 100) {
+    if (swipeDistanceY > 0) {
       scrollRef.current?.scrollBy({
         top: -window.innerHeight,
         behavior: "instant",
@@ -184,11 +212,16 @@ const DashBoard: React.FC = () => {
     if (eventDetailRef.current) {
       eventDetailRef.current.style.transition = "transform 0.3s ease";
     }
+    setTimeout(() => {
+      if (swipeButtonsRef.current) {
+        swipeButtonsRef.current.style.display = "none";
+      }
+    }, 5000);
   }, []);
 
   return (
     <IonPage>
-      <IonContent fullscreen={true} onClick={() => togglePlayback(videoRef)}>
+      <IonContent fullscreen={true}>
         <div className="relative h-screen">
           <div
             className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
@@ -197,10 +230,11 @@ const DashBoard: React.FC = () => {
             {VIDEO_URLS.map((video, index) => (
               <video
                 key={index + "-container"}
-                ref={videoRef}
+                ref={(el) => {
+                  if (el) videoRefs.current[index] = el;
+                }}
                 muted={isMuted}
                 playsInline
-                autoPlay
                 className={`snap-center inset-0 object-cover w-full h-screen absolute`}
                 style={{
                   top: `calc(${index} * 100vh)`,
@@ -215,7 +249,7 @@ const DashBoard: React.FC = () => {
           <>
             <p
               className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
-              onClick={() => history.push("host-detail")}
+              onClick={() => history.push("event-detail")}
             >
               Tailored
             </p>

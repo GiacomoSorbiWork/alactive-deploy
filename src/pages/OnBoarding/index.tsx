@@ -5,12 +5,7 @@ import Form from "../../components/Form";
 import RangeSlider from "../../components/DataRanger";
 import EventCard from "../../components/EventCard";
 import { LargeDefaultButton, BackButton } from "../../subComponents/Buttons";
-import {
-  IonContent,
-  IonFooter,
-  IonHeader,
-  IonPage,
-} from "@ionic/react";
+import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
@@ -28,8 +23,17 @@ interface UserInputType {
 }
 
 const musicList = [
-  "Commercial", "Reggaeton", "Hip-Hop", "EDM", "House", "Techno", "Bass Music", "Tech-House", 
-  "Afro-House", "Trance", "Big Room",
+  "Commercial",
+  "Reggaeton",
+  "Hip-Hop",
+  "EDM",
+  "House",
+  "Techno",
+  "Bass Music",
+  "Tech-House",
+  "Afro-House",
+  "Trance",
+  "Big Room",
 ];
 
 const QUERY_GET_EVENTS = gql(`
@@ -89,9 +93,11 @@ const OnBoarding: React.FC = () => {
     variables: {
       handle: userInput.handle.slice(1),
       name: userInput.name,
-      birthday: userInput.dob && !isNaN(userInput.dob.getTime()) 
-        ? userInput.dob.toISOString().split('T')[0] : ''
-    }
+      birthday:
+        userInput.dob && !isNaN(userInput.dob.getTime())
+          ? userInput.dob.toISOString().split("T")[0]
+          : "",
+    },
   });
 
   const [likeEvent] = useMutation(MUTATION_LIKE_EVENT);
@@ -109,22 +115,21 @@ const OnBoarding: React.FC = () => {
   };
 
   const isActive = useMemo(
-    () => (
+    () =>
       (step === 1 && userInput.name.trim() !== "") ||
-      (step === 2 && 
-        userInput.handle.trim().startsWith("@") && 
+      (step === 2 &&
+        userInput.handle.trim().startsWith("@") &&
         userInput.handle.length > 1 &&
-        /^[A-Za-z0-9._-]+$/.test(userInput.handle.slice(1))
-      ) ||
+        /^[A-Za-z0-9._-]+$/.test(userInput.handle.slice(1))) ||
       (step === 3 && userInput.dob !== null && isValidDob(userInput.dob)) ||
       (step === 4 && userInput.favoriteEventIDs.length > 0) ||
       (step === 5 && userInput.musicGenres.length > 0) ||
-      step === 6
-    ), [step, userInput]
+      step === 6,
+    [step, userInput]
   );
 
   const handleBack = useCallback(
-    () => (step > 1) ? setStep(step - 1) : history.push("/login"), 
+    () => (step > 1 ? setStep(step - 1) : history.push("/login")),
     [step, history]
   );
 
@@ -149,16 +154,19 @@ const OnBoarding: React.FC = () => {
 
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserInput((prev) => ({ ...prev, name: e.target.value }));
-  }
+  };
 
   const onHandleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setUserInput((prev) => ({ ...prev, handle: value.startsWith("@") ? value : "@" + value }));
-  }
+    setUserInput((prev) => ({
+      ...prev,
+      handle: value.startsWith("@") ? value : "@" + value,
+    }));
+  };
 
   const onDobChange = (date: Date | null) => {
     setUserInput((prev) => ({ ...prev, dob: date }));
-  }
+  };
 
   const onSelectEvent = (selectedItem?: string) => {
     if (!selectedItem) return;
@@ -169,7 +177,7 @@ const OnBoarding: React.FC = () => {
         ? prev.favoriteEventIDs.filter((item) => item !== selectedItem)
         : [...prev.favoriteEventIDs, selectedItem],
     }));
-  }
+  };
 
   const onToggleMusicGenre = (genre: string) => {
     setUserInput((prev) => ({
@@ -178,7 +186,7 @@ const OnBoarding: React.FC = () => {
         ? prev.musicGenres.filter((item) => item !== genre)
         : [...prev.musicGenres, genre],
     }));
-  }
+  };
 
   const onBudgetChange = (event: Event, newValue: number | number[]) => {
     setUserInput((prev) => ({ ...prev, budget: newValue as number[] }));
@@ -231,39 +239,45 @@ const OnBoarding: React.FC = () => {
           )}
           {step === 4 && (
             <div className="overflow-y-auto snap-y snap-mandatory scroll-smooth h-full">
-              {eventsData && eventsData.recommendMe.slice(0, 10).map((event) => {
-                const extractMinPrice = (policies: AccessPolicy[]) => {
-                  const policy = policies.reduce((min, policy) => {
-                    const minPrice = parseFloat(policy.minPrice);
-                    return minPrice < min.minPrice
-                      ? { minPrice: minPrice, currency: policy.currency } 
-                      : min
-                  }, { minPrice: Infinity, currency: '' });
-              
-                  return new Intl.NumberFormat('en-US', {
-                      style: 'currency',
+              {eventsData &&
+                eventsData.recommendMe.slice(0, 10).map((event) => {
+                  const extractMinPrice = (policies: AccessPolicy[]) => {
+                    const policy = policies.reduce(
+                      (min, policy) => {
+                        const minPrice = parseFloat(policy.minPrice);
+                        return minPrice < min.minPrice
+                          ? { minPrice: minPrice, currency: policy.currency }
+                          : min;
+                      },
+                      { minPrice: Infinity, currency: "" }
+                    );
+
+                    return new Intl.NumberFormat("en-US", {
+                      style: "currency",
                       currency: policy.currency,
-                      maximumFractionDigits: 0
-                  }).format(Math.round(policy.minPrice));
-                }
-                
-                return (
-                  <EventCard
-                    key={event.id}
-                    videoUrl={event.video}
-                    title={event.name}
-                    date={moment(event.datetime).format('D MMM')}
-                    location={event.hostedAt.municipality}
-                    price={extractMinPrice(event.accessPolicies as AccessPolicy[])}
-                    purpose="Registration"
-                    isChecked={userInput.favoriteEventIDs.includes(event.id)}
-                    selectFunc={onSelectEvent}
-                    cardId={event.id}
-                    className="!h-[calc(100%-85px)]"
-                    musicType={event.musicGenres[0]}
-                  />
-                )
-              })}
+                      maximumFractionDigits: 0,
+                    }).format(Math.round(policy.minPrice));
+                  };
+
+                  return (
+                    <EventCard
+                      key={event.id}
+                      videoUrl={event.video}
+                      title={event.name}
+                      date={moment(event.datetime).format("D MMM")}
+                      location={event.hostedAt.municipality}
+                      price={extractMinPrice(
+                        event.accessPolicies as AccessPolicy[]
+                      )}
+                      purpose="Registration"
+                      isChecked={userInput.favoriteEventIDs.includes(event.id)}
+                      selectFunc={onSelectEvent}
+                      cardId={event.id}
+                      className="!h-[calc(100%-85px)]"
+                      musicType={event.musicGenres[0]}
+                    />
+                  );
+                })}
             </div>
           )}
           {step === 5 && (
@@ -282,7 +296,9 @@ const OnBoarding: React.FC = () => {
                     } rounded-[20px] p-2`}
                     onClick={() => onToggleMusicGenre(musicGenre)}
                   >
-                    <span className="text-body-medium font-bold">{musicGenre}</span>
+                    <span className="text-body-medium font-bold">
+                      {musicGenre}
+                    </span>
                   </button>
                 ))}
               </div>
