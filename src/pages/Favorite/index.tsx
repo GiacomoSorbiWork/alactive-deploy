@@ -116,7 +116,6 @@ const Favorite: React.FC = () => {
                       date={moment(event.datetime).format('D MMM')}
                       location={event.hostedAt.municipality}
                       price={`FROM ${extractMinPrice(event.accessPolicies)}`}
-                      // TODO: Address optional unwrapping once we know whether avatar is always present.
                       titleLogo={event.hostedAt.avatar}
                     />
                   ))

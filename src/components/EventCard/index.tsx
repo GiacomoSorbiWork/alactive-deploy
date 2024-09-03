@@ -36,7 +36,7 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div
       className={`relative w-full snap-start ${
-        isCard ? "w-full max-w-[364px] h-[calc(100vw*550/364)]"  : "h-[55vh] mb-4"
+        isCard ? "h-[calc(100vw*190/300)] mb-4" : "w-full max-w-[364px] h-[calc(100vw*550/364)]"
       } rounded-xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30 ${className}`}
       onClick={handleClick}
     >
