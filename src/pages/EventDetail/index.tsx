@@ -1,24 +1,14 @@
 import React, { useCallback, useState } from "react";
 import CarouselComponent from "../../components/Carousel";
 import items from "../../components/Carousel/data";
-import CloudCheckSVG from "../../../resources/svg/artist.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ClockSVG from "../../../resources/svg/clock.svg";
 import AddressSVG from "../../../resources/svg/address.svg";
-import UnCheckSVG from "../../../resources/svg/octagon.svg";
 
-import PersonManSVG from "../../../resources/svg/rules/person-man.svg";
-import CreditSVG from "../../../resources/svg/rules/credit_card_off.svg";
-import MoneySVG from "../../../resources/svg/rules/money_off.svg";
-import ContextualSVG from "../../../resources/svg/rules/contextual_token.svg";
-import PhotographySVG from "../../../resources/svg/rules/no_photography.svg";
-import SmokeSVG from "../../../resources/svg/rules/smoke_free.svg";
-import FrameSVG from "../../../resources/svg/rules/Frame.svg";
 import LikeSVG from "../../../resources/svg/favorite.svg";
 import LikedSVG from "../../../resources/svg/liked.svg";
 import {
   EventHeaderProps,
-  HostProps,
   LineUpProps,
   MusicGenresProps,
   IconTextProps,
@@ -27,7 +17,6 @@ import {
 } from "./type";
 import Divider from "@mui/material/Divider";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { hostData, lineUpData, booklist } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import {
@@ -41,6 +30,7 @@ import Loading from "../../components/Loading";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { RuleSection } from "../../__generated__/graphql";
 
 const QUERY_EVENT = gql(`
   query Event($id: ID!) {
@@ -188,29 +178,6 @@ const VenueCard: React.FC<VenueProps> = ({
   </>
 );
 
-const Host: React.FC<HostProps> = ({ imgUrl, title, subTitle, text }) => (
-  <>
-    <div className="border border-white border-opacity-20 rounded-rounded mt-6 p-3 h-[242px]">
-      <div className="flex flex-col items-center justify-center h-full">
-        <div className="relative">
-          <img
-            src={imgUrl}
-            className="h-24 w-24 rounded-full border border-white border-opacity-20"
-            alt="Group"
-          />
-          <img
-            className="h-9 w-9 bg-primaryContainer rounded-full p-1 absolute top-14 left-16"
-            src={CloudCheckSVG}
-          />
-        </div>
-        <p className="text-title-medium font-bold">{title}</p>
-        <p className="text-label-small font-light">{subTitle}</p>
-      </div>
-    </div>
-    <p className="text-label-small font-medium mt-4 mb-6">{text}</p>
-  </>
-);
-
 const IconText: React.FC<IconTextProps> = ({
   img,
   text,
@@ -218,15 +185,13 @@ const IconText: React.FC<IconTextProps> = ({
 }) => (
   <>
     <div className="flex py-[20px] items-center">
-      <img src={img} alt="" />
-      <p className="text-body-medium leading-none ml-2">{text}</p>
+      <p className="text-body-medium leading-none ml-2">{img + text}</p>
     </div>
     {dividerState && <Divider className="!border-white h-0 opacity-20" />}
   </>
 );
 
-const Rules = () => {
-  const [showMoreVisible, setShowMoreVisible] = useState(true);
+const Rules: React.FC<{sections: RuleSection[]}> = ({sections}) => {
   return (
     <div>
       <p className="text-title-small font-semibold mt-6 mb-4">Rules</p>
@@ -234,42 +199,20 @@ const Rules = () => {
         We ask every guest who will attend the event to follow the specific
         guidelines.
       </p>
-      <p className="text-body-medium font-semibold mt-6 mb-1">The Essentials</p>
-      <IconText
-        img={FrameSVG}
-        text={
-          "Smart/casual: Dress / Dark jeans or chinos, button-down shirts, casual loafers, polos or clean sneakers"
-        }
-        dividerState={false}
-      />
-      <p className="text-body-medium font-semibold mt-1 mb-6">More on rules</p>
-      <Divider className="!border-white h-0 opacity-20" />
-      <IconText img={PersonManSVG} text={"Minimum age 21"} />
-      <IconText img={SmokeSVG} text={"Prohibited to smoke"} />
-      <IconText img={PhotographySVG} text={"Prohibited to make pictures"} />
-      <IconText img={ContextualSVG} text={"Id’s required"} />
-      <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
-      <IconText
-        img={CreditSVG}
-        text={"The venue doesn’t accept credit cards"}
-      />
-      {!showMoreVisible && (
-        <>
-          <IconText img={ContextualSVG} text={"Id’s required"} />
-          <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
-        </>
-      )}
-
-      {showMoreVisible && (
-        <>
-          <div className="h-[76px] bg-eventGradient mt-[-76px] absolute w-full"></div>
-          <div className="flex justify-center p-2">
-            <RoundedButton
-              onClick={() => setShowMoreVisible(!showMoreVisible)}
-            />
+      {sections.map((section, index) => (
+          <div key={index}>
+            <p className="text-body-medium font-semibold mt-6 mb-1">{section.title}</p>
+            {section.rules.map((rule, index) => {
+              return (
+                <IconText
+                  key={index}
+                  img={rule.icon}
+                  text={rule.text}
+                />
+              );
+            })}
           </div>
-        </>
-      )}
+      ))}
     </div>
   );
 };
@@ -334,9 +277,10 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             <p className="text-title-small font-bold mb-4">Lineup</p>
             <div className="overflow-x-auto pb-6">
               <div className="flex w-max gap-6">
-                {lineUpData.map((item, index) => (
+                {/* TODO: Add lineup. */}
+                {/* {lineUpData.map((item, index) => (
                   <LineUp key={index} {...item} />
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
@@ -344,13 +288,14 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           <VenueCard 
             imgUrl={event.hostedAt.avatar} 
             title={event.hostedAt.name} 
-            subTitle={event.hostedAt.description ?? ''} 
+            subTitle={'Venue'} 
+            text={event.hostedAt.description ?? ''}
             coordinates={[event.hostedAt.latitude, event.hostedAt.longitude]}
             address={event.hostedAt.address + ', ' + event.hostedAt.postcode}
           />
           <Divider className="!border-white h-0 opacity-20" />
-          <Host {...hostData} />
-          <Rules />
+          {/* <Host {...hostData} /> */}
+          <Rules sections={event.rules as RuleSection[]}/>
         </div>
 
         <SwipeableDrawer
@@ -377,13 +322,13 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           <div className="bg-filterContainer p-4 text-white flex flex-col">
             <Divider className="!border-white h-0 opacity-20 !mt-6" />
             <div className="py-1">
-              {booklist.map((item, index) => {
+              {event.accessPolicies.map((item, index) => {
                 return (
                   <BookList
                     key={"booklist" + index}
-                    svg={item.svg}
-                    title={item.title}
-                    subTitle={item.subTitle}
+                    svg={item.type}
+                    title={item.type}
+                    subTitle={item.currency + item.minPrice + " - " + item.currency + item.maxPrice}
                     className={
                       selectedBook === "booklist" + index
                         ? "bg-white bg-opacity-10 rounded-[20px]"
