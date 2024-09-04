@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import CarouselComponent from "../../components/Carousel";
-import items from "../../components/Carousel/data";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ClockSVG from "../../../resources/svg/clock.svg";
 import AddressSVG from "../../../resources/svg/address.svg";
@@ -21,7 +20,6 @@ import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import {
   LargeDefaultButton,
-  RoundedButton,
   TextOnlyButton,
 } from "../../subComponents/Buttons";
 import { gql } from "../../__generated__";

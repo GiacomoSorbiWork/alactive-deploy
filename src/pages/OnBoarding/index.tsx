@@ -37,7 +37,7 @@ const musicList = [
 ];
 
 const QUERY_GET_EVENTS = gql(`
-  query RecommendMe {
+  query GetOnboardingEvents {
     recommendMe {
       id
       name
