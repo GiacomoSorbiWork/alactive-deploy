@@ -146,6 +146,7 @@ const OnBoarding: React.FC = () => {
       });
 
       history.push("/dashboard");
+      alert("Remember to like events to improve your recommendations!");
     }
 
     setStep((prev) => prev + 1);
@@ -204,8 +205,8 @@ const OnBoarding: React.FC = () => {
           </div>
         )}
       </IonHeader>
-      <IonContent scrollY={false}>
-        <div className="p-8 flex flex-col h-full">
+      <IonContent scrollY={false} className="bg-black">
+        <div className="p-8 flex flex-col h-full bg-black">
           {step === 1 && (
             <Form
               title="Nice to meet you. And your name is?"
