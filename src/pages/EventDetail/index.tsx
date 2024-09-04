@@ -19,15 +19,15 @@ import LikedSVG from "../../../resources/svg/liked.svg";
 import {
   EventHeaderProps,
   HostProps,
-  IntroduceGroupProps,
   LineUpProps,
   MusicGenresProps,
   IconTextProps,
   BookListProps,
+  VenueProps,
 } from "./type";
 import Divider from "@mui/material/Divider";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { hostData, introData, lineUpData, booklist } from "./data";
+import { hostData, lineUpData, booklist } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import {
@@ -39,6 +39,8 @@ import { gql } from "../../__generated__";
 import { useQuery } from "@apollo/client";
 import Loading from "../../components/Loading";
 import moment from "moment";
+import { useParams } from "react-router-dom";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 const QUERY_EVENT = gql(`
   query Event($id: ID!) {
@@ -75,6 +77,8 @@ const QUERY_EVENT = gql(`
         country
         avatar
         description
+        latitude
+        longitude
       }
       hostedBy {
         id
@@ -92,8 +96,8 @@ const EventHeader: React.FC<EventHeaderProps> = ({
   subtitle,
   datetime,
 }) => {
-  const date = moment(datetime).format("dddd, MMMM Do YYYY");
-  const startingTime = moment(datetime).format("h:mm a");
+  const date = moment.utc(datetime).format("dddd, MMMM Do YYYY");
+  const startingTime = moment.utc(datetime).format("h:mm a");
 
   return (
     <div className="mb-6 mt-[-10px]">
@@ -141,16 +145,17 @@ const LineUp: React.FC<LineUpProps> = ({ avatar, userName }) => (
   </div>
 );
 
-const IntroduceGroup: React.FC<IntroduceGroupProps> = ({
+const VenueCard: React.FC<VenueProps> = ({
   imgUrl,
-  mapUrl,
+  coordinates,
   title,
   subTitle,
   address,
-  parkingAvailable = false,
   text,
 }) => (
   <>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <div className="border border-white border-opacity-20 rounded-rounded mt-6 p-3">
       <div className="flex items-center mt-[-23px]">
         <img
@@ -163,20 +168,20 @@ const IntroduceGroup: React.FC<IntroduceGroupProps> = ({
           <p className="text-label-small font-light">{subTitle}</p>
         </div>
       </div>
-      <div
-        className="w-full h-[162px] rounded-big bg mt-2"
-        style={{
-          backgroundImage: `url(${mapUrl})`,
-          backgroundPosition: "center",
-        }}
-      ></div>
+      <div id="map">
+        <MapContainer center={[coordinates[0], coordinates[1]]} zoom={13} scrollWheelZoom={false} className="w-full h-[162px] rounded-big bg mt-2">
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={[coordinates[0], coordinates[1]]}>
+            <Popup>{address}</Popup>
+          </Marker>
+        </MapContainer>
+      </div>
       <div className="my-4 flex">
         <img src={AddressSVG} alt="" />
         <p className="text-label-small ml-2">{address}</p>
-      </div>
-      <div className="flex">
-        {parkingAvailable && <img src={UnCheckSVG} alt="" />}
-        <p className="text-label-small ml-2">Parking Available</p>
       </div>
     </div>
     <p className="text-label-small font-medium mt-4 mb-6">{text}</p>
@@ -336,9 +341,13 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             </div>
           </div>
           <Divider className="!border-white h-0 opacity-20" />
-          {introData.map((item, index) => (
-            <IntroduceGroup key={index} {...item} />
-          ))}
+          <VenueCard 
+            imgUrl={event.hostedAt.avatar} 
+            title={event.hostedAt.name} 
+            subTitle={event.hostedAt.description ?? ''} 
+            coordinates={[event.hostedAt.latitude, event.hostedAt.longitude]}
+            address={event.hostedAt.address + ', ' + event.hostedAt.postcode}
+          />
           <Divider className="!border-white h-0 opacity-20" />
           <Host {...hostData} />
           <Rules />
