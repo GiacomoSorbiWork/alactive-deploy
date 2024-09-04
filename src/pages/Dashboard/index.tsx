@@ -15,6 +15,7 @@ import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
 import { IconButtonProps } from "./type";
 import EventDetail from "../EventDetail";
+import showAlert from "../../components/Alert";
 
 const VIDEO_URLS = [
   "https://s3-figma-videos-production-sig.figma.com/video/1267800981591854695/TEAM/08d0/bd09/-14c7-44ca-b923-a3436e290c96?Expires=1726444800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=f~VpWPyTh5TkQJeyCAycqBOeXvayjoav3qxK3bvYeWdnGldzoPlwCL4zCSBg~ae37F7rM8Wy1~qlOx01OBiG92sgUUXHt8tf-4RfPconpofslsToUbATBJ8-KQgSH4rjG51z1qFIdrKNCXe7WY2kPtYbfqyZsMxrjLercqP7tALZvEib6zaZTQDw-QJ0TbCN5v0nndtO2K-3KDE6OpmS6PmH3f6ekb9KepYJ54nYS3kuJrxEYplm4nWIgykmYTcaQnR2ZKHpHck-SArSh0VHdMMSXZTEkuwSmqpyTXkGjMSz~NdML-fEsPJnSSDoOF2bGD7X6fpDwHg05hkcJaHuHQ__",
@@ -143,14 +144,19 @@ const DashBoard: React.FC = () => {
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            video.play();
+            video.muted = isMuted;
+            if (!isMuted) {
+              video.muted = false;
+            } else {
+              video.muted = true;
+            }
           } else {
-            video.pause();
+            video.muted = true;
           }
         });
       },
       {
-        threshold: 0.5, // Adjust the threshold as needed
+        threshold: 0.5,
       }
     );
 
@@ -163,7 +169,7 @@ const DashBoard: React.FC = () => {
         if (video) observer.unobserve(video);
       });
     };
-  }, []);
+  }, [isMuted]);
 
   // Function to handle touch events on the scrollable container
   const handleScrollTouchStart = useCallback((e: TouchEvent) => {
@@ -233,13 +239,13 @@ const DashBoard: React.FC = () => {
                 ref={(el) => {
                   if (el) videoRefs.current[index] = el;
                 }}
-                muted={isMuted}
-                playsInline
+                muted={true}
+                autoPlay
+                loop
                 className={`snap-center inset-0 object-cover w-full h-screen absolute`}
                 style={{
                   top: `calc(${index} * 100vh)`,
                 }}
-                loop
               >
                 <source src={video} type="video/mp4" />
                 Your browser does not support the video tag.

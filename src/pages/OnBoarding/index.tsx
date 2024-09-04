@@ -204,7 +204,7 @@ const OnBoarding: React.FC = () => {
           </div>
         )}
       </IonHeader>
-      <IonContent scrollY={step === 4}>
+      <IonContent scrollY={false}>
         <div className="p-8 flex flex-col h-full">
           {step === 1 && (
             <Form
@@ -273,7 +273,6 @@ const OnBoarding: React.FC = () => {
                       isChecked={userInput.favoriteEventIDs.includes(event.id)}
                       selectFunc={onSelectEvent}
                       cardId={event.id}
-                      className="!h-[calc(100%-85px)]"
                       musicType={event.musicGenres[0]}
                     />
                   );

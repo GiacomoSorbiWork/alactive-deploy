@@ -1,5 +1,5 @@
 import React, { useEffect, lazy, Suspense } from "react";
-import { Route, Redirect, Switch, useHistory } from "react-router-dom";
+import { Route, Redirect, useHistory } from "react-router-dom";
 import { IonRouterOutlet } from "@ionic/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "./components/Loading";
@@ -27,20 +27,23 @@ const RouterPart: React.FC = () => {
   const { isAuthenticated, isLoading, error } = useAuth0();
   const history = useHistory();
 
-  const { data: dolExist } = useQuery(QUERY_DOL_EXIST);
+  const { data: dolExist, loading: queryLoading } = useQuery(QUERY_DOL_EXIST);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       history.push("/login");
+    } else if (!queryLoading && dolExist) {
+      if (dolExist.doIExist) {
+        history.push("/dashboard");
+      } else {
+        history.push("/onboarding");
+      }
     }
-  }, [isLoading, isAuthenticated, history]);
+  }, [isLoading, isAuthenticated, queryLoading, dolExist, history]);
 
-  useEffect(() => {
-    if (dolExist) history.push("/dashboard");
-    else history.push("/onBoarding");
-  }, [dolExist]);
-
-  if (isLoading || dolExist == undefined) return <Loading />;
+  if (isLoading || queryLoading) {
+    return <Loading />;
+  }
 
   if (error) {
     console.error("Authentication error:", error);
@@ -50,29 +53,28 @@ const RouterPart: React.FC = () => {
   return (
     <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
       <Suspense fallback={<Loading />}>
-        <Switch>
-          <Route exact path="/login" component={Login} />
-          {isAuthenticated ? (
-            <>
-              <Route exact path="/" component={OnBoarding} />
-              <Route exact path="/onBoarding" component={OnBoarding} />
-              <Route exact path="/host-detail" component={HostDetail} />
-              <Route exact path="/host-events" component={HostingEvent} />
-              <Route exact path="/event-detail" component={EventDetail} />
-              <Route exact path="/event-view" component={EventMediaView} />
-              <Route exact path="/dashboard" component={DashBoard} />
-              <Route exact path="/profile" component={Profile} />
-              <Route exact path="/favorite" component={Favorite} />
-              {/* <Route exact path="*">
-                <Redirect to="/" />
-              </Route> */}
-            </>
-          ) : (
-            <Route path="*">
-              <Redirect to="/login" />
-            </Route>
-          )}
-        </Switch>
+        <Route exact path="/login" component={Login} />
+        {isAuthenticated ? (
+          <>
+            <Route exact path="/" component={OnBoarding} />
+            <Route exact path="/onboarding" component={OnBoarding} />
+            <Route exact path="/host-detail" component={HostDetail} />
+            <Route exact path="/host-events" component={HostingEvent} />
+            <Route exact path="/event-detail" component={EventDetail} />
+            <Route exact path="/event-view" component={EventMediaView} />
+            <Route exact path="/dashboard" component={DashBoard} />
+            <Route exact path="/profile" component={Profile} />
+            <Route exact path="/favorite" component={Favorite} />
+            {/* Catch-all route */}
+            {/* <Route path="*">
+              <Redirect to="/" />
+            </Route> */}
+          </>
+        ) : (
+          <Route path="*">
+            <Redirect to="/login" />
+          </Route>
+        )}
       </Suspense>
     </IonRouterOutlet>
   );

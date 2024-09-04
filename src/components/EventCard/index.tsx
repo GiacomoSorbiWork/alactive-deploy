@@ -41,9 +41,9 @@ const EventCard: React.FC<EventCardProps> = ({
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            video.play();
+            video.muted = false;
           } else {
-            video.pause();
+            video.muted = true;
           }
         });
       },
@@ -66,9 +66,7 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div
       className={`relative w-full snap-start ${
-        isCard
-          ? "h-[calc(100vw*190/300)] mb-4"
-          : "w-full max-w-[364px] h-[calc(100vw*550/364)]"
+        isCard ? "mb-4 aspect-[190/300]" : "mb-3 aspect-[364/554]"
       } rounded-xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30 ${className}`}
       onClick={handleClick}
     >
@@ -77,6 +75,8 @@ const EventCard: React.FC<EventCardProps> = ({
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover"
           src={videoUrl}
+          muted
+          autoPlay
           loop
         />
       ) : (
