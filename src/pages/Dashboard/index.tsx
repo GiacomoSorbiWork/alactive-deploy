@@ -312,7 +312,7 @@ const DashBoard: React.FC = () => {
                   />
                 </div>
                 <div className="absolute bottom-[90px] left-4">
-                  <p className="text-title-small font-bold my-2">{event.name}</p>
+                  <p className="text-title-small font-bold my-2" onClick={() => history.push("/event/" + event.id)}>{event.name}</p>
                   <div className="overflow-hidden w-[75vw]">
                     <div className="flex animate-marqueeDashboard gap-3">
                       {[...Array(3)].map((_, index) => (
