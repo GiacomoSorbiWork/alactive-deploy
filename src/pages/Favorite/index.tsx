@@ -8,6 +8,7 @@ import { gql } from "../../__generated__/gql";
 import { AccessPolicy, Event, Host } from "../../__generated__/graphql";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
+import Loading from "../../components/Loading";
 
 const QUERY_LIKED = gql(`
   query liked {
@@ -46,7 +47,7 @@ const Favorite: React.FC = () => {
 
   const history = useHistory();
 
-  const { data } = useQuery(QUERY_LIKED);
+  const { data, loading: queryLoading } = useQuery(QUERY_LIKED);
 
   const extractMinPrice = (policies: AccessPolicy[]) => {
     const policy = policies.reduce(
@@ -65,6 +66,8 @@ const Favorite: React.FC = () => {
       maximumFractionDigits: 0,
     }).format(Math.round(policy.minPrice));
   };
+
+  if (queryLoading) return <Loading />;
 
   return (
     <IonPage>
