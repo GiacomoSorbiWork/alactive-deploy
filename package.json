@@ -4,13 +4,15 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && npm run codegen && vite build",
+    "dev": "NODE_ENV=dev_localapi vite --mode dev_localapi",
+    "dev_prodapi": "NODE_ENV=dev_prodapi vite --mode dev_prodapi",
+    "build": "NODE_ENV=prod graphql-codegen && tsc && vite build --mode prod",
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
     "lint": "eslint",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen",
+    "codegen-watch": "graphql-codegen -w"
   },
   "dependencies": {
     "@apollo/client": "^3.11.4",
@@ -19,7 +21,6 @@
     "@capacitor/core": "6.1.2",
     "@capacitor/haptics": "6.0.1",
     "@capacitor/keyboard": "6.0.2",
-    "@capacitor/status-bar": "6.0.1",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@graphql-codegen/cli": "^5.0.2",
@@ -31,9 +32,11 @@
     "@mui/material": "^5.16.7",
     "@mui/x-date-pickers": "^7.13.0",
     "@mui/x-date-pickers-pro": "^7.15.0",
+    "@parcel/watcher": "^2.4.1",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
     "ionicons": "^7.0.0",
     "moment": "^2.30.1",

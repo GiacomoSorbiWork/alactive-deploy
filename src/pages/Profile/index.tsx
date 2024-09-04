@@ -35,13 +35,13 @@ const QUERY_ME = gql`
       birthday
     }
   }
-`
+`;
 
 const MUTATION_DELETE = gql`
   mutation deleteAccount {
     deleteMe
   }
-`
+`;
 
 const ProfileList: React.FC<ProfileListType> = ({
   img,
@@ -104,14 +104,14 @@ const Profile: React.FC<ProfileType> = () => {
 
   return (
     <IonPage>
-      <IonContent>
+      <IonContent scrollY={false} fullscreen>
         <div
           className="relative w-full h-1/2 overflow-hidden bg-cover bg-center text-white"
           style={{
             backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.6) 100%), url(${data?.me?.avatar})`,
           }}
         >
-          <Box className="absolute bottom-7 text-white p-4">
+          <Box className="absolute bottom-7 text-white p-4 w-full">
             <p className="text-title-medium font-semibold w-5/6 leading-snug">
               {data?.me?.name}
             </p>
@@ -122,7 +122,7 @@ const Profile: React.FC<ProfileType> = () => {
           <ProfileList
             img={BirthSVG}
             title="Date of Birth"
-            text={loading ? 'Loading...' : (error ? 'Error' : data?.me?.birthday)} // Format the birthday for display
+            text={loading ? "Loading..." : error ? "Error" : data?.me?.birthday} // Format the birthday for display
             arrowVisible
             onClick={() => {
               setSelectBirthVisible(true); // Show the Date Picker
@@ -151,7 +151,12 @@ const Profile: React.FC<ProfileType> = () => {
           <ProfileList img={LogOutSVG} title="Log out" onClick={logout} />
           <p className="text-title-small mt-2 font-bold">Danger Zone</p>
           <Divider className="!border-white h-0 opacity-20" />
-          <ProfileList img={RecycleSVG} title="Delete Account" type="delete" onClick={handleOpen} />
+          <ProfileList
+            img={RecycleSVG}
+            title="Delete Account"
+            type="delete"
+            onClick={handleOpen}
+          />
         </div>
         <FooterBar />
       </IonContent>

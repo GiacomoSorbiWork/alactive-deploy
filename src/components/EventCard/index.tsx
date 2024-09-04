@@ -41,9 +41,9 @@ const EventCard: React.FC<EventCardProps> = ({
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            video.play();
+            video.muted = false;
           } else {
-            video.pause();
+            video.muted = true;
           }
         });
       },
@@ -65,8 +65,8 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <div
-      className={`relative w-full snap-center ${
-        isCard ? "h-[300px] min-w-[190px]" : "h-[55vh] mb-4"
+      className={`relative w-full snap-start ${
+        isCard ? "mb-4 aspect-[190/300]" : "mb-3 aspect-[364/554]"
       } rounded-xl overflow-hidden bg-cover bg-center text-white border border-white border-opacity-30 ${className}`}
       onClick={handleClick}
     >
@@ -75,6 +75,8 @@ const EventCard: React.FC<EventCardProps> = ({
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover"
           src={videoUrl}
+          muted
+          autoPlay
           loop
         />
       ) : (
@@ -136,7 +138,7 @@ const EventCard: React.FC<EventCardProps> = ({
                     <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
                       <img src={CreditSVG} alt="Credit Card" />
                       <p className="text-label-small font-medium ml-2">
-                        Starting from ${price}
+                        Starting from {price}
                       </p>
                     </div>
                     <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">

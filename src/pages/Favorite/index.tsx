@@ -3,16 +3,11 @@ import EventCard from "../../components/EventCard";
 import HostCard from "../../components/HostCard";
 import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
-import Logo from "../../../resources/shortcut.svg";
 import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
-import {
-  AccessPolicy,
-  Event,
-  Likeable,
-  Host,
-} from "../../__generated__/graphql";
+import { AccessPolicy, Event, Host } from "../../__generated__/graphql";
 import moment from "moment";
+import Loading from "../../components/Loading";
 
 const QUERY_LIKED = gql(`
   query liked {
@@ -49,7 +44,7 @@ const Favorite: React.FC = () => {
     setActiveTab(index);
   };
 
-  const { loading, error, data } = useQuery(QUERY_LIKED);
+  const { data, loading: queryLoading } = useQuery(QUERY_LIKED);
 
   const extractMinPrice = (policies: AccessPolicy[]) => {
     const policy = policies.reduce(
@@ -68,6 +63,8 @@ const Favorite: React.FC = () => {
       maximumFractionDigits: 0,
     }).format(Math.round(policy.minPrice));
   };
+
+  if (queryLoading) return <Loading />;
 
   return (
     <IonPage>
@@ -128,7 +125,6 @@ const Favorite: React.FC = () => {
                         date={moment(event.datetime).format("D MMM")}
                         location={event.hostedAt.municipality}
                         price={`FROM ${extractMinPrice(event.accessPolicies)}`}
-                        // TODO: Address optional unwrapping once we know whether avatar is always present.
                         titleLogo={event.hostedAt.avatar}
                       />
                     ))}
@@ -145,7 +141,7 @@ const Favorite: React.FC = () => {
                   .map((host) => (
                     <HostCard
                       key={host.id}
-                      imgUrl={host.avatar || ""}
+                      imgUrl={host.avatar ?? ""}
                       title={host.name}
                       subTitle="Nightclub"
                     />
