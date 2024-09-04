@@ -292,15 +292,9 @@ const BookList: React.FC<BookListProps> = ({
   );
 };
 
-const EventDetail: React.FC<{ window?: () => Window, id: string }> = ({ window, id }) => {
+const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
+  const { id } = useParams();
   const { loading, data } = useQuery(QUERY_EVENT, { variables: { id: id } });
-
-  console.log(id)
-  // TODO: Error handling.
-  if (loading) return <Loading />;
-
-  if (!data || !data.event) return <div>Event not found</div>;
-  const event = data.event
 
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
@@ -310,6 +304,10 @@ const EventDetail: React.FC<{ window?: () => Window, id: string }> = ({ window, 
   // Using useCallback to memoize the handlers
   const handleOpen = useCallback(() => setIsBookingModal(true), []);
   const handleClose = useCallback(() => setIsBookingModal(false), []);
+
+  // TODO: Error handling.
+  if (loading || !data || !data.event) return <Loading />;
+  const event = data.event
 
   return (
     <IonPage>

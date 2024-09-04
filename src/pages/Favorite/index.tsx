@@ -126,7 +126,7 @@ const Favorite: React.FC = () => {
                         location={event.hostedAt.municipality}
                         price={`FROM ${extractMinPrice(event.accessPolicies)}`}
                         titleLogo={event.hostedAt.avatar}
-                        selectFunc={() => history.push({ pathname: '/event-detail', search: '?id=' + event.id })}
+                        selectFunc={() => history.push(`/event/${event.id}`)}
                       />
                     ))}
               </div>
