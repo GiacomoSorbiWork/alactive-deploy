@@ -106,7 +106,7 @@ const EventCard: React.FC<EventCardProps> = ({
           {titleLogo && (
             <img
               src={titleLogo}
-              className="w-[21px] h-[18px] border-2 border-[#595959] border-opacity-20 border-solid rounded-full mr-[6px]"
+              className="w-[21px] h-[21px] border-2 border-[#595959] border-opacity-20 border-solid rounded-full mr-[6px]"
               alt="Title Logo"
             />
           )}

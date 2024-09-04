@@ -226,16 +226,16 @@ const DashBoard: React.FC = () => {
   const handleScrollTouchEnd = useCallback(() => {
     const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
 
-    if (swipeDistanceY < 0) {
+    if (swipeDistanceY < -50) {
       scrollRef.current?.scrollBy({
         top: window.innerHeight,
-        behavior: "instant",
+        behavior: "smooth",
       });
     }
-    if (swipeDistanceY > 0) {
+    if (swipeDistanceY > 50) {
       scrollRef.current?.scrollBy({
         top: -window.innerHeight,
-        behavior: "instant",
+        behavior: "smooth",
       });
     }
   }, []);
@@ -291,7 +291,7 @@ const DashBoard: React.FC = () => {
                     top: `calc(${index} * 100vh)`,
                   }}
                 >
-                  <source src={event.video} type="application/x-mpegURL" />
+                  {/* <source src={event.video} type="application/x-mpegURL" /> */}
                   Your browser does not support the video tag.
                 </video>
                 <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
@@ -340,18 +340,15 @@ const DashBoard: React.FC = () => {
             ))}
           </div>
           <>
-            <p
-              className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
-              onClick={() => history.push("event-detail")}
-            >
+            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4" >
               Tailored
             </p>
-            <img
+            {/* <img
               className="h-6 absolute right-3 top-5"
               src={PageInfoSVG}
               alt="Page Info"
               onClick={() => setFilterVisible(true)}
-            />
+            /> */}
             <button
               ref={swipeButtonsRef} // Assigning ref dynamically
               className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 animate-wiggle`}
