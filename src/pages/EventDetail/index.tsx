@@ -298,7 +298,7 @@ const BookList: React.FC<BookListProps> = ({
 };
 
 const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { loading, data } = useQuery(QUERY_EVENT, { variables: { id: id } });
 
   const container = window ? window().document.body : undefined;
