@@ -25,12 +25,20 @@ import {
   TextOnlyButton,
 } from "../../subComponents/Buttons";
 import { gql } from "../../__generated__";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import Loading from "../../components/Loading";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { RuleSection } from "../../__generated__/graphql";
+
+const MUTATION_LIKE = gql(`
+  mutation Like($id: String!, $like: Boolean!) {
+    setLike(target: $id, like: $like) {
+      handle
+    }
+  }
+`);
 
 const QUERY_EVENT = gql(`
   query Event($id: ID!) {
@@ -76,6 +84,9 @@ const QUERY_EVENT = gql(`
         avatar
         description
         website
+      }
+      likedBy {
+        authID
       }
     }
   }
@@ -247,7 +258,15 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState("booklist0");
-  const [Liked, setLiked] = useState(false);
+  const [Liked, setLiked] = useState(data?.event?.likedBy?.some(item => id === item.id));
+
+  const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
+  const toggleLike = () => {
+    setLikeRequest({ variables: { id: id, like: !Liked } });
+    setLiked((prev) => !prev);
+  };
+
 
   // Using useCallback to memoize the handlers
   const handleOpen = useCallback(() => setIsBookingModal(true), []);
@@ -265,9 +284,9 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
         <img
           className="absolute right-4 top-6 z-20"
           src={Liked ? LikedSVG : LikeSVG}
-          onClick={() => setLiked((prev) => !prev)}
+          onClick={toggleLike}
         />
-        <CarouselComponent items={items} />
+        <CarouselComponent items={event.media} />
         <div className="p-4">
           <EventHeader title={event.name} subtitle={event.description ?? ''} datetime={event.datetime} />
           <Divider className="!border-white h-0 opacity-20" />
