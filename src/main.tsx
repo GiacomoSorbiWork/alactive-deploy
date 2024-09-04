@@ -35,8 +35,7 @@ const ApolloProviderWithAuth0 = ({ children }: { children: React.ReactNode }) =>
   const { getAccessTokenSilently } = useAuth0();
 
   const httpLink = createHttpLink({
-    // uri: "https://localhost/graphql",
-    uri: "https://v1.api.alactive.app/graphql",
+    uri: import.meta.env.VITE_API_URL,
   });
 
   const authLink = setContext(async (_, { headers }) => {
@@ -62,12 +61,11 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Auth0Provider
-        domain="alactive-dev.uk.auth0.com"
-        clientId="09K9jptGf6apeXpCpoKKTRUEjwfW9RsW"
+        domain={import.meta.env.VITE_AUTH0_DOMAIN}
+        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
         authorizationParams={{
-          // redirect_uri: "http://localhost:5173/",
-          audience: "http://v1.api.alactive.app/graphql",
-          redirect_uri: "https://mobile.alactive.app",
+          redirect_uri: import.meta.env.VITE_CALLBACK_URL,
+          audience: import.meta.env.VITE_AUTH0_AUDIENCE
         }}
       >
         <ApolloProviderWithAuth0>
