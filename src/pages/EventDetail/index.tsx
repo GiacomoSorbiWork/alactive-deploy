@@ -35,30 +35,85 @@ import {
   RoundedButton,
   TextOnlyButton,
 } from "../../subComponents/Buttons";
+import { gql } from "../../__generated__";
+import { useQuery } from "@apollo/client";
+import Loading from "../../components/Loading";
+import moment from "moment";
+
+const QUERY_EVENT = gql(`
+  query Event($id: ID!) {
+    event(id: $id) {
+      name
+      description
+      musicGenres
+      video
+      media
+      datetime
+      duration
+      recurrence
+      tags
+      accessPolicies {
+        type
+        minPrice
+        maxPrice
+        currency
+        info
+      }
+      rules {
+        title
+        rules {
+          icon
+          text
+        }
+      }
+      hostedAt {
+        id
+        name
+        municipality
+        postcode
+        address
+        country
+        avatar
+        description
+      }
+      hostedBy {
+        id
+        name
+        avatar
+        description
+        website
+      }
+    }
+  }
+`);
 
 const EventHeader: React.FC<EventHeaderProps> = ({
   title,
   subtitle,
-  date,
-  startingTime,
-}) => (
-  <div className="mb-6 mt-[-10px]">
-    <p className="text-[30px] font-bold">{title}</p>
-    <p className="text-[18px] font-medium mt-[5px] mb-[19px]">{subtitle}</p>
-    <div>
-      <div className="flex items-center mb-4">
-        <img src={CalendarSVG} alt="" />
-        <p className="text-body-small font-medium ml-2">{date}</p>
-      </div>
-      <div className="flex items-center">
-        <img src={ClockSVG} alt="" />
-        <p className="text-body-small font-medium ml-2">
-          Starting from {startingTime}
-        </p>
+  datetime,
+}) => {
+  const date = moment(datetime).format("dddd, MMMM Do YYYY");
+  const startingTime = moment(datetime).format("h:mm a");
+
+  return (
+    <div className="mb-6 mt-[-10px]">
+      <p className="text-[30px] font-bold">{title}</p>
+      <p className="text-[18px] font-medium mt-[5px] mb-[19px]">{subtitle}</p>
+      <div>
+        <div className="flex items-center mb-4">
+          <img src={CalendarSVG} alt="" />
+          <p className="text-body-small font-medium ml-2">{date}</p>
+        </div>
+        <div className="flex items-center">
+          <img src={ClockSVG} alt="" />
+          <p className="text-body-small font-medium ml-2">
+            Starting from {startingTime}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const MusicGenres: React.FC<MusicGenresProps> = ({ fields }) => (
   <div className="my-6">
@@ -237,13 +292,15 @@ const BookList: React.FC<BookListProps> = ({
   );
 };
 
-const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
-  const eventInfo = {
-    title: "House Rave",
-    subtitle: "Pop-up event in Mayfair",
-    date: "12/03/2024",
-    startingTime: "22:00",
-  };
+const EventDetail: React.FC<{ window?: () => Window, id: string }> = ({ window, id }) => {
+  const { loading, data } = useQuery(QUERY_EVENT, { variables: { id: id } });
+
+  console.log(id)
+  // TODO: Error handling.
+  if (loading) return <Loading />;
+
+  if (!data || !data.event) return <div>Event not found</div>;
+  const event = data.event
 
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
@@ -266,17 +323,9 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
         />
         <CarouselComponent items={items} />
         <div className="p-4">
-          <EventHeader {...eventInfo} />
+          <EventHeader title={event.name} subtitle={event.description ?? ''} datetime={event.datetime} />
           <Divider className="!border-white h-0 opacity-20" />
-          <MusicGenres
-            fields={[
-              "Tech house",
-              "Afro house",
-              "Deep house",
-              "Downtempo",
-              "Organic House",
-            ]}
-          />
+          <MusicGenres fields={event.musicGenres} />
           <Divider className="!border-white h-0 opacity-20" />
           <div className="mt-6">
             <p className="text-title-small font-bold mb-4">Lineup</p>

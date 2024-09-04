@@ -27,10 +27,10 @@ const EventCard: React.FC<EventCardProps> = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const handleClick = () => {
-    if (isCard) {
+    if (selectFunc) {
+      selectFunc(cardId) 
+    } else {
       history.push(`/${nextURL}`);
-    } else if (selectFunc) {
-      selectFunc(cardId);
     }
   };
 

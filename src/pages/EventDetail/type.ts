@@ -1,8 +1,7 @@
 export interface EventHeaderProps {
 	title: string;
 	subtitle: string;
-	date: string;
-	startingTime: string;
+	datetime: string;
 }
 
 export interface MusicGenresProps {

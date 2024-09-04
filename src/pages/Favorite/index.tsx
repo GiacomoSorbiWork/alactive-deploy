@@ -7,6 +7,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
 import { AccessPolicy, Event, Host } from "../../__generated__/graphql";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 
 const QUERY_LIKED = gql(`
   query liked {
@@ -42,6 +43,8 @@ const Favorite: React.FC = () => {
   const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
+
+  const history = useHistory();
 
   const { data } = useQuery(QUERY_LIKED);
 
@@ -123,6 +126,7 @@ const Favorite: React.FC = () => {
                         location={event.hostedAt.municipality}
                         price={`FROM ${extractMinPrice(event.accessPolicies)}`}
                         titleLogo={event.hostedAt.avatar}
+                        selectFunc={() => history.push({ pathname: '/event-detail', search: '?id=' + event.id })}
                       />
                     ))}
               </div>

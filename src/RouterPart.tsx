@@ -20,7 +20,7 @@ const EventMediaView = lazy(() => import("./pages/EventMediaView"));
 const QUERY_DOL_EXIST = gql(`
   query doIExist {
     doIExist 
- 	}
+  }
 `);
 
 const RouterPart: React.FC = () => {
@@ -58,7 +58,7 @@ const RouterPart: React.FC = () => {
               <Route exact path="/onBoarding" component={OnBoarding} />
               <Route exact path="/host-detail" component={HostDetail} />
               <Route exact path="/host-events" component={HostingEvent} />
-              <Route exact path="/event-detail" component={EventDetail} />
+              <Route exact path="/event-detail:id" component={EventDetail} />
               <Route exact path="/event-view" component={EventMediaView} />
               <Route exact path="/dashboard" component={DashBoard} />
               <Route exact path="/profile" component={Profile} />

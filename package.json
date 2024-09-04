@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=dev_localapi vite --mode dev_localapi",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=dev_localapi vite --mode dev_localapi",
     "dev_prodapi": "NODE_ENV=dev_prodapi vite --mode dev_prodapi",
     "build": "NODE_ENV=prod graphql-codegen && tsc && vite build --mode prod",
     "preview": "vite preview",
