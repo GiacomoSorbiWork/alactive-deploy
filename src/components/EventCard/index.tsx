@@ -141,12 +141,14 @@ const EventCard: React.FC<EventCardProps> = ({
                         Starting from {price}
                       </p>
                     </div>
-                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
-                      <img src={CalendarSVG} alt="Calendar" />
-                      <p className="text-label-small font-medium ml-2">
-                        {date}
-                      </p>
-                    </div>
+                    {date && (
+                      <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
+                        <img src={CalendarSVG} alt="Calendar" />
+                        <p className="text-label-small font-medium ml-2">
+                          {date}
+                        </p>
+                      </div>
+                    )}
                     <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
                       <img src={MusicSVG} alt="Music" className="h-[17px]" />
                       <p className="text-label-small font-medium ml-2">

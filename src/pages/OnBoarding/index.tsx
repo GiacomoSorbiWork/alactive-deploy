@@ -264,7 +264,7 @@ const OnBoarding: React.FC = () => {
                       key={event.id}
                       videoUrl={event.video}
                       title={event.name}
-                      date={moment(event.datetime).format("D MMM")}
+                      // date={moment(event.datetime).format("D MMM")}
                       location={event.hostedAt.municipality}
                       price={extractMinPrice(
                         event.accessPolicies as AccessPolicy[]
