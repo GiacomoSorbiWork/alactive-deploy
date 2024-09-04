@@ -18,7 +18,7 @@ const Favorite = lazy(() => import("./pages/Favorite"));
 const EventMediaView = lazy(() => import("./pages/EventMediaView"));
 
 const QUERY_DOL_EXIST = gql(`
-  query doIExist {
+  query doIExist2 {
     doIExist 
   }
 `);
@@ -54,7 +54,7 @@ const RouterPart: React.FC = () => {
     <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
       <Suspense fallback={<Loading />}>
           <Route exact path="/login" component={Login} />
-          {isAuthenticated ? (
+          {isAuthenticated && (
             <>
               <Route exact path="/" component={OnBoarding} />
               <Route exact path="/onBoarding" component={OnBoarding} />
@@ -65,14 +65,7 @@ const RouterPart: React.FC = () => {
               <Route exact path="/dashboard" component={DashBoard} />
               <Route exact path="/profile" component={Profile} />
               <Route exact path="/favorite" component={Favorite} />
-              {/* <Route exact path="*">
-                <Redirect to="/" />
-              </Route> */}
             </>
-          ) : (
-            <Route path="*">
-              <Redirect to="/login" />
-            </Route>
           )}
       </Suspense>
     </IonRouterOutlet>
