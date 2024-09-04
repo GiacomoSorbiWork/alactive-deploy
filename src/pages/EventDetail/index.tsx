@@ -42,6 +42,12 @@ const MUTATION_LIKE = gql(`
 
 const QUERY_EVENT = gql(`
   query Event($id: ID!) {
+    me {
+      likes {
+        id
+      }
+    }
+
     event(id: $id) {
       name
       description
@@ -84,9 +90,6 @@ const QUERY_EVENT = gql(`
         avatar
         description
         website
-      }
-      likedBy {
-        authID
       }
     }
   }
@@ -258,7 +261,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState("booklist0");
-  const [Liked, setLiked] = useState(data?.event?.likedBy?.some(item => id === item.id));
+  const [Liked, setLiked] = useState(data?.me?.likes?.some(item => id === item.id));
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
 
@@ -286,7 +289,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           src={Liked ? LikedSVG : LikeSVG}
           onClick={toggleLike}
         />
-        <CarouselComponent items={event.media} />
+        <CarouselComponent items={[]} />
         <div className="p-4">
           <EventHeader title={event.name} subtitle={event.description ?? ''} datetime={event.datetime} />
           <Divider className="!border-white h-0 opacity-20" />
