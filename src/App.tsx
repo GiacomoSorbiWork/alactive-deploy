@@ -14,6 +14,9 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 import "./theme/variables.css";
+import { StatusBar } from "@capacitor/status-bar";
+
+StatusBar.setOverlaysWebView({ overlay: false });
 
 setupIonicReact();
 
