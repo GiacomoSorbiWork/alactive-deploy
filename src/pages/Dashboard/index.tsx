@@ -189,11 +189,6 @@ const DashBoard: React.FC = () => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
             video.muted = isMuted;
-            if (!isMuted) {
-              video.muted = false;
-            } else {
-              video.muted = true;
-            }
             video.src = String(
               data?.recommendMe.find((event) => event.id == video.id)?.video
             );
@@ -203,9 +198,7 @@ const DashBoard: React.FC = () => {
           }
         });
       },
-      {
-        threshold: 0.5,
-      }
+      { threshold: 0.5 }
     );
 
     videoRefs.current.forEach((video) => {
@@ -217,51 +210,7 @@ const DashBoard: React.FC = () => {
         if (video) observer.unobserve(video);
       });
     };
-  }, [isMuted, videoRefs]);
-
-  // Function to handle touch events on the scrollable container
-
-  // const handleScrollTouchStart = useCallback((e: TouchEvent) => {
-  //   touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  // }, []);
-
-  // const handleScrollTouchMove = useCallback((e: TouchEvent) => {
-  //   touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  // }, []);
-
-  // const handleScrollTouchEnd = useCallback(() => {
-  //   const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
-
-  //   if (swipeDistanceY < -50) {
-  //     scrollRef.current?.scrollBy({
-  //       top: window.innerHeight,
-  //       behavior: "instant",
-  //     });
-  //   }
-  //   if (swipeDistanceY > 50) {
-  //     scrollRef.current?.scrollBy({
-  //       top: -window.innerHeight,
-  //       behavior: "instant",
-  //     });
-  //   }
-  // }, []);
-
-  // Effect to manage touch events on the scrollable container
-
-  // useEffect(() => {
-  //   const element = scrollRef.current;
-  //   if (element) {
-  //     element.addEventListener("touchstart", handleScrollTouchStart);
-  //     element.addEventListener("touchmove", handleScrollTouchMove);
-  //     element.addEventListener("touchend", handleScrollTouchEnd);
-
-  //     return () => {
-  //       element.removeEventListener("touchstart", handleScrollTouchStart);
-  //       element.removeEventListener("touchmove", handleScrollTouchMove);
-  //       element.removeEventListener("touchend", handleScrollTouchEnd);
-  //     };
-  //   }
-  // }, [handleScrollTouchStart, handleScrollTouchMove, handleScrollTouchEnd]);
+  }, [isMuted, videoRefs, data]);
 
   // Effect to add smooth transition to the event detail element
   useEffect(() => {

@@ -5,6 +5,11 @@ const playM3u8 = (src: string, video: HTMLVideoElement) => {
 		const hls = new Hls();
 		hls.loadSource(src);
 		hls.attachMedia(video);
+		video.addEventListener("click", () => {
+			video.play().catch((error) => {
+				console.error("Autoplay failed:", error);
+			});
+		});
 	} else {
 		console.error("Invalid source or video element");
 	}
