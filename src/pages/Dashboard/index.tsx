@@ -268,6 +268,7 @@ const DashBoard: React.FC = () => {
                     <IconButton
                       icon={event.hostedAt.avatar}
                       label={event.hostedAt.name}
+                      onClick={() => history.push("/event/" + event.id)}
                     />
                     <IconButton
                       icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
