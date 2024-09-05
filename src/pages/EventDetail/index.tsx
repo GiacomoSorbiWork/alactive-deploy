@@ -30,7 +30,7 @@ import { useParams } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { RuleSection } from "../../__generated__/graphql";
 
-const MUTATION_LIKE = gql(`
+export const MUTATION_LIKE = gql(`
   mutation Like($id: String!, $like: Boolean!) {
     setLike(target: $id, like: $like) {
       handle

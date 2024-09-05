@@ -13,12 +13,23 @@ import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
 import { IconButtonProps } from "./type";
-import EventDetail from "../EventDetail";
+import EventDetail, { MUTATION_LIKE } from "../EventDetail";
 import { gql } from "../../__generated__";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { AccessPolicy } from "../../__generated__/graphql";
 import moment from "moment";
 import playM3u8 from "../../util/playM3u8";
+import Loading from "../../components/Loading";
+
+const QUERY_WHAT_I_LIKE = gql(`
+  query whatILike {
+    me {
+      likes {
+        id
+      }
+    }
+  }
+`);
 
 const QUERY_RECOMMEND = gql(`
   query recommendMe {
@@ -81,31 +92,14 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
   </button>
 );
 
-const useVideoControls = (initialState = { muted: false, liked: false }) => {
+const useVideoControls = (initialState = { id: "", muted: false }) => {
   const [isMuted, setIsMuted] = useState(initialState.muted);
-  const [isLiked, setIsLiked] = useState(initialState.liked);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   const toggleMute = () => setIsMuted((prev) => !prev);
-  const toggleLike = () => setIsLiked((prev) => !prev);
-
-  const togglePlayback = (videoRef: React.RefObject<HTMLVideoElement>) => {
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-    } else {
-      videoRef.current.play();
-    }
-    setIsPlaying((prev) => !prev);
-  };
 
   return {
     isMuted,
-    isLiked,
-    isPlaying,
     toggleMute,
-    toggleLike,
-    togglePlayback,
   };
 };
 
@@ -119,9 +113,26 @@ const DashBoard: React.FC = () => {
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  const { data: ILike, refetch: refetchILike } = useQuery(QUERY_WHAT_I_LIKE);
   const { loading, data } = useQuery(QUERY_RECOMMEND);
 
-  const { isMuted, isLiked, toggleMute, toggleLike } = useVideoControls();
+  const { isMuted, toggleMute } = useVideoControls();
+
+  const [likedEvents, setLikedEvents] = useState<{ [key: string]: boolean }>({});
+
+  useEffect(() => {
+    if (ILike && data) {
+      const initialLikedState = data.recommendMe.reduce((acc, event) => {
+        acc[event.id] = ILike.me.likes.some((like) => like.id === event.id);
+        return acc;
+      }, {} as { [key: string]: boolean });
+      setLikedEvents(initialLikedState);
+    }
+  }, [ILike, data]);
+
+  useEffect(() => {
+    refetchILike();
+  }, [likedEvents]);
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
@@ -227,6 +238,8 @@ const DashBoard: React.FC = () => {
       }, 5000);
   }, [loading]);
 
+  const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
   return (
     <IonPage>
       <IonContent fullscreen={true}>
@@ -237,91 +250,84 @@ const DashBoard: React.FC = () => {
           >
             {data &&
               data.recommendMe.map((event, index) => (
-                <div className="relative h-screen" key={event.id}>
-                  <video
-                    key={event.id + "-video"}
-                    id={event.id}
-                    ref={(el) => {
-                      if (el) videoRefs.current[index] = el;
-                    }}
-                    muted={true}
-                    autoPlay
-                    loop
-                    className={`snap-center inset-0 object-cover w-full h-screen absolute`}
-                    style={
-                      {
-                        // top: `calc(${index} * 100vh)`,
-                      }
-                    }
-                  >
-                    {/* <source type="application/x-mpegURL" /> */}
-                    Your browser does not support the video tag.
-                  </video>
-                  <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
-                    <IconButton
-                      icon={event.hostedAt.avatar}
-                      label={event.hostedAt.name}
-                      // onClick={() => history.push("/host-detail")}
-                    />
-                    <IconButton
-                      icon={isLiked ? LikedSVG : FavoriteSVG}
-                      label={isLiked ? "Liked" : "Like"}
-                      onClick={toggleLike}
-                    />
-                    <IconButton
-                      icon={isMuted ? UnmuteSVG : MuteSVG}
-                      label={isMuted ? "Unmute" : "Mute"}
-                      onClick={toggleMute}
-                    />
-                  </div>
-                  <div className="absolute bottom-[90px] left-4">
-                    <p
-                      className="text-title-small font-bold my-2"
-                      onClick={() => history.push("/event/" + event.id)}
+                  <div className="relative h-screen" key={event.id}>
+                    <video
+                      key={event.id + "-video"}
+                      id={event.id}
+                      ref={(el) => {
+                        if (el) videoRefs.current[index] = el;
+                      } }
+                      muted={true}
+                      autoPlay
+                      loop
+                      className={`snap-center inset-0 object-cover w-full h-screen absolute`}
                     >
-                      {event.name}
-                    </p>
-                    <div className="overflow-hidden w-[75vw]">
-                      <div className="flex animate-marqueeDashboard gap-3">
-                        {[...Array(3)].map((_, index) => (
-                          <React.Fragment key={index}>
-                            <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
-                              <img src={CreditSVG} alt="Credit Card" />
-                              <p className="text-label-small font-medium ml-2">
-                                Starting from{" "}
-                                {extractMinPrice(
-                                  event.accessPolicies as AccessPolicy[]
-                                )}
-                              </p>
-                            </div>
-                            <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
-                              <img src={CalendarSVG} alt="Calendar" />
-                              <p className="text-label-small font-medium ml-2">
-                                {moment(event.datetime).format("DD/MM/yyyy")}
-                              </p>
-                            </div>
-                            {event.musicGenres.map((genre, index) => (
-                              <div
-                                key={`carousel-genre-` + index}
-                                className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl"
-                              >
-                                <img
-                                  src={MusicSVG}
-                                  alt="Music"
-                                  className="h-[17px]"
-                                />
+                      Your browser does not support the video tag.
+                    </video>
+                    <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
+                      <IconButton
+                        icon={event.hostedAt.avatar}
+                        label={event.hostedAt.name} />
+                      <IconButton
+                        icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
+                        label={likedEvents[event.id] ? "Liked" : "Like"}
+                        onClick={() => {
+                          setLikedEvents((prev) => ({...prev, [event.id]: !prev[event.id]}));
+                          setLikeRequest({ variables: { id: event.id, like: !likedEvents[event.id] } });
+                        }} />
+                      <IconButton
+                        icon={isMuted ? UnmuteSVG : MuteSVG}
+                        label={isMuted ? "Unmute" : "Mute"}
+                        onClick={toggleMute} />
+                    </div>
+                    <div className="absolute bottom-[90px] left-4">
+                      <p
+                        className="text-title-small font-bold my-2"
+                        onClick={() => history.push("/event/" + event.id)}
+                      >
+                        {event.name}
+                      </p>
+                      <div className="overflow-hidden w-[75vw]">
+                        <div className="flex animate-marqueeDashboard gap-3">
+                          {[...Array(3)].map((_, index) => (
+                            <React.Fragment key={index}>
+                              <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
+                                <img src={CreditSVG} alt="Credit Card" />
                                 <p className="text-label-small font-medium ml-2">
-                                  {genre}
+                                  Starting from{" "}
+                                  {extractMinPrice(
+                                    event.accessPolicies as AccessPolicy[]
+                                  )}
                                 </p>
                               </div>
-                            ))}
-                          </React.Fragment>
-                        ))}
+                              <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
+                                <img src={CalendarSVG} alt="Calendar" />
+                                <p className="text-label-small font-medium ml-2">
+                                  {moment(event.datetime).format("DD/MM/yyyy")}
+                                </p>
+                              </div>
+                              {event.musicGenres.map((genre, index) => (
+                                <div
+                                  key={`carousel-genre-` + index}
+                                  className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl"
+                                >
+                                  <img
+                                    src={MusicSVG}
+                                    alt="Music"
+                                    className="h-[17px]" />
+                                  <p className="text-label-small font-medium ml-2">
+                                    {genre}
+                                  </p>
+                                </div>
+                              ))}
+                            </React.Fragment>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
           </div>
           <>
             <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4">
