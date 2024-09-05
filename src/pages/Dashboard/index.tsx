@@ -6,7 +6,7 @@ import MuteSVG from "../../../resources/svg/Speaker.svg";
 import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
-import PageInfoSVG from "../../../resources/svg/page_info.svg";
+// import PageInfoSVG from "../../../resources/svg/page_info.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
@@ -18,6 +18,7 @@ import { gql } from "../../__generated__";
 import { useQuery } from "@apollo/client";
 import { AccessPolicy } from "../../__generated__/graphql";
 import moment from "moment";
+import playM3u8 from "../../util/playM3u8";
 
 const QUERY_RECOMMEND = gql(`
   query recommendMe {
@@ -193,6 +194,10 @@ const DashBoard: React.FC = () => {
             } else {
               video.muted = true;
             }
+            video.src = String(
+              data?.recommendMe.find((event) => event.id == video.id)?.video
+            );
+            playM3u8(video.src, video);
           } else {
             video.muted = true;
           }
@@ -212,61 +217,66 @@ const DashBoard: React.FC = () => {
         if (video) observer.unobserve(video);
       });
     };
-  }, [isMuted]);
+  }, [isMuted, videoRefs]);
 
   // Function to handle touch events on the scrollable container
-  const handleScrollTouchStart = useCallback((e: TouchEvent) => {
-    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  }, []);
 
-  const handleScrollTouchMove = useCallback((e: TouchEvent) => {
-    touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  }, []);
+  // const handleScrollTouchStart = useCallback((e: TouchEvent) => {
+  //   touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  // }, []);
 
-  const handleScrollTouchEnd = useCallback(() => {
-    const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
+  // const handleScrollTouchMove = useCallback((e: TouchEvent) => {
+  //   touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  // }, []);
 
-    if (swipeDistanceY < -50) {
-      scrollRef.current?.scrollBy({
-        top: window.innerHeight,
-        behavior: "smooth",
-      });
-    }
-    if (swipeDistanceY > 50) {
-      scrollRef.current?.scrollBy({
-        top: -window.innerHeight,
-        behavior: "smooth",
-      });
-    }
-  }, []);
+  // const handleScrollTouchEnd = useCallback(() => {
+  //   const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
+
+  //   if (swipeDistanceY < -50) {
+  //     scrollRef.current?.scrollBy({
+  //       top: window.innerHeight,
+  //       behavior: "instant",
+  //     });
+  //   }
+  //   if (swipeDistanceY > 50) {
+  //     scrollRef.current?.scrollBy({
+  //       top: -window.innerHeight,
+  //       behavior: "instant",
+  //     });
+  //   }
+  // }, []);
 
   // Effect to manage touch events on the scrollable container
-  useEffect(() => {
-    const element = scrollRef.current;
-    if (element) {
-      element.addEventListener("touchstart", handleScrollTouchStart);
-      element.addEventListener("touchmove", handleScrollTouchMove);
-      element.addEventListener("touchend", handleScrollTouchEnd);
 
-      return () => {
-        element.removeEventListener("touchstart", handleScrollTouchStart);
-        element.removeEventListener("touchmove", handleScrollTouchMove);
-        element.removeEventListener("touchend", handleScrollTouchEnd);
-      };
-    }
-  }, [handleScrollTouchStart, handleScrollTouchMove, handleScrollTouchEnd]);
+  // useEffect(() => {
+  //   const element = scrollRef.current;
+  //   if (element) {
+  //     element.addEventListener("touchstart", handleScrollTouchStart);
+  //     element.addEventListener("touchmove", handleScrollTouchMove);
+  //     element.addEventListener("touchend", handleScrollTouchEnd);
+
+  //     return () => {
+  //       element.removeEventListener("touchstart", handleScrollTouchStart);
+  //       element.removeEventListener("touchmove", handleScrollTouchMove);
+  //       element.removeEventListener("touchend", handleScrollTouchEnd);
+  //     };
+  //   }
+  // }, [handleScrollTouchStart, handleScrollTouchMove, handleScrollTouchEnd]);
 
   // Effect to add smooth transition to the event detail element
   useEffect(() => {
     if (eventDetailRef.current) {
       eventDetailRef.current.style.transition = "transform 0.3s ease";
     }
-    setTimeout(() => {
-      if (swipeButtonsRef.current) {
-        swipeButtonsRef.current.style.display = "none";
-      }
-    }, 5000);
-  }, []);
+    if (!loading)
+      setTimeout(() => {
+        if (swipeButtonsRef.current) {
+          swipeButtonsRef.current.style.top = "0px";
+          swipeButtonsRef.current.style.opacity = "0";
+          swipeButtonsRef.current.style.height = "150px";
+        }
+      }, 5000);
+  }, [loading]);
 
   return (
     <IonPage>
@@ -276,71 +286,96 @@ const DashBoard: React.FC = () => {
             className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
             ref={scrollRef}
           >
-            {data && data.recommendMe.map((event, index) => (
-              <div className="relative h-screen" key={event.id}>
-                <video
-                  key={event.id + "-video"}
-                  ref={(el) => {
-                    if (el) videoRefs.current[index] = el;
-                  }}
-                  muted={true}
-                  autoPlay
-                  loop
-                  className={`snap-center inset-0 object-cover w-full h-screen absolute`}
-                  style={{
-                    top: `calc(${index} * 100vh)`,
-                  }}
-                >
-                  {/* <source src={event.video} type="application/x-mpegURL" /> */}
-                  Your browser does not support the video tag.
-                </video>
-                <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
-                  <IconButton
-                    icon={event.hostedAt.avatar}
-                    label={event.hostedAt.name}
-                    // onClick={() => history.push("/host-detail")}
-                  />
-                  <IconButton
-                    icon={isLiked ? LikedSVG : FavoriteSVG}
-                    label={isLiked ? "Liked" : "Like"}
-                    onClick={toggleLike}
-                  />
-                  <IconButton
-                    icon={isMuted ? UnmuteSVG : MuteSVG}
-                    label={isMuted ? "Unmute" : "Mute"}
-                    onClick={toggleMute}
-                  />
-                </div>
-                <div className="absolute bottom-[90px] left-4">
-                  <p className="text-title-small font-bold my-2" onClick={() => history.push("/event/" + event.id)}>{event.name}</p>
-                  <div className="overflow-hidden w-[75vw]">
-                    <div className="flex animate-marqueeDashboard gap-3">
-                      {[...Array(3)].map((_, index) => (
-                        <React.Fragment key={index}>
-                          <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
-                            <img src={CreditSVG} alt="Credit Card" />
-                            <p className="text-label-small font-medium ml-2">Starting from {extractMinPrice(event.accessPolicies as AccessPolicy[])}</p>
-                          </div>
-                          <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
-                            <img src={CalendarSVG} alt="Calendar" />
-                            <p className="text-label-small font-medium ml-2">{moment(event.datetime).format("DD/MM/yyyy")}</p>
-                          </div>
-                          {event.musicGenres.map((genre, index) => (
-                            <div key={`carousel-genre-`+index} className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
-                              <img src={MusicSVG} alt="Music" className="h-[17px]" />
-                              <p className="text-label-small font-medium ml-2">{genre}</p>
+            {data &&
+              data.recommendMe.map((event, index) => (
+                <div className="relative h-screen" key={event.id}>
+                  <video
+                    key={event.id + "-video"}
+                    id={event.id}
+                    ref={(el) => {
+                      if (el) videoRefs.current[index] = el;
+                    }}
+                    muted={true}
+                    autoPlay
+                    loop
+                    className={`snap-center inset-0 object-cover w-full h-screen absolute`}
+                    style={
+                      {
+                        // top: `calc(${index} * 100vh)`,
+                      }
+                    }
+                  >
+                    {/* <source type="application/x-mpegURL" /> */}
+                    Your browser does not support the video tag.
+                  </video>
+                  <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
+                    <IconButton
+                      icon={event.hostedAt.avatar}
+                      label={event.hostedAt.name}
+                      // onClick={() => history.push("/host-detail")}
+                    />
+                    <IconButton
+                      icon={isLiked ? LikedSVG : FavoriteSVG}
+                      label={isLiked ? "Liked" : "Like"}
+                      onClick={toggleLike}
+                    />
+                    <IconButton
+                      icon={isMuted ? UnmuteSVG : MuteSVG}
+                      label={isMuted ? "Unmute" : "Mute"}
+                      onClick={toggleMute}
+                    />
+                  </div>
+                  <div className="absolute bottom-[90px] left-4">
+                    <p
+                      className="text-title-small font-bold my-2"
+                      onClick={() => history.push("/event/" + event.id)}
+                    >
+                      {event.name}
+                    </p>
+                    <div className="overflow-hidden w-[75vw]">
+                      <div className="flex animate-marqueeDashboard gap-3">
+                        {[...Array(3)].map((_, index) => (
+                          <React.Fragment key={index}>
+                            <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
+                              <img src={CreditSVG} alt="Credit Card" />
+                              <p className="text-label-small font-medium ml-2">
+                                Starting from{" "}
+                                {extractMinPrice(
+                                  event.accessPolicies as AccessPolicy[]
+                                )}
+                              </p>
                             </div>
-                          ))}
-                        </React.Fragment>
-                      ))}
+                            <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
+                              <img src={CalendarSVG} alt="Calendar" />
+                              <p className="text-label-small font-medium ml-2">
+                                {moment(event.datetime).format("DD/MM/yyyy")}
+                              </p>
+                            </div>
+                            {event.musicGenres.map((genre, index) => (
+                              <div
+                                key={`carousel-genre-` + index}
+                                className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl"
+                              >
+                                <img
+                                  src={MusicSVG}
+                                  alt="Music"
+                                  className="h-[17px]"
+                                />
+                                <p className="text-label-small font-medium ml-2">
+                                  {genre}
+                                </p>
+                              </div>
+                            ))}
+                          </React.Fragment>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
           <>
-            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4" >
+            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4">
               Tailored
             </p>
             {/* <img
