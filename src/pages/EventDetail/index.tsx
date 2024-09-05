@@ -30,6 +30,11 @@ import { useParams } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { RuleSection } from "../../__generated__/graphql";
 
+const openInNewTab = (url: string): void => {
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+  if (newWindow) newWindow.opener = null
+}
+
 export const MUTATION_LIKE = gql(`
   mutation Like($id: String!, $like: Boolean!) {
     setLike(target: $id, like: $like) {
@@ -361,7 +366,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             </div>
             <LargeDefaultButton
               text="Book"
-              onClick={handleClose}
+              onClick={() => {openInNewTab(event.accessPolicies[Number(selectedBook.split("booklist")[1])].info)}}
               className="rounded-[12px]"
             ></LargeDefaultButton>
           </div>
