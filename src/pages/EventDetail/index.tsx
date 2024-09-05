@@ -29,8 +29,14 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { RuleSection } from "../../__generated__/graphql";
+import { extractMinPrice } from "../Dashboard";
 
-const MUTATION_LIKE = gql(`
+const openInNewTab = (url: string): void => {
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+  if (newWindow) newWindow.opener = null
+}
+
+export const MUTATION_LIKE = gql(`
   mutation Like($id: String!, $like: Boolean!) {
     setLike(target: $id, like: $like) {
       handle
@@ -361,7 +367,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             </div>
             <LargeDefaultButton
               text="Book"
-              onClick={handleClose}
+              onClick={() => {openInNewTab(event.accessPolicies[Number(selectedBook.split("booklist")[1])].info)}}
               className="rounded-[12px]"
             ></LargeDefaultButton>
           </div>
@@ -370,7 +376,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
       <IonFooter className="bg-primaryContainer p-4 items-center grid grid-cols-3 gap-1">
         <div className="col-span-2">
           <TextOnlyButton
-            text="Starting from $345"
+            text={`Starting from ${extractMinPrice(event.accessPolicies)}`}
             className="!text-body-medium leading-[22px]"
           />
         </div>
