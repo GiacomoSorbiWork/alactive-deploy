@@ -9,7 +9,6 @@ import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
-import moment from "moment";
 import { AccessPolicy } from "../../__generated__/graphql";
 
 interface UserInputType {
