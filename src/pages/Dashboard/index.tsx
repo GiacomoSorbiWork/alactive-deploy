@@ -54,7 +54,7 @@ const QUERY_RECOMMEND = gql(`
   }  
 `);
 
-const extractMinPrice = (policies: AccessPolicy[]) => {
+export const extractMinPrice = (policies: AccessPolicy[]) => {
   const policy = policies.reduce(
     (min, policy) => {
       const minPrice = parseFloat(policy.minPrice);

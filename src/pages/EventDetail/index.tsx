@@ -29,6 +29,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { RuleSection } from "../../__generated__/graphql";
+import { extractMinPrice } from "../Dashboard";
 
 const openInNewTab = (url: string): void => {
   const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
@@ -375,7 +376,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
       <IonFooter className="bg-primaryContainer p-4 items-center grid grid-cols-3 gap-1">
         <div className="col-span-2">
           <TextOnlyButton
-            text="Starting from $345"
+            text={`Starting from ${extractMinPrice(event.accessPolicies)}`}
             className="!text-body-medium leading-[22px]"
           />
         </div>
