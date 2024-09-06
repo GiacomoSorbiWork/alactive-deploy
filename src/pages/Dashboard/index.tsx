@@ -234,6 +234,8 @@ const DashBoard: React.FC = () => {
           swipeButtonsRef.current.style.top = "0px";
           swipeButtonsRef.current.style.opacity = "0";
           swipeButtonsRef.current.style.height = "92vh";
+          swipeButtonsRef.current.style.width = "5px";
+          swipeButtonsRef.current.style.right = "2px";
         }
       }, 5000);
   }, [loading]);
