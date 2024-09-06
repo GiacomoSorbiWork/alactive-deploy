@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=dev_localapi vite --mode dev_localapi",
-    "dev_prodapi": "NODE_ENV=dev_prodapi vite --mode dev_prodapi",
+    "dev_prodapi": "cross-env NODE_ENV=dev_prodapi vite --mode dev_prodapi",
     "build": "NODE_ENV=prod graphql-codegen && tsc && vite build --mode prod",
     "preview": "vite preview",
     "test.e2e": "cypress run",
@@ -66,6 +66,7 @@
     "@vitejs/plugin-legacy": "^5.0.0",
     "@vitejs/plugin-react": "^4.0.1",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
     "cypress": "^13.5.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.35.0",
