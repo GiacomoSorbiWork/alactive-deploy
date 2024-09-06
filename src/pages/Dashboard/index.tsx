@@ -233,7 +233,7 @@ const DashBoard: React.FC = () => {
         if (swipeButtonsRef.current) {
           swipeButtonsRef.current.style.top = "0px";
           swipeButtonsRef.current.style.opacity = "0";
-          swipeButtonsRef.current.style.height = "150px";
+          swipeButtonsRef.current.style.height = "92vh";
         }
       }, 5000);
   }, [loading]);
@@ -249,11 +249,11 @@ const DashBoard: React.FC = () => {
             ref={scrollRef}
           >
             {data &&
-              data.recommendMe.map((event, index) => (
-                <div className="relative h-full" key={event.id}>
+              data.recommendMe.map((host, index) => (
+                <div className="relative h-full" key={host.id}>
                   <video
-                    key={event.id + "-video"}
-                    id={event.id}
+                    key={host.id + "-video"}
+                    id={host.id}
                     ref={(el) => {
                       if (el) videoRefs.current[index] = el;
                     }}
@@ -262,29 +262,29 @@ const DashBoard: React.FC = () => {
                     loop
                     playsInline
                     disablePictureInPicture
-                    style={{ pointerEvents: 'none' }}
+                    style={{ pointerEvents: "none" }}
                     className={`snap-center inset-0 object-cover w-full h-full absolute`}
                   >
                     Your browser does not support the video tag.
                   </video>
                   <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
                     <IconButton
-                      icon={event.hostedAt.avatar}
-                      label={event.hostedAt.name}
-                      onClick={() => history.push("/event/" + event.id)}
+                      icon={host.hostedAt.avatar}
+                      label={host.hostedAt.name}
+                      onClick={() => history.push("/host/" + host.id)}
                     />
                     <IconButton
-                      icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
-                      label={likedEvents[event.id] ? "Liked" : "Like"}
+                      icon={likedEvents[host.id] ? LikedSVG : FavoriteSVG}
+                      label={likedEvents[host.id] ? "Liked" : "Like"}
                       onClick={() => {
                         setLikedEvents((prev) => ({
                           ...prev,
-                          [event.id]: !prev[event.id],
+                          [host.id]: !prev[host.id],
                         }));
                         setLikeRequest({
                           variables: {
-                            id: event.id,
-                            like: !likedEvents[event.id],
+                            id: host.id,
+                            like: !likedEvents[host.id],
                           },
                         });
                       }}
@@ -298,9 +298,9 @@ const DashBoard: React.FC = () => {
                   <div className="absolute bottom-[90px] left-4">
                     <p
                       className="text-title-small font-bold my-2"
-                      onClick={() => history.push("/event/" + event.id)}
+                      onClick={() => history.push("/host/" + host.id)}
                     >
-                      {event.name}
+                      {host.name}
                     </p>
                     <div className="overflow-hidden w-[75vw]">
                       <div className="flex animate-marqueeDashboard gap-3">
@@ -311,17 +311,17 @@ const DashBoard: React.FC = () => {
                               <p className="text-label-small font-medium ml-2">
                                 Starting from{" "}
                                 {extractMinPrice(
-                                  event.accessPolicies as AccessPolicy[]
+                                  host.accessPolicies as AccessPolicy[]
                                 )}
                               </p>
                             </div>
                             <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                               <img src={CalendarSVG} alt="Calendar" />
                               <p className="text-label-small font-medium ml-2">
-                                {moment(event.datetime).format("DD/MM/yyyy")}
+                                {moment(host.datetime).format("DD/MM/yyyy")}
                               </p>
                             </div>
-                            {event.musicGenres.map((genre, index) => (
+                            {host.musicGenres.map((genre, index) => (
                               <div
                                 key={`carousel-genre-` + index}
                                 className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl"
