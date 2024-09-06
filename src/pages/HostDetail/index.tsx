@@ -39,8 +39,7 @@ const QUERY_VENUE :TypedDocumentNode<VenueQuery, VenueQueryVariables> = gql(`
          id
       }
     }
-
-    venue(id: $id) {
+    venue($id: ID!) {
       name
       country
       municipality
@@ -50,21 +49,20 @@ const QUERY_VENUE :TypedDocumentNode<VenueQuery, VenueQueryVariables> = gql(`
       description
       media
       highlights{
-       title
-       cover
-       videos
-       }
-       hosting{
-         name
+        title
+        cover
+        videos
+      }
+      hosting{
+        name
         media
         datetime
         accessPolicies{
-         type
-         minPrice
+          minPrice
+          currency
         }
+      }
     }
-  }
-  }
 `);
 
 
