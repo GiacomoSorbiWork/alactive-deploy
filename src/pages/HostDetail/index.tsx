@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import CarouselComponent from "../../components/Carousel";
 import items from "../../components/Carousel/data";
 import CloudCheck from "../../../resources/svg/artist.svg";
@@ -17,6 +17,56 @@ import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonPage } from "@ionic/react";
 import { RoundedButton } from "../../subComponents/Buttons";
 import { useHistory } from "react-router";
+import {TypedDocumentNode} from "@graphql-typed-document-node/core";
+import {LikeMutation, LikeMutationVariables, VenueQuery, VenueQueryVariables} from "../../__generated__/graphql";
+import {gql} from "../../__generated__";
+import { useMutation, useQuery } from "@apollo/client";
+import Loading from "../../components/Loading";
+
+
+const MUTATION_LIKE :TypedDocumentNode<LikeMutation, LikeMutationVariables> = gql(`
+  mutation Like($id: String!, $like: Boolean!) {
+    setLike(target: $id, like: $like) {
+      handle
+    }
+  }
+`);
+
+const QUERY_VENUE :TypedDocumentNode<VenueQuery, VenueQueryVariables> = gql(`
+ query Venue($id: ID!) {
+     me {
+      likes{
+         id
+      }
+    }
+
+    venue(id: $id) {
+      name
+      country
+      municipality
+      postcode
+      address
+      avatar
+      description
+      media
+      highlights{
+       title
+       cover
+       videos
+       }
+       hosting{
+         name
+        media
+        datetime
+        accessPolicies{
+         type
+         minPrice
+        }
+    }
+  }
+  }
+`);
+
 
 const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
   <div className="flex items-center p-4">
