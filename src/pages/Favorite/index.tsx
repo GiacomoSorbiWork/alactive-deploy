@@ -7,6 +7,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
 import { AccessPolicy, Event, Host } from "../../__generated__/graphql";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 import Loading from "../../components/Loading";
 
 const QUERY_LIKED = gql(`
@@ -43,6 +44,8 @@ const Favorite: React.FC = () => {
   const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
+
+  const history = useHistory();
 
   const { data, loading: queryLoading } = useQuery(QUERY_LIKED);
 
@@ -107,8 +110,8 @@ const Favorite: React.FC = () => {
           </div>
         </div>
       </IonHeader>
-      <IonContent fullscreen={true}>
-        <div className="p-4 text-white overflow-y-auto mb-[75px]">
+      <IonContent fullscreen={true} >
+        <div className="p-4 text-white overflow-y-auto mb-[75px] h-full bg-black">
           {activeTab === 0 && (
             <div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -126,6 +129,7 @@ const Favorite: React.FC = () => {
                         location={event.hostedAt.municipality}
                         price={`FROM ${extractMinPrice(event.accessPolicies)}`}
                         titleLogo={event.hostedAt.avatar}
+                        selectFunc={() => history.push(`/event/${event.id}`)}
                       />
                     ))}
               </div>

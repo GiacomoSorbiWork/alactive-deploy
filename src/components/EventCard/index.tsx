@@ -5,6 +5,7 @@ import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ThumbUPSVG from "../../../resources/svg/thumbvector.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
+import playM3u8 from "../../util/playM3u8";
 
 const EventCard: React.FC<EventCardProps> = ({
   imgUrl,
@@ -27,15 +28,16 @@ const EventCard: React.FC<EventCardProps> = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const handleClick = () => {
-    if (isCard) {
-      history.push(`/${nextURL}`);
-    } else if (selectFunc) {
+    if (selectFunc) {
       selectFunc(cardId);
+    } else {
+      history.push(`/${nextURL}`);
     }
   };
 
   // Handle video playback based on visibility
   useEffect(() => {
+    if (videoUrl && videoRef.current) playM3u8(videoUrl, videoRef.current);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -106,7 +108,7 @@ const EventCard: React.FC<EventCardProps> = ({
           {titleLogo && (
             <img
               src={titleLogo}
-              className="w-[21px] h-[18px] border-2 border-[#595959] border-opacity-20 border-solid rounded-full mr-[6px]"
+              className="w-[21px] h-[21px] border-2 border-[#595959] border-opacity-20 border-solid rounded-full mr-[6px]"
               alt="Title Logo"
             />
           )}
@@ -141,12 +143,14 @@ const EventCard: React.FC<EventCardProps> = ({
                         Starting from {price}
                       </p>
                     </div>
-                    <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
-                      <img src={CalendarSVG} alt="Calendar" />
-                      <p className="text-label-small font-medium ml-2">
-                        {date}
-                      </p>
-                    </div>
+                    {date && (
+                      <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
+                        <img src={CalendarSVG} alt="Calendar" />
+                        <p className="text-label-small font-medium ml-2">
+                          {date}
+                        </p>
+                      </div>
+                    )}
                     <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 rounded-3xl">
                       <img src={MusicSVG} alt="Music" className="h-[17px]" />
                       <p className="text-label-small font-medium ml-2">

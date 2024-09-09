@@ -19,11 +19,6 @@ import DocumentSVG from "../../../resources/svg/document.svg";
 import RecycleSVG from "../../../resources/svg/recycle.svg";
 import ArrowRightSVG from "../../../resources/svg/arrow-right.svg";
 import { useAuth0 } from "@auth0/auth0-react";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 const QUERY_ME = gql`

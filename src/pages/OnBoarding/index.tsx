@@ -9,7 +9,6 @@ import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
-import moment from "moment";
 import { AccessPolicy } from "../../__generated__/graphql";
 
 interface UserInputType {
@@ -37,7 +36,7 @@ const musicList = [
 ];
 
 const QUERY_GET_EVENTS = gql(`
-  query RecommendMe {
+  query GetOnboardingEvents {
     recommendMe {
       id
       name
@@ -146,6 +145,7 @@ const OnBoarding: React.FC = () => {
       });
 
       history.push("/dashboard");
+      alert("Remember to like events to improve your recommendations!");
     }
 
     setStep((prev) => prev + 1);
@@ -204,8 +204,8 @@ const OnBoarding: React.FC = () => {
           </div>
         )}
       </IonHeader>
-      <IonContent scrollY={false}>
-        <div className="p-8 flex flex-col h-full">
+      <IonContent scrollY={false} className="bg-black">
+        <div className="p-8 flex flex-col h-full bg-black">
           {step === 1 && (
             <Form
               title="Nice to meet you. And your name is?"
@@ -264,7 +264,7 @@ const OnBoarding: React.FC = () => {
                       key={event.id}
                       videoUrl={event.video}
                       title={event.name}
-                      date={moment(event.datetime).format("D MMM")}
+                      // date={moment(event.datetime).format("D MMM")}
                       location={event.hostedAt.municipality}
                       price={extractMinPrice(
                         event.accessPolicies as AccessPolicy[]

@@ -18,9 +18,9 @@ const Favorite = lazy(() => import("./pages/Favorite"));
 const EventMediaView = lazy(() => import("./pages/EventMediaView"));
 
 const QUERY_DOL_EXIST = gql(`
-  query doIExist {
+  query doIExist2 {
     doIExist 
- 	}
+  }
 `);
 
 const RouterPart: React.FC = () => {
@@ -53,28 +53,20 @@ const RouterPart: React.FC = () => {
   return (
     <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
       <Suspense fallback={<Loading />}>
-        <Route exact path="/login" component={Login} />
-        {isAuthenticated ? (
-          <>
-            <Route exact path="/" component={OnBoarding} />
-            <Route exact path="/onboarding" component={OnBoarding} />
-            <Route exact path="/host-detail" component={HostDetail} />
-            <Route exact path="/host-events" component={HostingEvent} />
-            <Route exact path="/event-detail" component={EventDetail} />
-            <Route exact path="/event-view" component={EventMediaView} />
-            <Route exact path="/dashboard" component={DashBoard} />
-            <Route exact path="/profile" component={Profile} />
-            <Route exact path="/favorite" component={Favorite} />
-            {/* Catch-all route */}
-            {/* <Route path="*">
-              <Redirect to="/" />
-            </Route> */}
-          </>
-        ) : (
-          <Route path="*">
-            <Redirect to="/login" />
-          </Route>
-        )}
+          <Route exact path="/login" component={Login} />
+          {isAuthenticated && (
+            <>
+              <Route exact path="/" component={OnBoarding} />
+              <Route exact path="/onBoarding" component={OnBoarding} />
+              <Route exact path="/host-detail" component={HostDetail} />
+              <Route exact path="/host-events" component={HostingEvent} />
+              <Route path="/event/:id" component={EventDetail} />
+              <Route exact path="/event-view" component={EventMediaView} />
+              <Route exact path="/dashboard" component={DashBoard} />
+              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/favorite" component={Favorite} />
+            </>
+          )}
       </Suspense>
     </IonRouterOutlet>
   );

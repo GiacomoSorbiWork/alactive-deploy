@@ -1,64 +1,131 @@
 import React, { useCallback, useState } from "react";
 import CarouselComponent from "../../components/Carousel";
-import items from "../../components/Carousel/data";
-import CloudCheckSVG from "../../../resources/svg/artist.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ClockSVG from "../../../resources/svg/clock.svg";
 import AddressSVG from "../../../resources/svg/address.svg";
-import UnCheckSVG from "../../../resources/svg/octagon.svg";
 
-import PersonManSVG from "../../../resources/svg/rules/person-man.svg";
-import CreditSVG from "../../../resources/svg/rules/credit_card_off.svg";
-import MoneySVG from "../../../resources/svg/rules/money_off.svg";
-import ContextualSVG from "../../../resources/svg/rules/contextual_token.svg";
-import PhotographySVG from "../../../resources/svg/rules/no_photography.svg";
-import SmokeSVG from "../../../resources/svg/rules/smoke_free.svg";
-import FrameSVG from "../../../resources/svg/rules/Frame.svg";
 import LikeSVG from "../../../resources/svg/favorite.svg";
 import LikedSVG from "../../../resources/svg/liked.svg";
 import {
   EventHeaderProps,
-  HostProps,
-  IntroduceGroupProps,
   LineUpProps,
   MusicGenresProps,
   IconTextProps,
   BookListProps,
+  VenueProps,
 } from "./type";
 import Divider from "@mui/material/Divider";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { hostData, introData, lineUpData, booklist } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import {
   LargeDefaultButton,
-  RoundedButton,
   TextOnlyButton,
 } from "../../subComponents/Buttons";
+import { gql } from "../../__generated__";
+import { useMutation, useQuery } from "@apollo/client";
+import Loading from "../../components/Loading";
+import moment from "moment";
+import { useParams } from "react-router-dom";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { RuleSection } from "../../__generated__/graphql";
+import { extractMinPrice } from "../Dashboard";
+
+const openInNewTab = (url: string): void => {
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+  if (newWindow) newWindow.opener = null
+}
+
+export const MUTATION_LIKE = gql(`
+  mutation Like($id: String!, $like: Boolean!) {
+    setLike(target: $id, like: $like) {
+      handle
+    }
+  }
+`);
+
+const QUERY_EVENT = gql(`
+  query Event($id: ID!) {
+    me {
+      likes {
+        id
+      }
+    }
+
+    event(id: $id) {
+      name
+      description
+      musicGenres
+      video
+      media
+      datetime
+      duration
+      recurrence
+      tags
+      accessPolicies {
+        type
+        minPrice
+        maxPrice
+        currency
+        info
+      }
+      rules {
+        title
+        rules {
+          icon
+          text
+        }
+      }
+      hostedAt {
+        id
+        name
+        municipality
+        postcode
+        address
+        country
+        avatar
+        description
+        latitude
+        longitude
+      }
+      hostedBy {
+        id
+        name
+        avatar
+        description
+        website
+      }
+    }
+  }
+`);
 
 const EventHeader: React.FC<EventHeaderProps> = ({
   title,
   subtitle,
-  date,
-  startingTime,
-}) => (
-  <div className="mb-6 mt-[-10px]">
-    <p className="text-[30px] font-bold">{title}</p>
-    <p className="text-[18px] font-medium mt-[5px] mb-[19px]">{subtitle}</p>
-    <div>
-      <div className="flex items-center mb-4">
-        <img src={CalendarSVG} alt="" />
-        <p className="text-body-small font-medium ml-2">{date}</p>
-      </div>
-      <div className="flex items-center">
-        <img src={ClockSVG} alt="" />
-        <p className="text-body-small font-medium ml-2">
-          Starting from {startingTime}
-        </p>
+  datetime,
+}) => {
+  const date = moment.utc(datetime).format("dddd, MMMM Do YYYY");
+  const startingTime = moment.utc(datetime).format("h:mm a");
+
+  return (
+    <div className="mb-6 mt-[-10px]">
+      <p className="text-[30px] font-bold">{title}</p>
+      <p className="text-[18px] font-medium mt-[5px] mb-[19px]">{subtitle}</p>
+      <div>
+        <div className="flex items-center mb-4">
+          <img src={CalendarSVG} alt="" />
+          <p className="text-body-small font-medium ml-2">{date}</p>
+        </div>
+        <div className="flex items-center">
+          <img src={ClockSVG} alt="" />
+          <p className="text-body-small font-medium ml-2">
+            Starting from {startingTime}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const MusicGenres: React.FC<MusicGenresProps> = ({ fields }) => (
   <div className="my-6">
@@ -86,16 +153,17 @@ const LineUp: React.FC<LineUpProps> = ({ avatar, userName }) => (
   </div>
 );
 
-const IntroduceGroup: React.FC<IntroduceGroupProps> = ({
+const VenueCard: React.FC<VenueProps> = ({
   imgUrl,
-  mapUrl,
+  coordinates,
   title,
   subTitle,
   address,
-  parkingAvailable = false,
   text,
 }) => (
   <>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <div className="border border-white border-opacity-20 rounded-rounded mt-6 p-3">
       <div className="flex items-center mt-[-23px]">
         <img
@@ -108,43 +176,20 @@ const IntroduceGroup: React.FC<IntroduceGroupProps> = ({
           <p className="text-label-small font-light">{subTitle}</p>
         </div>
       </div>
-      <div
-        className="w-full h-[162px] rounded-big bg mt-2"
-        style={{
-          backgroundImage: `url(${mapUrl})`,
-          backgroundPosition: "center",
-        }}
-      ></div>
+      <div id="map">
+        <MapContainer center={[coordinates[0], coordinates[1]]} zoom={13} scrollWheelZoom={false} className="w-full h-[162px] rounded-big bg mt-2">
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={[coordinates[0], coordinates[1]]}>
+            <Popup>{address}</Popup>
+          </Marker>
+        </MapContainer>
+      </div>
       <div className="my-4 flex">
         <img src={AddressSVG} alt="" />
         <p className="text-label-small ml-2">{address}</p>
-      </div>
-      <div className="flex">
-        {parkingAvailable && <img src={UnCheckSVG} alt="" />}
-        <p className="text-label-small ml-2">Parking Available</p>
-      </div>
-    </div>
-    <p className="text-label-small font-medium mt-4 mb-6">{text}</p>
-  </>
-);
-
-const Host: React.FC<HostProps> = ({ imgUrl, title, subTitle, text }) => (
-  <>
-    <div className="border border-white border-opacity-20 rounded-rounded mt-6 p-3 h-[242px]">
-      <div className="flex flex-col items-center justify-center h-full">
-        <div className="relative">
-          <img
-            src={imgUrl}
-            className="h-24 w-24 rounded-full border border-white border-opacity-20"
-            alt="Group"
-          />
-          <img
-            className="h-9 w-9 bg-primaryContainer rounded-full p-1 absolute top-14 left-16"
-            src={CloudCheckSVG}
-          />
-        </div>
-        <p className="text-title-medium font-bold">{title}</p>
-        <p className="text-label-small font-light">{subTitle}</p>
       </div>
     </div>
     <p className="text-label-small font-medium mt-4 mb-6">{text}</p>
@@ -158,15 +203,13 @@ const IconText: React.FC<IconTextProps> = ({
 }) => (
   <>
     <div className="flex py-[20px] items-center">
-      <img src={img} alt="" />
-      <p className="text-body-medium leading-none ml-2">{text}</p>
+      <p className="text-body-medium leading-none ml-2">{img + text}</p>
     </div>
     {dividerState && <Divider className="!border-white h-0 opacity-20" />}
   </>
 );
 
-const Rules = () => {
-  const [showMoreVisible, setShowMoreVisible] = useState(true);
+const Rules: React.FC<{sections: RuleSection[]}> = ({sections}) => {
   return (
     <div>
       <p className="text-title-small font-semibold mt-6 mb-4">Rules</p>
@@ -174,42 +217,20 @@ const Rules = () => {
         We ask every guest who will attend the event to follow the specific
         guidelines.
       </p>
-      <p className="text-body-medium font-semibold mt-6 mb-1">The Essentials</p>
-      <IconText
-        img={FrameSVG}
-        text={
-          "Smart/casual: Dress / Dark jeans or chinos, button-down shirts, casual loafers, polos or clean sneakers"
-        }
-        dividerState={false}
-      />
-      <p className="text-body-medium font-semibold mt-1 mb-6">More on rules</p>
-      <Divider className="!border-white h-0 opacity-20" />
-      <IconText img={PersonManSVG} text={"Minimum age 21"} />
-      <IconText img={SmokeSVG} text={"Prohibited to smoke"} />
-      <IconText img={PhotographySVG} text={"Prohibited to make pictures"} />
-      <IconText img={ContextualSVG} text={"Id’s required"} />
-      <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
-      <IconText
-        img={CreditSVG}
-        text={"The venue doesn’t accept credit cards"}
-      />
-      {!showMoreVisible && (
-        <>
-          <IconText img={ContextualSVG} text={"Id’s required"} />
-          <IconText img={MoneySVG} text={"The venue doesn’t accept cash"} />
-        </>
-      )}
-
-      {showMoreVisible && (
-        <>
-          <div className="h-[76px] bg-eventGradient mt-[-76px] absolute w-full"></div>
-          <div className="flex justify-center p-2">
-            <RoundedButton
-              onClick={() => setShowMoreVisible(!showMoreVisible)}
-            />
+      {sections.map((section, index) => (
+          <div key={index}>
+            <p className="text-body-medium font-semibold mt-6 mb-1">{section.title}</p>
+            {section.rules.map((rule, index) => {
+              return (
+                <IconText
+                  key={index}
+                  img={rule.icon}
+                  text={rule.text}
+                />
+              );
+            })}
           </div>
-        </>
-      )}
+      ))}
     </div>
   );
 };
@@ -238,21 +259,29 @@ const BookList: React.FC<BookListProps> = ({
 };
 
 const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
-  const eventInfo = {
-    title: "House Rave",
-    subtitle: "Pop-up event in Mayfair",
-    date: "12/03/2024",
-    startingTime: "22:00",
-  };
+  const { id } = useParams<{ id: string }>();
+  const { loading, data } = useQuery(QUERY_EVENT, { variables: { id: id } });
 
   const container = window ? window().document.body : undefined;
   const [isBookingModal, setIsBookingModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState("booklist0");
-  const [Liked, setLiked] = useState(false);
+  const [Liked, setLiked] = useState(data?.me?.likes?.some(item => id === item.id));
+
+  const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
+  const toggleLike = () => {
+    setLikeRequest({ variables: { id: id, like: !Liked } });
+    setLiked((prev) => !prev);
+  };
+
 
   // Using useCallback to memoize the handlers
   const handleOpen = useCallback(() => setIsBookingModal(true), []);
   const handleClose = useCallback(() => setIsBookingModal(false), []);
+
+  // TODO: Error handling.
+  if (loading || !data || !data.event) return <Loading />;
+  const event = data.event
 
   return (
     <IonPage>
@@ -262,39 +291,37 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
         <img
           className="absolute right-4 top-6 z-20"
           src={Liked ? LikedSVG : LikeSVG}
-          onClick={() => setLiked((prev) => !prev)}
+          onClick={toggleLike}
         />
-        <CarouselComponent items={items} />
+        <CarouselComponent items={[]} />
         <div className="p-4">
-          <EventHeader {...eventInfo} />
+          <EventHeader title={event.name} subtitle={event.description ?? ''} datetime={event.datetime} />
           <Divider className="!border-white h-0 opacity-20" />
-          <MusicGenres
-            fields={[
-              "Tech house",
-              "Afro house",
-              "Deep house",
-              "Downtempo",
-              "Organic House",
-            ]}
-          />
+          <MusicGenres fields={event.musicGenres} />
           <Divider className="!border-white h-0 opacity-20" />
           <div className="mt-6">
             <p className="text-title-small font-bold mb-4">Lineup</p>
             <div className="overflow-x-auto pb-6">
               <div className="flex w-max gap-6">
-                {lineUpData.map((item, index) => (
+                {/* TODO: Add lineup. */}
+                {/* {lineUpData.map((item, index) => (
                   <LineUp key={index} {...item} />
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
           <Divider className="!border-white h-0 opacity-20" />
-          {introData.map((item, index) => (
-            <IntroduceGroup key={index} {...item} />
-          ))}
+          <VenueCard 
+            imgUrl={event.hostedAt.avatar} 
+            title={event.hostedAt.name} 
+            subTitle={'Venue'} 
+            text={event.hostedAt.description ?? ''}
+            coordinates={[event.hostedAt.latitude, event.hostedAt.longitude]}
+            address={event.hostedAt.address + ', ' + event.hostedAt.postcode}
+          />
           <Divider className="!border-white h-0 opacity-20" />
-          <Host {...hostData} />
-          <Rules />
+          {/* <Host {...hostData} /> */}
+          <Rules sections={event.rules as RuleSection[]}/>
         </div>
 
         <SwipeableDrawer
@@ -321,13 +348,13 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           <div className="bg-filterContainer p-4 text-white flex flex-col">
             <Divider className="!border-white h-0 opacity-20 !mt-6" />
             <div className="py-1">
-              {booklist.map((item, index) => {
+              {event.accessPolicies.map((item, index) => {
                 return (
                   <BookList
                     key={"booklist" + index}
-                    svg={item.svg}
-                    title={item.title}
-                    subTitle={item.subTitle}
+                    svg={item.type}
+                    title={item.type}
+                    subTitle={item.currency + item.minPrice + " - " + item.currency + item.maxPrice}
                     className={
                       selectedBook === "booklist" + index
                         ? "bg-white bg-opacity-10 rounded-[20px]"
@@ -340,7 +367,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             </div>
             <LargeDefaultButton
               text="Book"
-              onClick={handleClose}
+              onClick={() => {openInNewTab(event.accessPolicies[Number(selectedBook.split("booklist")[1])].info)}}
               className="rounded-[12px]"
             ></LargeDefaultButton>
           </div>
@@ -349,7 +376,7 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
       <IonFooter className="bg-primaryContainer p-4 items-center grid grid-cols-3 gap-1">
         <div className="col-span-2">
           <TextOnlyButton
-            text="Starting from $345"
+            text={`Starting from ${extractMinPrice(event.accessPolicies)}`}
             className="!text-body-medium leading-[22px]"
           />
         </div>

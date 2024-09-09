@@ -1,8 +1,7 @@
 export interface EventHeaderProps {
 	title: string;
 	subtitle: string;
-	date: string;
-	startingTime: string;
+	datetime: string;
 }
 
 export interface MusicGenresProps {
@@ -14,13 +13,12 @@ export interface LineUpProps {
 	userName: string;
 }
 
-export interface IntroduceGroupProps {
+export interface VenueProps {
 	imgUrl: string; // URL for the image
-	mapUrl: string; // URL for the map image
+	coordinates: number[]; // URL for the map image
 	title: string; // Title text
 	subTitle: string; // Subtitle text
 	address?: string; // Address text, optional
-	parkingAvailable?: boolean; // Boolean indicating parking availability, optional
 	text?: string; // Additional text, optional
 }
 
