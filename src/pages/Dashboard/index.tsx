@@ -203,10 +203,12 @@ const DashBoard: React.FC = () => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
             video.muted = isMuted;
-            video.src = String(
-              data?.recommendMe.find((event) => event.id == video.id)?.video
-            );
-            playM3u8(video.src, video);
+						if(video.src === ""){
+							video.src = String(
+								data?.recommendMe.find((event) => event.id == video.id)?.video
+							);
+							playM3u8(video.src, video);
+						}
           } else {
             video.muted = true;
           }
