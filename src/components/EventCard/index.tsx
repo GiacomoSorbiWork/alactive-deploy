@@ -80,6 +80,7 @@ const EventCard: React.FC<EventCardProps> = ({
           muted
           autoPlay
           loop
+					controls={false}
         />
       ) : (
         <div
