@@ -11,7 +11,7 @@ import { PurpleScreen } from "./components/PurpleScreen";
 // Lazy load the components
 const Login = lazy(() => import("./pages/Login"));
 const OnBoarding = lazy(() => import("./pages/OnBoarding"));
-const HostDetail = lazy(() => import("./pages/HostDetail"));
+const VenueDetail = lazy(() => import("./pages/VenueDetail"));
 const EventDetail = lazy(() => import("./pages/EventDetail"));
 const DashBoard = lazy(() => import("./pages/Dashboard"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -64,7 +64,7 @@ const RouterPart: React.FC = () => {
           <>
             <Route exact path="/" component={OnBoarding} />
             <Route exact path="/onBoarding" component={OnBoarding} />
-            <Route exact path="/host/:id" component={HostDetail} />
+            <Route exact path="/venue/:id" component={VenueDetail} />
             <Route exact path="/host-events" component={HostingEvent} />
             <Route path="/event/:id" component={EventDetail} />
             <Route exact path="/event-view" component={EventMediaView} />

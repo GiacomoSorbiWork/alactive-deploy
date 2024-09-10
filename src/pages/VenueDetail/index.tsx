@@ -40,7 +40,7 @@ const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
   );
 };
 
-const HostDetail: React.FC = () => {
+const VenueDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [Liked, setLiked] = useState(false);
   const history = useHistory();
@@ -192,4 +192,4 @@ const HostDetail: React.FC = () => {
   );
 };
 
-export default HostDetail;
+export default VenueDetail;

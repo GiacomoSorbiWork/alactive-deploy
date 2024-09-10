@@ -48,6 +48,7 @@ const QUERY_RECOMMEND = gql(`
         currency
       }
       hostedAt {
+        id
         name
         avatar
       }
@@ -256,11 +257,11 @@ const DashBoard: React.FC = () => {
             ref={scrollRef}
           >
             {data &&
-              data.recommendMe.map((host, index) => (
-                <div className="relative h-full" key={host.id}>
+              data.recommendMe.map((event, index) => (
+                <div className="relative h-full" key={event.id}>
                   <video
-                    key={host.id + "-video"}
-                    id={host.id}
+                    key={event.id + "-video"}
+                    id={event.id}
                     ref={(el) => {
                       if (el) videoRefs.current[index] = el;
                     }}
@@ -276,22 +277,22 @@ const DashBoard: React.FC = () => {
                   </video>
                   <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
                     <IconButton
-                      icon={host.hostedAt.avatar}
-                      label={host.hostedAt.name}
-                      onClick={() => history.push("/host/" + host.id)}
+                      icon={event.hostedAt.avatar}
+                      label={event.hostedAt.name}
+                      onClick={() => history.push("/venue/" + event.hostedAt.id)}
                     />
                     <IconButton
-                      icon={likedEvents[host.id] ? LikedSVG : FavoriteSVG}
-                      label={likedEvents[host.id] ? "Liked" : "Like"}
+                      icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
+                      label={likedEvents[event.id] ? "Liked" : "Like"}
                       onClick={() => {
                         setLikedEvents((prev) => ({
                           ...prev,
-                          [host.id]: !prev[host.id],
+                          [event.id]: !prev[event.id],
                         }));
                         setLikeRequest({
                           variables: {
-                            id: host.id,
-                            like: !likedEvents[host.id],
+                            id: event.id,
+                            like: !likedEvents[event.id],
                           },
                         });
                       }}
@@ -305,9 +306,9 @@ const DashBoard: React.FC = () => {
                   <div className="absolute bottom-[90px] left-4">
                     <p
                       className="text-title-small font-bold my-2"
-                      onClick={() => history.push("/host/" + host.id)}
+                      onClick={() => history.push("/event/" + event.id)}
                     >
-                      {host.name}
+                      {event.name}
                     </p>
                     <div className="overflow-hidden w-[75vw]">
                       <div className="flex animate-marqueeDashboard gap-3">
@@ -318,17 +319,17 @@ const DashBoard: React.FC = () => {
                               <p className="text-label-small font-medium ml-2">
                                 Starting from{" "}
                                 {extractMinPrice(
-                                  host.accessPolicies as AccessPolicy[]
+                                  event.accessPolicies as AccessPolicy[]
                                 )}
                               </p>
                             </div>
                             <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                               <img src={CalendarSVG} alt="Calendar" />
                               <p className="text-label-small font-medium ml-2">
-                                {moment(host.datetime).format("DD/MM/yyyy")}
+                                {moment(event.datetime).format("DD/MM/yyyy")}
                               </p>
                             </div>
-                            {host.musicGenres.map((genre, index) => (
+                            {event.musicGenres.map((genre, index) => (
                               <div
                                 key={`carousel-genre-` + index}
                                 className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl"
