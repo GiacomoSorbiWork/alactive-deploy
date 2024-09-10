@@ -32,8 +32,8 @@ const RouterPart: React.FC = () => {
   const { data: dolExist, loading: queryLoading } = useQuery(QUERY_DOL_EXIST);
 
   useEffect(() => {
-		setPurpleScreen(true);
-    setTimeout(() => {
+    setPurpleScreen(true);
+    if (!isLoading && !queryLoading) {
       if (!isLoading && !isAuthenticated) {
         history.push("/login");
       } else if (!queryLoading && dolExist) {
@@ -44,10 +44,10 @@ const RouterPart: React.FC = () => {
         }
       }
       setPurpleScreen(false);
-    }, 1000);
+    }
   }, [isLoading, isAuthenticated, queryLoading, dolExist, history]);
 
-  if (isLoading || queryLoading) {
+  if (!purpleScreen && (isLoading || queryLoading)) {
     return <Loading />;
   }
 
@@ -55,7 +55,7 @@ const RouterPart: React.FC = () => {
     console.error("Authentication error:", error);
     return <div>Error: {error.message}</div>;
   }
-	if(purpleScreen) return <PurpleScreen/>
+  if (purpleScreen) return <PurpleScreen />;
   return (
     <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
       <Suspense fallback={<Loading />}>

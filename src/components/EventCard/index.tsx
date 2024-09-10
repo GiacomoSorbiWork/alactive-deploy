@@ -121,7 +121,7 @@ const EventCard: React.FC<EventCardProps> = ({
           </h2>
         </div>
 
-        {isCard && location && (
+        {isCard && (
           <p className="text-[12px] opacity-80 mb-4">{location}</p>
         )}
       </div>
