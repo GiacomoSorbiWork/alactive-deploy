@@ -20,6 +20,18 @@ import { useHistory, useParams } from "react-router";
 import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
 import Loading from "../../components/Loading";
+import moment from "moment/moment";
+import {extractMinPrice} from "../Dashboard";
+
+export const MUTATION_LIKE = gql(
+    ` 
+  mutation Like($id: String!, $like: Boolean!) {
+    setLike(target: $id, like: $like) {
+      handle
+    }
+    }
+  `
+)
 
 const QUERY_VENUE = gql(`
  query Venue($id: ID!) {
@@ -55,7 +67,11 @@ const QUERY_VENUE = gql(`
 	}
 `);
 
-const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
+const VenueHeader: React.FC<UserHeaderProps> = ({
+  imgUrl,
+  name,
+  subname
+}) => (
   <div className="flex items-center p-4">
     <img src={imgUrl} alt="User" className="rounded-full w-14 h-14 mr-4" />
     <div className="flex flex-col">
@@ -83,17 +99,21 @@ const VenueDetail: React.FC = () => {
   console.log(data);
 
   const [activeTab, setActiveTab] = useState<number>(0);
-  const [Liked, setLiked] = useState(false);
+  const [Liked, setLiked] = useState(data?.me?.likes?.some(item => id === item.id));
   const history = useHistory();
   const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
 
-  const userInfo = {
-    imgUrl: UserAvatar,
-    name: "Circoloco",
-    subname: "@hi_ibiza",
+  const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
+  const toggleLike = () => {
+    setLikeRequest({ variables: { id: id, like: !Liked } });
+    setLiked((prev) => !prev);
   };
+
+
+  const venue = data.venue
 
   return (
     <IonPage>
@@ -102,10 +122,10 @@ const VenueDetail: React.FC = () => {
         <img
           className="absolute right-4 top-6 z-20"
           src={Liked ? LikedSVG : LikeSVG}
-          onClick={() => setLiked((prev) => !prev)}
+          onClick={toggleLike}
         />
-        <CarouselComponent items={items} />
-        <UserHeader {...userInfo} />
+        <CarouselComponent items={venue.media} />
+        <VenueHeader imgUrl={venue.avatar} name={venue.name} subname={"venue"} />
         <div className="mt-0">
           <div className="flex">
             <div className="flex flex-col items-center">
@@ -148,8 +168,20 @@ const VenueDetail: React.FC = () => {
                   Hosting Events
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {detailData.map((event, index) => (
-                    <EventCard {...event} key={index} />
+                  {data &&
+                      data.venue.hosting?.map((
+                          event) => (
+                              <EventCard
+                                  key={event.id}
+                                  imgUrl={event.media[0]}
+                                  title={event.name}
+                                  date={moment(event.datetime).format("D MMM")}
+                                  location={event.hostedAt.municipality}
+                                  price={`FROM ${extractMinPrice(event.accessPolicies)}`}
+                                  titleLogo={event.hostedAt.avatar}
+                                  selectFunc={() => history.push(`/event/${event.id}`)}
+                              />
+
                   ))}
                 </div>
               </div>
@@ -182,11 +214,12 @@ const VenueDetail: React.FC = () => {
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
                 <div className="overflow-x-auto w-full">
                   <div className="flex w-max gap-4 ">
-                    {detailData.map((event, index) => (
+                    {data &&
+                      data.venue.highlights.map((highlight, index) => (
                       <div key={index}>
                         <EventCard
-                          title={event.title}
-                          imgUrl={event.imgUrl}
+                          title={highlight.title}
+                          imgUrl={highlight.cover}
                           nextURL="event-view"
                           className="!w-[44.3vw]"
                         />
@@ -201,8 +234,9 @@ const VenueDetail: React.FC = () => {
             <>
               <div>
                 <h2 className="text-title-small font-bold mb-4">Address</h2>
-                <p className="text-label-small mb-4">
-                  Bond street, 22, GU75HP, London, United Kingdom
+                <p className="text-label-small mb-4">{
+                  venue.address+', '+venue.postcode+', '+venue.municipality+', '+venue.country
+                }
                 </p>
                 <img
                   className="rounded-md"
@@ -215,9 +249,7 @@ const VenueDetail: React.FC = () => {
                   Information
                 </h2>
                 <p className="text-body-small font-medium mb-1">
-                  {"The most technologically advanced club on the planet with" +
-                    "cutting-edge DJs and pioneering immersive experiences." +
-                    "Officially the World's Number 1 Club."}
+                  {venue.description}
                 </p>
               </div>
               <SocialIcon icon={SpotifySVG} text="Spotify" />
