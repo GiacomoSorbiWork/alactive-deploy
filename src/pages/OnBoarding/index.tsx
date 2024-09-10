@@ -9,8 +9,8 @@ import { IonContent, IonFooter, IonHeader, IonPage } from "@ionic/react";
 import LoadingSpinner from "../../components/Loading";
 import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
-import moment from "moment";
 import { AccessPolicy } from "../../__generated__/graphql";
+import showAlert from "../../components/Alert";
 
 interface UserInputType {
   name: string;
@@ -135,18 +135,31 @@ const OnBoarding: React.FC = () => {
 
   const handleNext = useCallback(async (): Promise<void> => {
     if (!isActive) {
-      alert("Please fill out all fields correctly.");
+      showAlert({
+        message: "Please fill out all fields correctly.",
+        type: "warning",
+      });
       return;
     }
 
     if (step === 6) {
-      await createUser();
-      userInput.favoriteEventIDs.forEach((eventID) => {
-        likeEvent({ variables: { target: eventID } });
-      });
+      try {
+        await createUser();
+        userInput.favoriteEventIDs.forEach((eventID) => {
+          likeEvent({ variables: { target: eventID } });
+        });
 
-      history.push("/dashboard");
-      alert("Remember to like events to improve your recommendations!");
+        location.pathname = "/dashboard";
+        showAlert({
+          message: "Remember to like events to improve your recommendations!",
+        });
+      } catch {
+        showAlert({
+          message: "Already Registered",
+          type: "warning",
+        });
+        location.pathname = "/dashboard";
+      }
     }
 
     setStep((prev) => prev + 1);

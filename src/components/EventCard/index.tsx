@@ -5,6 +5,7 @@ import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ThumbUPSVG from "../../../resources/svg/thumbvector.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
+import playM3u8 from "../../util/playM3u8";
 
 const EventCard: React.FC<EventCardProps> = ({
   imgUrl,
@@ -28,7 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const handleClick = () => {
     if (selectFunc) {
-      selectFunc(cardId) 
+      selectFunc(cardId);
     } else {
       history.push(`/${nextURL}`);
     }
@@ -36,6 +37,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   // Handle video playback based on visibility
   useEffect(() => {
+    if (videoUrl && videoRef.current) playM3u8(videoUrl, videoRef.current);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -78,6 +80,7 @@ const EventCard: React.FC<EventCardProps> = ({
           muted
           autoPlay
           loop
+					controls={false}
         />
       ) : (
         <div
@@ -119,7 +122,7 @@ const EventCard: React.FC<EventCardProps> = ({
           </h2>
         </div>
 
-        {isCard && location && (
+        {isCard && (
           <p className="text-[12px] opacity-80 mb-4">{location}</p>
         )}
       </div>

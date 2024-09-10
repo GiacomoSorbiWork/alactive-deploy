@@ -1,27 +1,83 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Box } from "@mui/material";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import { ItemProps, Item } from "./types";
+import playM3u8 from "../../util/playM3u8";
 
-const CarouselItem: React.FC<ItemProps> = ({ item }) => {
+interface CarouselItemProps {
+  url: string;
+}
+
+const isVideoUrl = (url: string) => {
+  const videoAllowUrl = ["m3u8", "avi", "mp4", "mov"];
+  return videoAllowUrl.some((ext) => url.endsWith(`.${ext}`));
+};
+
+const CarouselItem: React.FC<CarouselItemProps> = ({ url }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const video = entry.target as HTMLVideoElement;
+            if (entry.isIntersecting) {
+              video.muted = false;
+              playM3u8(url, video);
+            } else {
+              video.muted = true;
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      observer.observe(videoRef.current);
+      return () => {
+        if (videoRef.current) observer.unobserve(videoRef.current);
+      };
+    }
+  }, [videoRef, url]);
+
   return (
     <Paper
       style={{
         textAlign: "center",
-        backgroundImage: `url(${item.imgPath})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
         height: "400px",
+        overflow: "hidden",
       }}
     >
-      <div className="bg-detailImageGradient h-full w-full p-[20px]" />
+      {isVideoUrl(url) ? (
+        <video
+          ref={videoRef}
+          key={url}
+          muted
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+					autoPlay
+        ></video>
+      ) : (
+        <img
+          src={url}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      )}
     </Paper>
   );
 };
+interface CustomCarouselProps {
+  items: string[] | undefined; //
+}
 
-const CustomCarousel: React.FC<{ items: Item[] }> = ({ items }) => {
+const CustomCarousel: React.FC<CustomCarouselProps> = ({ items }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleChange = (now?: number) => {
@@ -42,9 +98,8 @@ const CustomCarousel: React.FC<{ items: Item[] }> = ({ items }) => {
           height: "400px",
         }}
       >
-        {items.map((item, index) => (
-          <CarouselItem key={index} item={item} />
-        ))}
+        {items &&
+          items.map((item, index) => <CarouselItem key={index} url={item} />)}
       </Carousel>
       <Box
         sx={{
@@ -54,23 +109,24 @@ const CustomCarousel: React.FC<{ items: Item[] }> = ({ items }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          color: "#fff", // Set color of the indicators to white
-          zIndex: 1, // Ensure indicators have higher z-index
+          color: "#fff",
+          zIndex: 1,
         }}
       >
-        {items.map((_, index) => (
-          <Box key={index} mx={0.5}>
-            {index === currentIndex ? (
-              <RadioButtonCheckedIcon
-                style={{ color: "#fff", fontSize: "8px" }} // White color and smaller size for the filled circle
-              />
-            ) : (
-              <RadioButtonUncheckedIcon
-                style={{ color: "#fff", fontSize: "8px" }} // White color and smaller size for the outlined circle
-              />
-            )}
-          </Box>
-        ))}
+        {items &&
+          items.map((_, index) => (
+            <Box key={index} mx={0.5}>
+              {index === currentIndex ? (
+                <RadioButtonCheckedIcon
+                  style={{ color: "#fff", fontSize: "8px" }}
+                />
+              ) : (
+                <RadioButtonUncheckedIcon
+                  style={{ color: "#fff", fontSize: "8px" }}
+                />
+              )}
+            </Box>
+          ))}
       </Box>
     </div>
   );

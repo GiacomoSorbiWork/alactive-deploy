@@ -6,19 +6,29 @@ import MuteSVG from "../../../resources/svg/Speaker.svg";
 import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
-// import PageInfoSVG from "../../../resources/svg/page_info.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import { IonContent, IonPage } from "@ionic/react";
 import { useHistory } from "react-router";
 import FooterBar from "../../components/FooterBar";
 import { IconButtonProps } from "./type";
-import EventDetail from "../EventDetail";
+import EventDetail, { MUTATION_LIKE } from "../EventDetail";
 import { gql } from "../../__generated__";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { AccessPolicy } from "../../__generated__/graphql";
 import moment from "moment";
 import playM3u8 from "../../util/playM3u8";
+import Loading from "../../components/Loading";
+
+const QUERY_WHAT_I_LIKE = gql(`
+  query whatILike {
+    me {
+      likes {
+        id
+      }
+    }
+  }
+`);
 
 const QUERY_RECOMMEND = gql(`
   query recommendMe {
@@ -38,6 +48,7 @@ const QUERY_RECOMMEND = gql(`
         currency
       }
       hostedAt {
+        id
         name
         avatar
       }
@@ -45,7 +56,7 @@ const QUERY_RECOMMEND = gql(`
   }  
 `);
 
-const extractMinPrice = (policies: AccessPolicy[]) => {
+export const extractMinPrice = (policies: AccessPolicy[]) => {
   const policy = policies.reduce(
     (min, policy) => {
       const minPrice = parseFloat(policy.minPrice);
@@ -64,7 +75,7 @@ const extractMinPrice = (policies: AccessPolicy[]) => {
 };
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
-  <button
+  icon && label&& <button
     className="flex flex-col items-center m-2 cursor-pointer"
     onClick={onClick}
     aria-label={label}
@@ -73,7 +84,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
       style={{ clipPath: "circle(50% at 50% 50%)" }}
       src={icon}
       className={`${
-        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "w-8" : "h-10"
+        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "w-8" : "h-10 w-10"
       }`}
       alt={label}
     />
@@ -81,31 +92,14 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
   </button>
 );
 
-const useVideoControls = (initialState = { muted: false, liked: false }) => {
+const useVideoControls = (initialState = { id: "", muted: false }) => {
   const [isMuted, setIsMuted] = useState(initialState.muted);
-  const [isLiked, setIsLiked] = useState(initialState.liked);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   const toggleMute = () => setIsMuted((prev) => !prev);
-  const toggleLike = () => setIsLiked((prev) => !prev);
-
-  const togglePlayback = (videoRef: React.RefObject<HTMLVideoElement>) => {
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-    } else {
-      videoRef.current.play();
-    }
-    setIsPlaying((prev) => !prev);
-  };
 
   return {
     isMuted,
-    isLiked,
-    isPlaying,
     toggleMute,
-    toggleLike,
-    togglePlayback,
   };
 };
 
@@ -118,15 +112,35 @@ const DashBoard: React.FC = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [currentEventId, setCurrentEventId] = useState<string>("");
 
+  const { data: ILike, refetch: refetchILike } = useQuery(QUERY_WHAT_I_LIKE);
   const { loading, data } = useQuery(QUERY_RECOMMEND);
 
-  const { isMuted, isLiked, toggleMute, toggleLike } = useVideoControls();
+  const { isMuted, toggleMute } = useVideoControls();
+
+  const [likedEvents, setLikedEvents] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+
+  useEffect(() => {
+    if (ILike && data) {
+      const initialLikedState = data.recommendMe.reduce((acc, event) => {
+        acc[event.id] = ILike.me.likes.some((like) => like.id === event.id);
+        return acc;
+      }, {} as { [key: string]: boolean });
+      setLikedEvents(initialLikedState);
+    }
+  }, [ILike, data]);
+
+  useEffect(() => {
+    refetchILike();
+  }, [likedEvents]);
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
-    history.push("/event-detail");
-  }, [history]);
+    history.push("/event/" + currentEventId);
+  }, [history, currentEventId]);
 
   // Function to handle touch start on swipe buttons
   const handleSwipeButtonTouchStart = useCallback((e: TouchEvent) => {
@@ -189,11 +203,6 @@ const DashBoard: React.FC = () => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
             video.muted = isMuted;
-            if (!isMuted) {
-              video.muted = false;
-            } else {
-              video.muted = true;
-            }
             video.src = String(
               data?.recommendMe.find((event) => event.id == video.id)?.video
             );
@@ -201,11 +210,10 @@ const DashBoard: React.FC = () => {
           } else {
             video.muted = true;
           }
+          setCurrentEventId(video.id);
         });
       },
-      {
-        threshold: 0.5,
-      }
+      { threshold: 0.5 }
     );
 
     videoRefs.current.forEach((video) => {
@@ -217,51 +225,7 @@ const DashBoard: React.FC = () => {
         if (video) observer.unobserve(video);
       });
     };
-  }, [isMuted, videoRefs]);
-
-  // Function to handle touch events on the scrollable container
-
-  // const handleScrollTouchStart = useCallback((e: TouchEvent) => {
-  //   touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  // }, []);
-
-  // const handleScrollTouchMove = useCallback((e: TouchEvent) => {
-  //   touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  // }, []);
-
-  // const handleScrollTouchEnd = useCallback(() => {
-  //   const swipeDistanceY = touchEnd.current.y - touchStart.current.y;
-
-  //   if (swipeDistanceY < -50) {
-  //     scrollRef.current?.scrollBy({
-  //       top: window.innerHeight,
-  //       behavior: "instant",
-  //     });
-  //   }
-  //   if (swipeDistanceY > 50) {
-  //     scrollRef.current?.scrollBy({
-  //       top: -window.innerHeight,
-  //       behavior: "instant",
-  //     });
-  //   }
-  // }, []);
-
-  // Effect to manage touch events on the scrollable container
-
-  // useEffect(() => {
-  //   const element = scrollRef.current;
-  //   if (element) {
-  //     element.addEventListener("touchstart", handleScrollTouchStart);
-  //     element.addEventListener("touchmove", handleScrollTouchMove);
-  //     element.addEventListener("touchend", handleScrollTouchEnd);
-
-  //     return () => {
-  //       element.removeEventListener("touchstart", handleScrollTouchStart);
-  //       element.removeEventListener("touchmove", handleScrollTouchMove);
-  //       element.removeEventListener("touchend", handleScrollTouchEnd);
-  //     };
-  //   }
-  // }, [handleScrollTouchStart, handleScrollTouchMove, handleScrollTouchEnd]);
+  }, [isMuted, videoRefs, data]);
 
   // Effect to add smooth transition to the event detail element
   useEffect(() => {
@@ -273,22 +237,28 @@ const DashBoard: React.FC = () => {
         if (swipeButtonsRef.current) {
           swipeButtonsRef.current.style.top = "0px";
           swipeButtonsRef.current.style.opacity = "0";
-          swipeButtonsRef.current.style.height = "150px";
+          swipeButtonsRef.current.style.height = "92vh";
+          swipeButtonsRef.current.style.width = "10px";
+          swipeButtonsRef.current.style.right = "0px";
+					swipeButtonsRef.current.id = "";
         }
       }, 5000);
   }, [loading]);
 
+  const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
+	if(loading ) return <Loading/>
   return (
     <IonPage>
       <IonContent fullscreen={true}>
-        <div className="relative h-screen">
+        <div className="relative h-full">
           <div
-            className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
+            className="relative h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
             ref={scrollRef}
           >
             {data &&
               data.recommendMe.map((event, index) => (
-                <div className="relative h-screen" key={event.id}>
+                <div className="relative h-full" key={event.id}>
                   <video
                     key={event.id + "-video"}
                     id={event.id}
@@ -298,26 +268,34 @@ const DashBoard: React.FC = () => {
                     muted={true}
                     autoPlay
                     loop
-                    className={`snap-center inset-0 object-cover w-full h-screen absolute`}
-                    style={
-                      {
-                        // top: `calc(${index} * 100vh)`,
-                      }
-                    }
+                    playsInline
+                    disablePictureInPicture
+                    style={{ pointerEvents: "none" }}
+                    className={`snap-center inset-0 object-cover w-full h-full absolute`}
                   >
-                    {/* <source type="application/x-mpegURL" /> */}
                     Your browser does not support the video tag.
                   </video>
                   <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
                     <IconButton
                       icon={event.hostedAt.avatar}
                       label={event.hostedAt.name}
-                      // onClick={() => history.push("/host-detail")}
+                      onClick={() => history.push("/venue/" + event.hostedAt.id)}
                     />
                     <IconButton
-                      icon={isLiked ? LikedSVG : FavoriteSVG}
-                      label={isLiked ? "Liked" : "Like"}
-                      onClick={toggleLike}
+                      icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
+                      label={likedEvents[event.id] ? "Liked" : "Like"}
+                      onClick={() => {
+                        setLikedEvents((prev) => ({
+                          ...prev,
+                          [event.id]: !prev[event.id],
+                        }));
+                        setLikeRequest({
+                          variables: {
+                            id: event.id,
+                            like: !likedEvents[event.id],
+                          },
+                        });
+                      }}
                     />
                     <IconButton
                       icon={isMuted ? UnmuteSVG : MuteSVG}
@@ -375,7 +353,7 @@ const DashBoard: React.FC = () => {
               ))}
           </div>
           <>
-            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4">
+            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4" onClick={handleGoEventDetail}>
               Tailored
             </p>
             {/* <img
@@ -386,7 +364,8 @@ const DashBoard: React.FC = () => {
             /> */}
             <button
               ref={swipeButtonsRef} // Assigning ref dynamically
-              className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 animate-wiggle`}
+							id="animate-wiggle"
+              className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75`}
             >
               <img src={ArrowLeft} alt="Swipe for Details" />
               <p className="text-body-small font-semibold leading-[17px]">

@@ -110,8 +110,8 @@ const Favorite: React.FC = () => {
           </div>
         </div>
       </IonHeader>
-      <IonContent fullscreen={true} >
-        <div className="p-4 text-white overflow-y-auto mb-[75px] h-full bg-black">
+      <IonContent fullscreen={true}>
+        <div className="p-4 text-white mb-[70px]  bg-black">
           {activeTab === 0 && (
             <div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
