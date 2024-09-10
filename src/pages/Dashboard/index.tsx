@@ -18,6 +18,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { AccessPolicy } from "../../__generated__/graphql";
 import moment from "moment";
 import playM3u8 from "../../util/playM3u8";
+import Loading from "../../components/Loading";
 
 const QUERY_WHAT_I_LIKE = gql(`
   query whatILike {
@@ -236,14 +237,16 @@ const DashBoard: React.FC = () => {
           swipeButtonsRef.current.style.top = "0px";
           swipeButtonsRef.current.style.opacity = "0";
           swipeButtonsRef.current.style.height = "92vh";
-          swipeButtonsRef.current.style.width = "5px";
-          swipeButtonsRef.current.style.right = "2px";
+          swipeButtonsRef.current.style.width = "10px";
+          swipeButtonsRef.current.style.right = "0px";
+					swipeButtonsRef.current.id = "";
         }
       }, 5000);
   }, [loading]);
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
 
+	if(loading ) return <Loading/>
   return (
     <IonPage>
       <IonContent fullscreen={true}>
@@ -360,7 +363,8 @@ const DashBoard: React.FC = () => {
             /> */}
             <button
               ref={swipeButtonsRef} // Assigning ref dynamically
-              className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75 animate-wiggle`}
+							id="animate-wiggle"
+              className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75`}
             >
               <img src={ArrowLeft} alt="Swipe for Details" />
               <p className="text-body-small font-semibold leading-[17px]">

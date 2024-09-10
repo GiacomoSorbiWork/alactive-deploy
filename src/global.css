@@ -56,7 +56,7 @@ input:focus-visible {
     transform: translateX(5px);
   }
 }
-.animate-wiggle {
+#animate-wiggle {
   animation: wiggle 1s ease-in-out infinite;
 }
 

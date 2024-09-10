@@ -149,7 +149,7 @@ const OnBoarding: React.FC = () => {
           likeEvent({ variables: { target: eventID } });
         });
 
-        history.push("/dashboard");
+        location.pathname = "/dashboard";
         showAlert({
           message: "Remember to like events to improve your recommendations!",
         });
@@ -158,7 +158,7 @@ const OnBoarding: React.FC = () => {
           message: "Already Registered",
           type: "warning",
         });
-        history.push("/dashboard");
+        location.pathname = "/dashboard";
       }
     }
 
