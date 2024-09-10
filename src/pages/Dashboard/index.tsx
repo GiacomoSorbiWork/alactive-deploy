@@ -110,6 +110,7 @@ const DashBoard: React.FC = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [currentEventId, setCurrentEventId] = useState<string>("");
 
   const { data: ILike, refetch: refetchILike } = useQuery(QUERY_WHAT_I_LIKE);
   const { loading, data } = useQuery(QUERY_RECOMMEND);
@@ -136,8 +137,8 @@ const DashBoard: React.FC = () => {
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
-    history.push("/event-detail");
-  }, [history]);
+    history.push("/event/" + currentEventId);
+  }, [history, currentEventId]);
 
   // Function to handle touch start on swipe buttons
   const handleSwipeButtonTouchStart = useCallback((e: TouchEvent) => {
@@ -207,6 +208,7 @@ const DashBoard: React.FC = () => {
           } else {
             video.muted = true;
           }
+          setCurrentEventId(video.id);
         });
       },
       { threshold: 0.5 }
