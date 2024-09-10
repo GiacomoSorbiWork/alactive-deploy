@@ -73,7 +73,7 @@ export const extractMinPrice = (policies: AccessPolicy[]) => {
 };
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
-  <button
+  icon && label&& <button
     className="flex flex-col items-center m-2 cursor-pointer"
     onClick={onClick}
     aria-label={label}
@@ -82,7 +82,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
       style={{ clipPath: "circle(50% at 50% 50%)" }}
       src={icon}
       className={`${
-        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "w-8" : "h-10"
+        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "w-8" : "h-10 w-10"
       }`}
       alt={label}
     />
