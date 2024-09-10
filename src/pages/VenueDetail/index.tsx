@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import CarouselComponent from "../../components/Carousel";
 import items from "../../components/Carousel/data";
 import CloudCheck from "../../../resources/svg/artist.svg";
@@ -16,23 +16,12 @@ import { detailData } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonPage } from "@ionic/react";
 import { RoundedButton } from "../../subComponents/Buttons";
-import { useHistory } from "react-router";
-import {TypedDocumentNode} from "@graphql-typed-document-node/core";
-import {LikeMutation, LikeMutationVariables, VenueQuery, VenueQueryVariables} from "../../__generated__/graphql";
-import {gql} from "../../__generated__";
+import { useHistory, useParams } from "react-router";
+import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
 import Loading from "../../components/Loading";
 
-
-const MUTATION_LIKE :TypedDocumentNode<LikeMutation, LikeMutationVariables> = gql(`
-  mutation Like($id: String!, $like: Boolean!) {
-    setLike(target: $id, like: $like) {
-      handle
-    }
-  }
-`);
-
-const QUERY_VENUE :TypedDocumentNode<VenueQuery, VenueQueryVariables> = gql(`
+const QUERY_VENUE = gql(`
  query Venue($id: ID!) {
      me {
       likes{
@@ -63,8 +52,8 @@ const QUERY_VENUE :TypedDocumentNode<VenueQuery, VenueQueryVariables> = gql(`
         }
       }
     }
+	}
 `);
-
 
 const UserHeader: React.FC<UserHeaderProps> = ({ imgUrl, name, subname }) => (
   <div className="flex items-center p-4">
@@ -89,6 +78,10 @@ const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
 };
 
 const VenueDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const { loading, data } = useQuery(QUERY_VENUE, { variables: { id: id } });
+  console.log(data);
+
   const [activeTab, setActiveTab] = useState<number>(0);
   const [Liked, setLiked] = useState(false);
   const history = useHistory();
