@@ -349,7 +349,7 @@ const DashBoard: React.FC = () => {
               ))}
           </div>
           <>
-            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4">
+            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4" onClick={handleGoEventDetail}>
               Tailored
             </p>
             {/* <img

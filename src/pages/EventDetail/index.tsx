@@ -290,10 +290,10 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
         <ArrowBack />
         <img
           className="absolute right-4 top-6 z-20"
-          src={Liked ? LikedSVG : LikeSVG}
+          src={!Liked ? LikedSVG : LikeSVG}
           onClick={toggleLike}
         />
-        <CarouselComponent items={[]} />
+        <CarouselComponent items={event.media} />
         <div className="p-4">
           <EventHeader title={event.name} subtitle={event.description ?? ''} datetime={event.datetime} />
           <Divider className="!border-white h-0 opacity-20" />

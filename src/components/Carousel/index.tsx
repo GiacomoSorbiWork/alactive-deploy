@@ -6,17 +6,39 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import playM3u8 from "../../util/playM3u8";
 
 interface CarouselItemProps {
-  video: string;
+  url: string;
 }
 
-const CarouselItem: React.FC<CarouselItemProps> = ({ video }) => {
+const isVideoUrl = (url: string) => {
+  const videoAllowUrl = ["m3u8", "avi", "mp4", "mov"];
+  return videoAllowUrl.some((ext) => url.endsWith(`.${ext}`));
+};
+
+const CarouselItem: React.FC<CarouselItemProps> = ({ url }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     if (videoRef.current) {
-      playM3u8(video, videoRef.current);
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const video = entry.target as HTMLVideoElement;
+            if (entry.isIntersecting) {
+              video.muted = false;
+              playM3u8(url, video);
+            } else {
+              video.muted = true;
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      observer.observe(videoRef.current);
+      return () => {
+        if (videoRef.current) observer.unobserve(videoRef.current);
+      };
     }
-  }, [video]); // Effect will run when 'video' changes
+  }, [videoRef, url]);
 
   return (
     <Paper
@@ -26,16 +48,28 @@ const CarouselItem: React.FC<CarouselItemProps> = ({ video }) => {
         overflow: "hidden",
       }}
     >
-      <video
-        ref={videoRef}
-        key={video}
-        muted
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      ></video>
+      {isVideoUrl(url) ? (
+        <video
+          ref={videoRef}
+          key={url}
+          muted
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+					autoPlay
+        ></video>
+      ) : (
+        <img
+          src={url}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      )}
     </Paper>
   );
 };
@@ -65,7 +99,7 @@ const CustomCarousel: React.FC<CustomCarouselProps> = ({ items }) => {
         }}
       >
         {items &&
-          items.map((item, index) => <CarouselItem key={index} video={item} />)}
+          items.map((item, index) => <CarouselItem key={index} url={item} />)}
       </Carousel>
       <Box
         sx={{
