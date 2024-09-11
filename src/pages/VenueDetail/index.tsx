@@ -12,16 +12,18 @@ import LineSVG from "../../../resources/svg/social/link-svgrepo-com.svg";
 import LikeSVG from "../../../resources/svg/favorite.svg";
 import LikedSVG from "../../../resources/svg/liked.svg";
 
-import { UserHeaderProps, SocialIconProps } from "./type";
+import { UserHeaderProps, SocialIconProps, MapProps } from "./type";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonPage } from "@ionic/react";
 import { RoundedButton } from "../../subComponents/Buttons";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { useHistory, useParams } from "react-router";
 import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
 import Loading from "../../components/Loading";
 import moment from "moment/moment";
-import {extractMinPrice} from "../Dashboard";
+import { extractMinPrice } from "../Dashboard";
+import { Venue } from "../../__generated__/graphql";
 
 const QUERY_VENUE= gql(`
   query Venue($id: ID!) {
@@ -36,6 +38,8 @@ const QUERY_VENUE= gql(`
       municipality
       postcode
       address
+      longitude
+      latitude
       avatar
       description
       media
@@ -58,6 +62,14 @@ const QUERY_VENUE= gql(`
   }
 `);
 
+const MUTATION_LIKE = gql(`
+  mutation Like($id: String!, $like: Boolean!) {
+    setLike(target: $id, like: $like) {
+      handle
+    }
+  }
+`);
+
 const VenueHeader: React.FC<UserHeaderProps> = ({
   imgUrl,
   name,
@@ -74,6 +86,35 @@ const VenueHeader: React.FC<UserHeaderProps> = ({
     </div>
   </div>
 );
+
+const handleMapClick = (latitude: number, longitude: number) => {
+  const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+  window.open(googleMapsUrl, '_blank');
+};
+
+const MapCard: React.FC<MapProps> = ({ coordinates, address }) => {
+
+  
+
+  return (
+  <div id="map" className="h-64 w-full rounded-md overflow-hidden mb-4">
+    <MapContainer 
+      center={[coordinates[0], coordinates[1]]} 
+      zoom={13} scrollWheelZoom={false} 
+      className="h-full w-full" 
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <Marker position={[coordinates[0], coordinates[1]]}>
+        <Popup>{address}</Popup>
+      </Marker>
+    </MapContainer>
+  </div>
+
+  );
+};
 
 const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
   return (
@@ -98,6 +139,8 @@ const VenueDetail: React.FC = () => {
 
   if (loading || !data || !data.venue) return <Loading />;
   const venue = data.venue
+
+  const handleClick = () => handleMapClick(venue.latitude, venue.longitude);
 
   return (
     <IonPage>
@@ -208,14 +251,17 @@ const VenueDetail: React.FC = () => {
             <>
               <div>
                 <h2 className="text-title-small font-bold mb-4">Address</h2>
-                <p className="text-label-small mb-4">{
+                <p 
+                  className="text-label-small mb-4"
+                  onClick={handleClick}  
+                >{
                   venue.address+', '+venue.postcode+', '+venue.municipality+', '+venue.country
                 }
                 </p>
-                <img
-                  className="rounded-md"
-                  src="https://img.freepik.com/premium-vector/3d-top-view-map-with-destination-location-point_34645-1177.jpg?w=1380"
-                ></img>
+                <MapCard
+                  coordinates={[venue.latitude, venue.longitude]} // Passa le coordinate della venue
+                  address={venue.address + ', ' + venue.postcode + ', ' + venue.municipality + ', ' + venue.country} // Componi l'indirizzo completo
+                />
               </div>
 
               <div className="mt-5">
@@ -226,11 +272,11 @@ const VenueDetail: React.FC = () => {
                   {venue.description}
                 </p>
               </div>
-              <SocialIcon icon={SpotifySVG} text="Spotify" />
+              {/* <SocialIcon icon={SpotifySVG} text="Spotify" />
               <SocialIcon icon={YouTubeSVG} text="YouTube" />
               <SocialIcon icon={LinkdinSVG} text="LinkedIn" />
               <SocialIcon icon={InstagamSVG} text="Instagram" />
-              <SocialIcon icon={LineSVG} text="stefanooffical.com" />
+              <SocialIcon icon={LineSVG} text="stefanooffical.com" /> */}
             </>
           )}
         </div>
