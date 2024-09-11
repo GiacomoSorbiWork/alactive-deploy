@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CarouselComponent from "../../components/Carousel";
-import items from "../../components/Carousel/data";
+
 import CloudCheck from "../../../resources/svg/artist.svg";
 import UserAvatar from "../../../resources/avatar/Basic_Ui_(186).jpg";
 import EventCard from "../../components/EventCard";
@@ -11,8 +11,8 @@ import LinkdinSVG from "../../../resources/svg/social/linkedin-app-white-icon.sv
 import LineSVG from "../../../resources/svg/social/link-svgrepo-com.svg";
 import LikeSVG from "../../../resources/svg/favorite.svg";
 import LikedSVG from "../../../resources/svg/liked.svg";
+
 import { UserHeaderProps, SocialIconProps } from "./type";
-import { detailData } from "./data";
 import ArrowBack from "../../components/ArrowBack";
 import { IonContent, IonPage } from "@ionic/react";
 import { RoundedButton } from "../../subComponents/Buttons";
@@ -23,24 +23,14 @@ import Loading from "../../components/Loading";
 import moment from "moment/moment";
 import {extractMinPrice} from "../Dashboard";
 
-export const MUTATION_LIKE = gql(
-    ` 
-  mutation Like($id: String!, $like: Boolean!) {
-    setLike(target: $id, like: $like) {
-      handle
-    }
-    }
-  `
-)
-
-const QUERY_VENUE = gql(`
- query Venue($id: ID!) {
-     me {
-      likes{
-         id
+const QUERY_VENUE= gql(`
+  query Venue($id: ID!) {
+    me {
+      likes {
+        id
       }
     }
-    venue($id: ID!) {
+    venue(id: $id) {
       name
       country
       municipality
@@ -49,22 +39,22 @@ const QUERY_VENUE = gql(`
       avatar
       description
       media
-      highlights{
+      highlights {
         title
         cover
         videos
       }
-      hosting{
+      hosting {
         name
         media
         datetime
-        accessPolicies{
+        accessPolicies {
           minPrice
           currency
         }
       }
     }
-	}
+  }
 `);
 
 const VenueHeader: React.FC<UserHeaderProps> = ({
@@ -95,24 +85,17 @@ const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
 
 const VenueDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { loading, data } = useQuery(QUERY_VENUE, { variables: { id: id } });
-  console.log(data);
+  const { loading, data } = useQuery(QUERY_VENUE, { variables: { id } });
+ console.log(data);
 
   const [activeTab, setActiveTab] = useState<number>(0);
-  const [Liked, setLiked] = useState(data?.me?.likes?.some(item => id === item.id));
   const history = useHistory();
   const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
 
-  const [setLikeRequest] = useMutation(MUTATION_LIKE);
 
-  const toggleLike = () => {
-    setLikeRequest({ variables: { id: id, like: !Liked } });
-    setLiked((prev) => !prev);
-  };
-
-
+  if (loading || !data || !data.venue) return <Loading />;
   const venue = data.venue
 
   return (
@@ -122,7 +105,6 @@ const VenueDetail: React.FC = () => {
         <img
           className="absolute right-4 top-6 z-20"
           src={Liked ? LikedSVG : LikeSVG}
-          onClick={toggleLike}
         />
         <CarouselComponent items={venue.media} />
         <VenueHeader imgUrl={venue.avatar} name={venue.name} subname={"venue"} />
@@ -185,11 +167,6 @@ const VenueDetail: React.FC = () => {
                   ))}
                 </div>
               </div>
-              {detailData.length >= 6 && (
-                <div className="flex justify-center p-4">
-                  <RoundedButton onClick={() => history.push("host-events")} />
-                </div>
-              )}
               {/* <div className="mt-7">
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
                 <div className="flex overflow-x-auto gap-4">
