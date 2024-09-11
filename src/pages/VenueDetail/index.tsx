@@ -45,6 +45,7 @@ const QUERY_VENUE= gql(`
         videos
       }
       hosting {
+        id
         name
         media
         datetime
@@ -102,10 +103,6 @@ const VenueDetail: React.FC = () => {
     <IonPage>
       <IonContent fullscreen={true}>
         <ArrowBack />
-        <img
-          className="absolute right-4 top-6 z-20"
-          src={Liked ? LikedSVG : LikeSVG}
-        />
         <CarouselComponent items={venue.media} />
         <VenueHeader imgUrl={venue.avatar} name={venue.name} subname={"venue"} />
         <div className="mt-0">
@@ -158,9 +155,9 @@ const VenueDetail: React.FC = () => {
                                   imgUrl={event.media[0]}
                                   title={event.name}
                                   date={moment(event.datetime).format("D MMM")}
-                                  location={event.hostedAt.municipality}
+                                  location={venue.municipality}
                                   price={`FROM ${extractMinPrice(event.accessPolicies)}`}
-                                  titleLogo={event.hostedAt.avatar}
+                                  titleLogo={venue.avatar}
                                   selectFunc={() => history.push(`/event/${event.id}`)}
                               />
 
