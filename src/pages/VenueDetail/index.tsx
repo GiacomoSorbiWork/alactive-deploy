@@ -128,7 +128,15 @@ const SocialIcon: React.FC<SocialIconProps> = ({ icon, text }) => {
 const VenueDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { loading, data } = useQuery(QUERY_VENUE, { variables: { id } });
- console.log(data);
+  console.log(data);
+
+  const [Liked, setLiked] = useState(data?.me?.likes?.some(item => id === item.id));
+  const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
+  const toggleLike = () => {
+    setLikeRequest({ variables: { id: id, like: !Liked } });
+    setLiked((prev) => !prev);
+  };
 
   const [activeTab, setActiveTab] = useState<number>(0);
   const history = useHistory();
@@ -146,6 +154,11 @@ const VenueDetail: React.FC = () => {
     <IonPage>
       <IonContent fullscreen={true}>
         <ArrowBack />
+        <img
+          className="absolute right-4 top-6 z-20"
+          src={!Liked ? LikedSVG : LikeSVG}
+          onClick={toggleLike}
+        />
         <CarouselComponent items={venue.media} />
         <VenueHeader imgUrl={venue.avatar} name={venue.name} subname={"venue"} />
         <div className="mt-0">

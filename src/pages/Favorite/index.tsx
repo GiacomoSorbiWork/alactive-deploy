@@ -5,7 +5,7 @@ import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
 import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
-import { AccessPolicy, Event, Host } from "../../__generated__/graphql";
+import { AccessPolicy, Event, Host, Venue } from "../../__generated__/graphql";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 import Loading from "../../components/Loading";
@@ -139,7 +139,7 @@ const Favorite: React.FC = () => {
             <div className="flex flex-col gap-4">
               {data &&
                 data.me.likes
-                  .filter((liked): liked is Host => {
+                  .filter((liked): liked is Venue => {
                     return liked.__typename == "Host";
                   })
                   .map((host) => (
