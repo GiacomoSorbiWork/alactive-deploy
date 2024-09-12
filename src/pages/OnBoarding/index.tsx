@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, useCallback, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { ProgressBar } from "../../components/ProgressBar";
 import Form from "../../components/Form";
 import RangeSlider from "../../components/DataRanger";
@@ -148,8 +148,6 @@ const OnBoarding: React.FC = () => {
         userInput.favoriteEventIDs.forEach((eventID) => {
           likeEvent({ variables: { target: eventID } });
         });
-
-        location.pathname = "/dashboard";
         showAlert({
           message: "Remember to like events to improve your recommendations!",
         });
@@ -158,7 +156,6 @@ const OnBoarding: React.FC = () => {
           message: "Already Registered",
           type: "warning",
         });
-        location.pathname = "/dashboard";
       }
     }
 
@@ -355,12 +352,24 @@ const OnBoarding: React.FC = () => {
         {step < 7 && step != 4 && (
           <div className="flex items-center p-4 gap-2 bg-black bg-opacity-50 backdrop-blur-sm sticky bottom-0">
             <BackButton onClick={handleBack} />
-            <LargeDefaultButton
-              text="Continue"
-              className="w-full"
-              onClick={handleNext}
-              state={isActive ? "isActive" : "disabled"}
-            />
+            {step == 6 ? (
+              <Link
+                to="/dashboard"
+                className={`min-h-[56px] flex items-center justify-center rounded-normal p-big w-full bg-activeButton`}
+                onClick={handleNext}
+              >
+                <span className="font-semibold text-body-large leading-[16.94px]">
+                  Continue
+                </span>
+              </Link>
+            ) : (
+              <LargeDefaultButton
+                text="Continue"
+                className="w-full"
+                onClick={handleNext}
+                state={isActive ? "isActive" : "disabled"}
+              />
+            )}
             {lastStep > step && (
               <BackButton onClick={handleNext} state="noBack isActive" />
             )}
