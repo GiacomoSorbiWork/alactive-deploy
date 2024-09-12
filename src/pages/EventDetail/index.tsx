@@ -101,18 +101,22 @@ const QUERY_EVENT = gql(`
   }
 `);
 
+const Placeholder: React.FC = () => (
+  <div className="placeholder w-1/2 h-4 bg-gray-300 rounded mt-2"></div>
+);
+
 const EventHeader: React.FC<EventHeaderProps> = ({
   title,
   subtitle,
   datetime,
 }) => {
-  const date = moment.utc(datetime).format("dddd, MMMM Do YYYY");
-  const startingTime = moment.utc(datetime).format("h:mm a");
+  const date = datetime ? moment.utc(datetime).format("dddd, MMMM Do YYYY") : "Loading...";
+  const startingTime = datetime ? moment.utc(datetime).format("h:mm a") : "Loading...";
 
   return (
     <div className="mb-6 mt-[-10px]">
-      <p className="text-[30px] font-bold">{title}</p>
-      <p className="text-[18px] font-medium mt-[5px] mb-[19px]">{subtitle}</p>
+      <p className="text-[30px] font-bold">{title ? title : <Placeholder />}</p>
+      <p className="text-[18px] font-medium mt-[5px] mb-[19px]">{subtitle ? subtitle : <Placeholder />}</p>
       <div>
         <div className="flex items-center mb-4">
           <img src={CalendarSVG} alt="" />
@@ -129,21 +133,31 @@ const EventHeader: React.FC<EventHeaderProps> = ({
   );
 };
 
-const MusicGenres: React.FC<MusicGenresProps> = ({ fields }) => (
-  <div className="my-6">
-    <p className="text-title-small font-bold mb-4">Music Genres</p>
+const MusicGenres: React.FC<MusicGenresProps> = ({ fields }) => {
+  const placeholders = [1, 2, 3]; // Array per i placeholder
+
+  return (
     <div className="flex flex-wrap gap-small">
-      {fields.map((genre: string, index: number) => (
+      {fields && fields.length > 0
+        ? fields.map((genre: string, index: number) => (
         <div
           key={index}
           className="p-2 rounded-rounded bg-white bg-opacity-10 text-body-small"
         >
           {genre}
         </div>
+          ))
+        : placeholders.map((_, index) => (
+            <div
+              key={index}
+              className="p-2 rounded-rounded bg-white bg-opacity-10 text-body-small"
+            >
+              <Placeholder />
+          </div>
       ))}
     </div>
-  </div>
-);
+  );
+};
 
 const LineUp: React.FC<LineUpProps> = ({ avatar, userName }) => (
   <div className="flex flex-col items-center">
@@ -211,15 +225,13 @@ const IconText: React.FC<IconTextProps> = ({
   </>
 );
 
-const Rules: React.FC<{sections: RuleSection[]}> = ({sections}) => {
+const Rules: React.FC<{sections: RuleSection[]}> = ({ sections }) => {
+  const placeholders = [1, 2, 3]; // Array per generare i placeholder
+
   return (
     <div>
-      <p className="text-title-small font-semibold mt-6 mb-4">Rules</p>
-      <p className="text-body-medium leading-none">
-        We ask every guest who will attend the event to follow the specific
-        guidelines.
-      </p>
-      {sections.map((section, index) => (
+      {sections && sections.length > 0 ? (
+        sections.map((section, index) => (
           <div key={index}>
             <p className="text-body-medium font-semibold mt-6 mb-1">{section.title}</p>
             {section.rules.map((rule, index) => {
@@ -232,7 +244,17 @@ const Rules: React.FC<{sections: RuleSection[]}> = ({sections}) => {
               );
             })}
           </div>
-      ))}
+        ))
+      ) : (
+        // Mostra placeholder se sections è vuoto o non definito
+        placeholders.map((_, index) => (
+          <div key={index}>
+            <p className="text-body-medium font-semibold mt-6 mb-1">
+              <Placeholder />
+            </p>
+          </div>
+        ))
+      )}
     </div>
   );
 };
@@ -282,10 +304,10 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const handleClose = useCallback(() => setIsBookingModal(false), []);
 
   // TODO: Error handling.
-  if (loading || !data || !data.event) 
-    return <Loading />
+  // if (loading || !data || !data.event) 
+  //   return <Loading/>
 
-  const event = data.event
+  const event = data?.event
 
   return (
     <IonPage>
@@ -297,37 +319,64 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           src={!Liked ? LikedSVG : LikeSVG}
           onClick={toggleLike}
         />
-        <CarouselComponent items={event.media} />
+        <CarouselComponent items={event?.media?? []} />
+        
         <div className="p-4">
-          <EventHeader title={event.name} subtitle={event.description ?? ''} datetime={event.datetime} />
+
+          <EventHeader title={event?.name ?? ''} subtitle={event?.description ?? ''} datetime={event?.datetime} />
+
           <Divider className="!border-white h-0 opacity-20" />
-          <MusicGenres fields={event.musicGenres} />
+
+          <div className="my-6">
+            <p className="text-title-small font-bold mb-4">Music Genres</p>
+
+            <MusicGenres fields={event?.musicGenres?? []} />
+            
+          </div>
+
           <Divider className="!border-white h-0 opacity-20" />
-          <div className="mt-6">
+
+          {/* <div className="mt-6">
             <p className="text-title-small font-bold mb-4">Lineup</p>
             <div className="overflow-x-auto pb-6">
               <div className="flex w-max gap-6">
-                {/* TODO: Add lineup. */}
-                {/* {lineUpData.map((item, index) => (
+                {{lineUpData.map((item, index) => (
                   <LineUp key={index} {...item} />
-                ))} */}
+                ))} 
               </div>
             </div>
-          </div>
+          </div> */}
+
           <Divider className="!border-white h-0 opacity-20" />
+
+          {event && event.hostedAt && (
           <VenueCard 
             imgUrl={event.hostedAt.avatar} 
             title={event.hostedAt.name} 
-            subTitle={'Venue'} 
-            text={event.hostedAt.description ?? ''}
-            coordinates={[event.hostedAt.latitude, event.hostedAt.longitude]}
-            address={event.hostedAt.address + ', ' + event.hostedAt.postcode}
+            subTitle="Venue" 
+            text={event.hostedAt.description ?? ''} 
+            coordinates={[event.hostedAt.latitude, event.hostedAt.longitude]} 
+            address={`${event.hostedAt.address}, ${event.hostedAt.postcode}`} 
           />
+        )}
+
           <Divider className="!border-white h-0 opacity-20" />
+
           {/* <Host {...hostData} /> */}
-          <Rules sections={event.rules as RuleSection[]}/>
+          <div>
+            <p className="text-title-small font-semibold mt-6 mb-4">Rules</p>
+            <p className="text-body-medium leading-none">
+              We ask every guest who will attend the event to follow the specific
+              guidelines.
+            </p>
+        
+            <Rules sections={event?.rules as RuleSection[]}/>  
+
+          </div>
+
         </div>
 
+        {event && event.accessPolicies &&(
         <SwipeableDrawer
           container={container}
           anchor="bottom"
@@ -383,19 +432,25 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             ></LargeDefaultButton>
           </div>
         </SwipeableDrawer>
+        )}
+
       </IonContent>
+
       <IonFooter className="bg-primaryContainer p-4 items-center grid grid-cols-3 gap-1">
         <div className="col-span-2">
-          <TextOnlyButton
-            text={`Starting from ${extractMinPrice(event.accessPolicies)}`}
-            className="!text-body-medium leading-[22px]"
-          />
+          {event && event.accessPolicies &&(
+            <TextOnlyButton
+              text={`Starting from ${extractMinPrice(event.accessPolicies)}`}
+              className="!text-body-medium leading-[22px]"
+            />
+          )}
         </div>
         <LargeDefaultButton
           text="Book"
           className="ml-4 !rounded-[12px]"
           onClick={handleOpen}
         />
+
       </IonFooter>
     </IonPage>
   );
