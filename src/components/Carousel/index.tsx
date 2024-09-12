@@ -133,7 +133,7 @@ const CustomCarousel: React.FC<CustomCarouselProps> = ({ items }) => {
       <div
   style={{
     height: "400px",
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#b0b0b0",
     position: "relative",
     overflow: "hidden",
   }}

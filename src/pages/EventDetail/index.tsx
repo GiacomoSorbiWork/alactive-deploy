@@ -102,7 +102,7 @@ const QUERY_EVENT = gql(`
 `);
 
 const Placeholder: React.FC = () => (
-  <div className="placeholder w-1/2 h-4 bg-gray-300 rounded mt-2"></div>
+  <div className="placeholder w-1/2 h-4 bg-gray-700 rounded mt-2  animate-pulse"></div>
 );
 
 const EventHeader: React.FC<EventHeaderProps> = ({
@@ -110,8 +110,8 @@ const EventHeader: React.FC<EventHeaderProps> = ({
   subtitle,
   datetime,
 }) => {
-  const date = datetime ? moment.utc(datetime).format("dddd, MMMM Do YYYY") : "Loading...";
-  const startingTime = datetime ? moment.utc(datetime).format("h:mm a") : "Loading...";
+  const date = datetime ? moment.utc(datetime).format("dddd, MMMM Do YYYY") : <Placeholder />;
+  const startingTime = datetime ? moment.utc(datetime).format("h:mm a") : <Placeholder />;
 
   return (
     <div className="mb-6 mt-[-10px]">

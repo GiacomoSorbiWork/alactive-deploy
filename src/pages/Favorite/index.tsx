@@ -163,6 +163,7 @@ const Favorite: React.FC = () => {
                       imgUrl={venue.avatar ?? ""}
                       title={venue.name}
                       subTitle={venue.type ?? ""}
+                      nextURL={"/venue/" + venue.id}
                     />
                   ))}
             </div>
