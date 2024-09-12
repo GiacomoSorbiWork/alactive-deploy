@@ -5,7 +5,7 @@ import { IonContent, IonHeader, IonPage } from "@ionic/react";
 import FooterBar from "../../components/FooterBar";
 import { useQuery } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
-import { AccessPolicy, Event, Host } from "../../__generated__/graphql";
+import { AccessPolicy, Event, Host, Venue } from "../../__generated__/graphql";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 import Loading from "../../components/Loading";
@@ -32,6 +32,13 @@ const QUERY_LIKED = gql(`
         ... on Host {
           name
           avatar
+        }
+
+        ... on Venue {
+          id
+          name
+          avatar     
+          type   
         }
       }
     }
@@ -67,7 +74,7 @@ const Favorite: React.FC = () => {
     }).format(Math.round(policy.minPrice));
   };
 
-  if (queryLoading) return <Loading />;
+  // if (queryLoading) return <Loading />;
 
   return (
     <IonPage>
@@ -139,15 +146,15 @@ const Favorite: React.FC = () => {
             <div className="flex flex-col gap-4">
               {data &&
                 data.me.likes
-                  .filter((liked): liked is Host => {
-                    return liked.__typename == "Host";
+                  .filter((liked): liked is Venue => {
+                    return liked.__typename == "Venue";
                   })
-                  .map((host) => (
+                  .map((venue) => (
                     <HostCard
-                      key={host.id}
-                      imgUrl={host.avatar ?? ""}
-                      title={host.name}
-                      subTitle="Nightclub"
+                      key={venue.id}
+                      imgUrl={venue.avatar ?? ""}
+                      title={venue.name}
+                      subTitle={venue.type ?? ""}
                     />
                   ))}
             </div>

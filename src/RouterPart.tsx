@@ -64,7 +64,7 @@ const RouterPart: React.FC = () => {
           <>
             <Route exact path="/" component={OnBoarding} />
             <Route exact path="/onBoarding" component={OnBoarding} />
-            <Route exact path="/venue/:id" component={VenueDetail} />
+            <Route path="/venue/:id" component={VenueDetail} />
             <Route exact path="/host-events" component={HostingEvent} />
             <Route path="/event/:id" component={EventDetail} />
             <Route exact path="/event-view" component={EventMediaView} />

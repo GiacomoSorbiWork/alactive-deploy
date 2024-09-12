@@ -3,6 +3,8 @@ import CarouselComponent from "../../components/Carousel";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ClockSVG from "../../../resources/svg/clock.svg";
 import AddressSVG from "../../../resources/svg/address.svg";
+import TicketSVG from "../../../resources/svg/f7_tickets.svg";
+
 
 import LikeSVG from "../../../resources/svg/favorite.svg";
 import LikedSVG from "../../../resources/svg/liked.svg";
@@ -280,7 +282,9 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const handleClose = useCallback(() => setIsBookingModal(false), []);
 
   // TODO: Error handling.
-  if (loading || !data || !data.event) return <Loading />;
+  if (loading || !data || !data.event) 
+    return <Loading />
+
   const event = data.event
 
   return (
@@ -348,13 +352,20 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
           <div className="bg-filterContainer p-4 text-white flex flex-col">
             <Divider className="!border-white h-0 opacity-20 !mt-6" />
             <div className="py-1">
-              {event.accessPolicies.map((item, index) => {
+              {event.accessPolicies
+              .filter(item => item.type === "TICKETS" || item.type === "TABLES")
+              .map((item, index) => {
+
+                const subTitle = item.type === "TABLES" && !event.accessPolicies.some(ap => ap.type === "TICKET")
+                    ? ""
+                    : item.currency + item.minPrice + " - " + item.currency + item.maxPrice;
+
                 return (
                   <BookList
                     key={"booklist" + index}
-                    svg={item.type}
+                    svg={TicketSVG}
                     title={item.type}
-                    subTitle={item.currency + item.minPrice + " - " + item.currency + item.maxPrice}
+                    subTitle={subTitle}
                     className={
                       selectedBook === "booklist" + index
                         ? "bg-white bg-opacity-10 rounded-[20px]"
