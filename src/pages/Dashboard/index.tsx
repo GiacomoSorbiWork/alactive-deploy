@@ -74,23 +74,52 @@ export const extractMinPrice = (policies: AccessPolicy[]) => {
   }).format(Math.round(policy.minPrice));
 };
 
-const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => (
-  icon && label&& <button
-    className="flex flex-col items-center m-2 cursor-pointer"
-    onClick={onClick}
-    aria-label={label}
-  >
-    <img
-      style={{ clipPath: "circle(50% at 50% 50%)" }}
-      src={icon}
-      className={`${
-        ["Like", "Liked", "Mute", "Unmute"].includes(label) ? "w-8" : "h-10 w-10"
-      }`}
-      alt={label}
-    />
-    <p className="text-body-small">{label}</p>
-  </button>
-);
+const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
+  const [iconLoaded, setIconLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    const loadIcon = async () => {
+      try {
+        const response = await fetch(icon);
+        if (response.ok) {
+          setIconLoaded(true);
+        } else {
+          setIconLoaded(false);
+        }
+      } catch {
+        setIconLoaded(false);
+      }
+    };
+
+    if (icon) {
+      loadIcon();
+    }
+  }, [icon]);
+
+  return (
+    <button
+      className="flex flex-col items-center m-2 cursor-pointer"
+      onClick={onClick}
+      aria-label={label}
+    >
+      {iconLoaded ? (
+        <img
+          style={{ clipPath: "circle(50% at 50% 50%)" }}
+          src={icon}
+          className={`${
+            ["Like", "Liked", "Mute", "Unmute"].includes(label)
+              ? "w-8"
+              : "h-10 w-10"
+          }`}
+          alt={label}
+        />
+      ) : (
+        <div className="w-9 h-9 rounded-full bg-white"></div>
+      )}
+      {label && <p className="text-body-small">{label}</p>}
+    </button>
+  );
+};
 
 const useVideoControls = (initialState = { id: "", muted: false }) => {
   const [isMuted, setIsMuted] = useState(initialState.muted);
@@ -123,6 +152,9 @@ const DashBoard: React.FC = () => {
     {}
   );
 
+  const [setLikeRequest] = useMutation(MUTATION_LIKE);
+  const [delayedLoading, setDelayedLoading] = useState(true);
+
   useEffect(() => {
     if (ILike && data) {
       const initialLikedState = data.recommendMe.reduce((acc, event) => {
@@ -137,6 +169,64 @@ const DashBoard: React.FC = () => {
     refetchILike();
   }, [likedEvents]);
 
+  // Handle video playback based on visibility
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(async (entry) => {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            video.muted = isMuted;
+            if (video.src === "") {
+              video.src = String(
+                data?.recommendMe.find((event) => event.id == video.id)?.video
+              );
+              await playM3u8(video.src, video);
+              timer = setTimeout(() => {
+                setDelayedLoading(false);
+              }, 100);
+            }
+          } else {
+            video.muted = true;
+          }
+          setCurrentEventId(video.id);
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    videoRefs.current.forEach((video) => {
+      if (video) observer.observe(video);
+    });
+
+    return () => {
+      videoRefs.current.forEach((video) => {
+        if (video) observer.unobserve(video);
+      });
+      clearTimeout(timer);
+    };
+  }, [isMuted, videoRefs, data]);
+
+  // Effect to add smooth transition to the event detail element
+  useEffect(() => {
+    if (eventDetailRef.current) {
+      eventDetailRef.current.style.transition = "transform 0.1s ease";
+    }
+
+    if (!loading)
+      setTimeout(() => {
+        if (swipeButtonsRef.current) {
+          swipeButtonsRef.current.style.top = "0px";
+          swipeButtonsRef.current.style.opacity = "0";
+          swipeButtonsRef.current.style.height = "92vh";
+          swipeButtonsRef.current.style.width = "10px";
+          swipeButtonsRef.current.style.right = "0px";
+          swipeButtonsRef.current.id = "";
+        }
+      }, 5000);
+  }, [loading]);
+
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
     history.push("/event/" + currentEventId);
@@ -150,7 +240,7 @@ const DashBoard: React.FC = () => {
   // Function to handle touch move on swipe buttons
   const handleSwipeButtonTouchMove = useCallback((e: TouchEvent) => {
     touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    const deltaX = touchEnd.current.x - touchStart.current.x;
+    const deltaX = touchEnd.current.x - touchStart.current.x + 10;
     if (eventDetailRef.current && window.innerWidth >= Math.abs(deltaX)) {
       eventDetailRef.current.style.transform = `translateX(${deltaX}px)`;
     }
@@ -161,13 +251,13 @@ const DashBoard: React.FC = () => {
     const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
     const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
 
-    if (swipeDistanceX > 50 && swipeDistanceY < 10) {
+    if (swipeDistanceX > 30 && swipeDistanceY < 10) {
       const isSwipeLeft = touchEnd.current.x < touchStart.current.x;
 
       if (isSwipeLeft && eventDetailRef.current) {
         // Animate to the left when swiped
         eventDetailRef.current.style.transform = `translateX(-100%)`; // Move to left
-        setTimeout(handleGoEventDetail, 300);
+        setTimeout(handleGoEventDetail, 200);
       }
     } else if (eventDetailRef.current) {
       // Reset position if not an effective swipe
@@ -195,64 +285,15 @@ const DashBoard: React.FC = () => {
     handleSwipeButtonTouchEnd,
   ]);
 
-  // Handle video playback based on visibility
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const video = entry.target as HTMLVideoElement;
-          if (entry.isIntersecting) {
-            video.muted = isMuted;
-						if(video.src === ""){
-							video.src = String(
-								data?.recommendMe.find((event) => event.id == video.id)?.video
-							);
-							playM3u8(video.src, video);
-						}
-          } else {
-            video.muted = true;
-          }
-          setCurrentEventId(video.id);
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    videoRefs.current.forEach((video) => {
-      if (video) observer.observe(video);
-    });
-
-    return () => {
-      videoRefs.current.forEach((video) => {
-        if (video) observer.unobserve(video);
-      });
-    };
-  }, [isMuted, videoRefs, data]);
-
-  // Effect to add smooth transition to the event detail element
-  useEffect(() => {
-    if (eventDetailRef.current) {
-      eventDetailRef.current.style.transition = "transform 0.3s ease";
-    }
-    if (!loading)
-      setTimeout(() => {
-        if (swipeButtonsRef.current) {
-          swipeButtonsRef.current.style.top = "0px";
-          swipeButtonsRef.current.style.opacity = "0";
-          swipeButtonsRef.current.style.height = "92vh";
-          swipeButtonsRef.current.style.width = "10px";
-          swipeButtonsRef.current.style.right = "0px";
-					swipeButtonsRef.current.id = "";
-        }
-      }, 5000);
-  }, [loading]);
-
-  const [setLikeRequest] = useMutation(MUTATION_LIKE);
-
-	if(loading ) return <Loading/>
   return (
     <IonPage>
       <IonContent fullscreen={true}>
+        {(loading || delayedLoading) && (
+          <div className="absolute w-full h-full bg-primaryContainer z-20">
+            <Loading />
+          </div>
+        )}
+
         <div className="relative h-full">
           <div
             className="relative h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
@@ -281,7 +322,9 @@ const DashBoard: React.FC = () => {
                     <IconButton
                       icon={event.hostedAt.avatar}
                       label={event.hostedAt.name}
-                      onClick={() => history.push("/venue/" + event.hostedAt.id)}
+                      onClick={() =>
+                        history.push("/venue/" + event.hostedAt.id)
+                      }
                     />
                     <IconButton
                       icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
@@ -354,28 +397,33 @@ const DashBoard: React.FC = () => {
                 </div>
               ))}
           </div>
-          <>
-            <p className="text-[27px] font-bold cursor-pointer absolute top-5 left-4" onClick={handleGoEventDetail}>
-              Tailored
-            </p>
-            {/* <img
+          {!loading && !delayedLoading && (
+            <>
+              <p
+                className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
+                onClick={handleGoEventDetail}
+              >
+                Tailored
+              </p>
+              {/* <img
               className="h-6 absolute right-3 top-5"
               src={PageInfoSVG}
               alt="Page Info"
               onClick={() => setFilterVisible(true)}
             /> */}
-            <button
-              ref={swipeButtonsRef} // Assigning ref dynamically
-							id="animate-wiggle"
-              className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75`}
-            >
-              <img src={ArrowLeft} alt="Swipe for Details" />
-              <p className="text-body-small font-semibold leading-[17px]">
-                Swipe for Details
-              </p>
-            </button>
-          </>
-          <FooterBar />
+              <button
+                ref={swipeButtonsRef} // Assigning ref dynamically
+                id="animate-wiggle"
+                className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75`}
+              >
+                <img src={ArrowLeft} alt="Swipe for Details" />
+                <p className="text-body-small font-semibold leading-[17px]">
+                  Swipe for Details
+                </p>
+              </button>
+              <FooterBar />
+            </>
+          )}
           <SwipeableEdgeDrawer
             openState={filterVisible}
             onClose={() => setFilterVisible(false)}
