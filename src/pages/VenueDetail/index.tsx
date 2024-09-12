@@ -24,6 +24,7 @@ import Loading from "../../components/Loading";
 import moment from "moment/moment";
 import { extractMinPrice } from "../Dashboard";
 import { Venue } from "../../__generated__/graphql";
+import FakeEventCard from "../../components/FakeEventCard";
 
 const QUERY_VENUE= gql(`
   query Venue($id: ID!) {
@@ -70,16 +71,25 @@ const MUTATION_LIKE = gql(`
   }
 `);
 
+const Placeholder: React.FC = () => (
+  <div className="placeholder w-1/2 h-4 bg-gray-700 rounded mt-2  animate-pulse"></div>
+);
+
 const VenueHeader: React.FC<UserHeaderProps> = ({
   imgUrl,
   name,
   subname
 }) => (
   <div className="flex items-center p-4">
-    <img src={imgUrl} alt="User" className="rounded-full w-14 h-14 mr-4" />
+    {imgUrl ? (
+      <img src={imgUrl} alt="User" className="rounded-full w-14 h-14 mr-4" />
+    ) : (
+      <div className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"></div>
+    )}
+    
     <div className="flex flex-col">
       <div className="flex items-center">
-        <p className="text-title-small font-bold mr-2 text-white">{name}</p>
+        <p className="text-title-small font-bold mr-2 text-white">{name? name : <Placeholder />}</p>
         <img src={CloudCheck} alt="Verified" className="w-5 h-5" />
       </div>
       <p className="text-label-small text-white text-opacity-65">{subname}</p>
@@ -145,11 +155,11 @@ const VenueDetail: React.FC = () => {
   };
 
 
-  if (loading || !data || !data.venue) return <Loading />
+  // if (loading || !data || !data.venue) return <Loading />
   
   const venue = data?.venue
 
-  const handleClick = () => handleMapClick(venue.latitude, venue.longitude);
+  const handleClick = () => handleMapClick(venue?.latitude?? 0, venue?.longitude?? 0);
 
   return (
     <IonPage>
@@ -160,8 +170,8 @@ const VenueDetail: React.FC = () => {
           src={!Liked ? LikedSVG : LikeSVG}
           onClick={toggleLike}
         />
-        <CarouselComponent items={venue.media} />
-        <VenueHeader imgUrl={venue.avatar} name={venue.name} subname={"venue"} />
+        <CarouselComponent items={venue?.media?? []} />
+        <VenueHeader imgUrl={venue?.avatar?? ""} name={venue?.name?? ""} subname={"venue"} />
         <div className="mt-0">
           <div className="flex">
             <div className="flex flex-col items-center">
@@ -204,7 +214,7 @@ const VenueDetail: React.FC = () => {
                   Hosting Events
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {data &&
+                  {data && data.venue.hosting.length > 0 ? (
                       data.venue.hosting?.map((
                           event) => (
                               <EventCard
@@ -217,8 +227,12 @@ const VenueDetail: React.FC = () => {
                                   titleLogo={venue.avatar}
                                   selectFunc={() => history.push(`/event/${event.id}`)}
                               />
-
-                  ))}
+                          ))
+                        ) : (
+                          [...Array(4)].map((_, index) => (
+                            <FakeEventCard key={index} isCard={true} />
+                        ))
+                  )}
                 </div>
               </div>
               {/* <div className="mt-7">
@@ -245,7 +259,7 @@ const VenueDetail: React.FC = () => {
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
                 <div className="overflow-x-auto w-full">
                   <div className="flex w-max gap-4 ">
-                    {data &&
+                    {data && data.venue.highlights.length>0 ? (
                       data.venue.highlights.map((highlight, index) => (
                       <div key={index}>
                         <EventCard
@@ -255,7 +269,12 @@ const VenueDetail: React.FC = () => {
                           className="!w-[44.3vw]"
                         />
                       </div>
-                    ))}
+                        ))
+                      ) : (
+                        [...Array(4)].map((_, index) => (
+                          <FakeEventCard key={index} isCard={true} />
+                      ))
+                  )}
                   </div>
                 </div>
               </div>
@@ -265,7 +284,27 @@ const VenueDetail: React.FC = () => {
             <>
               <div>
                 <h2 className="text-title-small font-bold mb-4">Address</h2>
-                <p 
+
+                {!loading ? (
+                  <>
+                    <p 
+                      className="text-label-small mb-4"
+                      onClick={handleClick}
+                    >
+                      {venue.address + ', ' + venue.postcode + ', ' + venue.municipality + ', ' + venue.country}
+                    </p>
+                    <MapCard
+                      coordinates={[venue.latitude, venue.longitude]} // Passa le coordinate della venue
+                      address={venue.address + ', ' + venue.postcode + ', ' + venue.municipality + ', ' + venue.country} // Componi l'indirizzo completo
+                    />
+                  </>
+                ) : (
+                  <div className="placeholder-content">
+                    {/* Aggiungi qui un placeholder per quando `loading` è falso */}
+                  </div>
+                )}
+                
+                {/* <p 
                   className="text-label-small mb-4"
                   onClick={handleClick}  
                 >{
@@ -275,7 +314,7 @@ const VenueDetail: React.FC = () => {
                 <MapCard
                   coordinates={[venue.latitude, venue.longitude]} // Passa le coordinate della venue
                   address={venue.address + ', ' + venue.postcode + ', ' + venue.municipality + ', ' + venue.country} // Componi l'indirizzo completo
-                />
+                /> */}
               </div>
 
               <div className="mt-5">
@@ -283,7 +322,7 @@ const VenueDetail: React.FC = () => {
                   Information
                 </h2>
                 <p className="text-body-small font-medium mb-1">
-                  {venue.description}
+                  {venue?.description? venue?.description : "Loading..."}
                 </p>
               </div>
               {/* <SocialIcon icon={SpotifySVG} text="Spotify" />

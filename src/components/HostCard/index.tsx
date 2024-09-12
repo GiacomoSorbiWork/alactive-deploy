@@ -3,13 +3,13 @@ import { HostCardProps } from "./type";
 import { useHistory } from "react-router-dom";
 import CloudCheckSVG from "../../../resources/svg/artist.svg";
 
-const HostCard: React.FC<HostCardProps> = ({ imgUrl, title, subTitle }) => {
+const HostCard: React.FC<HostCardProps> = ({ imgUrl, title, subTitle, nextURL }) => {
   const history = useHistory();
   return (
     <div
       className="relative w-full h-[242px] rounded-[16px] border border-[#4b4b4b] overflow-hidden bg-cover bg-center text-white"
       style={{ backgroundImage: `url(${imgUrl})` }}
-      onClick={() => history.push(`/host-detail`)}
+      onClick={() => history.push(nextURL)}
     >
       <div className="bg-cardGradient h-full w-full">
         <div className="absolute bottom-3 left-3">

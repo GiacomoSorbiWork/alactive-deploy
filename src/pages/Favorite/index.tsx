@@ -9,6 +9,7 @@ import { AccessPolicy, Event, Host, Venue } from "../../__generated__/graphql";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 import Loading from "../../components/Loading";
+import FakeEventCard from "../../components/FakeEventCard";
 
 const QUERY_LIKED = gql(`
   query liked {
@@ -122,23 +123,30 @@ const Favorite: React.FC = () => {
           {activeTab === 0 && (
             <div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {data &&
-                  data.me.likes
-                    .filter((liked): liked is Event => {
-                      return liked.__typename === "Event";
-                    })
-                    .map((event) => (
-                      <EventCard
-                        key={event.id}
-                        imgUrl={event.media[0]}
-                        title={event.name}
-                        date={moment(event.datetime).format("D MMM")}
-                        location={event.hostedAt.municipality}
-                        price={`FROM ${extractMinPrice(event.accessPolicies)}`}
-                        titleLogo={event.hostedAt.avatar}
-                        selectFunc={() => history.push(`/event/${event.id}`)}
-                      />
-                    ))}
+                {data && data.me.likes.length > 0 ? (
+
+                    data.me.likes
+                      .filter((liked): liked is Event => {
+                        return liked.__typename === "Event";
+                      })
+                      .map((event) => (
+                        <EventCard
+                          key={event.id}
+                          imgUrl={event.media[0]}
+                          title={event.name}
+                          date={moment(event.datetime).format("D MMM")}
+                          location={event.hostedAt.municipality}
+                          price={`FROM ${extractMinPrice(event.accessPolicies)}`}
+                          titleLogo={event.hostedAt.avatar}
+                          selectFunc={() => history.push(`/event/${event.id}`)}
+                        />
+                      ))
+                  ) : (
+                    // Render FakeEventCard as placeholder when data is not available
+                    [...Array(4)].map((_, index) => (
+                      <FakeEventCard key={index} isCard={true} />
+                    ))
+                  )}
               </div>
             </div>
           )}
@@ -155,6 +163,7 @@ const Favorite: React.FC = () => {
                       imgUrl={venue.avatar ?? ""}
                       title={venue.name}
                       subTitle={venue.type ?? ""}
+                      nextURL={"/venue/" + venue.id}
                     />
                   ))}
             </div>

@@ -68,6 +68,22 @@ const ProfileList: React.FC<ProfileListType> = ({
   </div>
 );
 
+const getRandomColorFromName = (input: string) => {
+  // Calcola un hash del nome
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+      hash += input.charCodeAt(i);
+  }
+  
+  // Usa l'hash per generare valori RGB
+  const r = (hash % 256);
+  const g = ((hash * 2) % 256);
+  const b = ((hash * 3) % 256);
+  
+  // Restituisci il colore in formato RGB
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
 const Profile: React.FC<ProfileType> = () => {
   const { logout } = useAuth0();
 
@@ -97,31 +113,45 @@ const Profile: React.FC<ProfileType> = () => {
 
   const { loading, error, data } = useQuery(QUERY_ME);
 
+
   return (
     <IonPage>
-      <IonContent scrollY={false} fullscreen>
+      <IonContent scrollY={true} fullscreen>
         <div
           className="relative w-full h-1/2 overflow-hidden bg-cover bg-center text-white"
           style={{
             backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.6) 100%), url(${data?.me?.avatar})`,
+            // backgroundColor:getRandomColorFromName(data?.me?.name || 'Default Name'),
           }}
         >
-          <Box className="absolute bottom-7 text-white p-4 w-full">
-            <p className="text-title-medium font-semibold w-5/6 leading-snug">
-              {data?.me?.name}
-            </p>
+          <Box 
+          className="absolute bottom-7 text-white p-4 w-full"
+          // style={{
+          //   background: 'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))'
+          // }}
+          >
+            {loading? (
+            <div className="placeholder w-4/6 h-10 bg-gray-700 rounded mt-2  animate-pulse"></div>) : (
+              <p className="text-title-medium font-semibold w-5/6 leading-snug">{data?.me?.name}</p>
+              )
+            }
+        
+          {loading? (
+           <div className="placeholder w-3/6 h-5 bg-gray-700 rounded mt-2  animate-pulse"></div>):(
             <p className="text-body-small mt-2">@{data?.me?.handle}</p>
+           )
+          }
           </Box>
         </div>
         <div className="text-white px-4 rounded-t-rounded relative mt-[-35px] bg-primaryContainer pb-[75px]">
           <ProfileList
             img={BirthSVG}
             title="Date of Birth"
-            text={loading ? "Loading..." : error ? "Error" : data?.me?.birthday} // Format the birthday for display
-            arrowVisible
-            onClick={() => {
-              setSelectBirthVisible(true); // Show the Date Picker
-            }}
+            text={loading? "Loading... " : error ? "Error" : data?.me?.birthday} // Format the birthday for display
+            // arrowVisible
+            // onClick={() => {
+            //   setSelectBirthVisible(true); // Show the Date Picker
+            // }}
           />
 
           {/* <div className="hidden">

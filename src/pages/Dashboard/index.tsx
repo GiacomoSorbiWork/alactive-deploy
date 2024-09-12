@@ -225,7 +225,9 @@ const DashBoard: React.FC = () => {
           swipeButtonsRef.current.id = "";
         }
       }, 5000);
-  }, [loading]);
+  }, 
+  [loading]
+);
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
@@ -285,21 +287,65 @@ const DashBoard: React.FC = () => {
     handleSwipeButtonTouchEnd,
   ]);
 
+  const EventPlaceholder: React.FC = () => {
+    return (
+      <div className="relative h-full">
+        {/* Video Placeholder */}
+        <div className="bg-gray-700 w-full h-full absolute animate-pulse"></div>
+  
+        {/* Icon Buttons Placeholder */}
+        <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
+          <div className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"></div>
+          <div className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"></div>
+          <div className="w-[50px] h-[50px] rounded-full bg-gray-600 animate-pulse"></div>
+        </div>
+  
+        {/* Event Details Placeholder */}
+        <div className="absolute bottom-[90px] left-4">
+          <p className="text-title-small font-bold my-2 bg-gray-600 h-6 w-[150px] rounded-md animate-pulse"></p>
+          <div className="overflow-hidden w-[75vw]">
+            <div className="flex animate-marqueeDashboard gap-3">
+              {[...Array(3)].map((_, index) => (
+                <React.Fragment key={index}>
+                  {/* Price Placeholder */}
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
+                    <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[100px]"></p>
+                  </div>
+  
+                  {/* Date Placeholder */}
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
+                    <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[80px]"></p>
+                  </div>
+  
+                  {/* Music Genre Placeholder */}
+                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
+                    <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[80px]"></p>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
   return (
     <IonPage>
       <IonContent fullscreen={true}>
-        {(loading || delayedLoading) && (
+        {/* {(loading || delayedLoading) && (
           <div className="absolute w-full h-full bg-primaryContainer z-20">
             <Loading />
           </div>
-        )}
+        )} */}
 
         <div className="relative h-full">
           <div
             className="relative h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
             ref={scrollRef}
           >
-            {data &&
+            {data && data.recommendMe.length > 0 ? (
               data.recommendMe.map((event, index) => (
                 <div className="relative h-full" key={event.id}>
                   <video
@@ -326,6 +372,7 @@ const DashBoard: React.FC = () => {
                         history.push("/venue/" + event.hostedAt.id)
                       }
                     />
+
                     <IconButton
                       icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
                       label={likedEvents[event.id] ? "Liked" : "Like"}
@@ -342,12 +389,14 @@ const DashBoard: React.FC = () => {
                         });
                       }}
                     />
+
                     <IconButton
                       icon={isMuted ? UnmuteSVG : MuteSVG}
                       label={isMuted ? "Unmute" : "Mute"}
                       onClick={toggleMute}
-                    />
+                    />      
                   </div>
+
                   <div className="absolute bottom-[90px] left-4">
                     <p
                       className="text-title-small font-bold my-2"
@@ -395,9 +444,12 @@ const DashBoard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <EventPlaceholder />
+            )}
           </div>
-          {!loading && !delayedLoading && (
+          
             <>
               <p
                 className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
@@ -423,7 +475,7 @@ const DashBoard: React.FC = () => {
               </button>
               <FooterBar />
             </>
-          )}
+          
           <SwipeableEdgeDrawer
             openState={filterVisible}
             onClose={() => setFilterVisible(false)}
