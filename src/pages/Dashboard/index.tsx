@@ -18,7 +18,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { AccessPolicy } from "../../__generated__/graphql";
 import moment from "moment";
 import playM3u8 from "../../util/playM3u8";
-import Loading from "../../components/Loading";
+// import Loading from "../../components/Loading";
 
 const QUERY_WHAT_I_LIKE = gql(`
   query whatILike {
@@ -75,34 +75,13 @@ export const extractMinPrice = (policies: AccessPolicy[]) => {
 };
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
-  const [iconLoaded, setIconLoaded] = useState<boolean>(false);
-
-  useEffect(() => {
-    const loadIcon = async () => {
-      try {
-        const response = await fetch(icon);
-        if (response.ok) {
-          setIconLoaded(true);
-        } else {
-          setIconLoaded(false);
-        }
-      } catch {
-        setIconLoaded(false);
-      }
-    };
-
-    if (icon) {
-      loadIcon();
-    }
-  }, [icon]);
-
-  return (
-    <button
-      className="flex flex-col items-center m-2 cursor-pointer"
-      onClick={onClick}
-      aria-label={label}
-    >
-      {iconLoaded ? (
+  if (icon && label) {
+    return (
+      <button
+        className="flex flex-col items-center m-2 cursor-pointer"
+        onClick={onClick}
+        aria-label={label}
+      >
         <img
           style={{ clipPath: "circle(50% at 50% 50%)" }}
           src={icon}
@@ -113,12 +92,10 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
           }`}
           alt={label}
         />
-      ) : (
-        <div className="w-9 h-9 rounded-full bg-white"></div>
-      )}
-      {label && <p className="text-body-small">{label}</p>}
-    </button>
-  );
+        <p className="text-body-small">{label}</p>
+      </button>
+    );
+  } else return <></>;
 };
 
 const useVideoControls = (initialState = { id: "", muted: false }) => {
@@ -153,7 +130,7 @@ const DashBoard: React.FC = () => {
   );
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
-  const [delayedLoading, setDelayedLoading] = useState(true);
+  // const [delayedLoading, setDelayedLoading] = useState(true);
 
   useEffect(() => {
     if (ILike && data) {
@@ -183,9 +160,9 @@ const DashBoard: React.FC = () => {
                 data?.recommendMe.find((event) => event.id == video.id)?.video
               );
               await playM3u8(video.src, video);
-              timer = setTimeout(() => {
-                setDelayedLoading(false);
-              }, 100);
+              // timer = setTimeout(() => {
+              //   setDelayedLoading(false);
+              // }, 100);
             }
           } else {
             video.muted = true;
@@ -225,9 +202,7 @@ const DashBoard: React.FC = () => {
           swipeButtonsRef.current.id = "";
         }
       }, 5000);
-  }, 
-  [loading]
-);
+  }, [loading]);
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
@@ -292,14 +267,14 @@ const DashBoard: React.FC = () => {
       <div className="relative h-full">
         {/* Video Placeholder */}
         <div className="bg-gray-700 w-full h-full absolute animate-pulse"></div>
-  
+
         {/* Icon Buttons Placeholder */}
         <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
           <div className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"></div>
           <div className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"></div>
           <div className="w-[50px] h-[50px] rounded-full bg-gray-600 animate-pulse"></div>
         </div>
-  
+
         {/* Event Details Placeholder */}
         <div className="absolute bottom-[90px] left-4">
           <p className="text-title-small font-bold my-2 bg-gray-600 h-6 w-[150px] rounded-md animate-pulse"></p>
@@ -311,12 +286,12 @@ const DashBoard: React.FC = () => {
                   <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
                     <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[100px]"></p>
                   </div>
-  
+
                   {/* Date Placeholder */}
                   <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
                     <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[80px]"></p>
                   </div>
-  
+
                   {/* Music Genre Placeholder */}
                   <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
                     <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[80px]"></p>
@@ -329,7 +304,6 @@ const DashBoard: React.FC = () => {
       </div>
     );
   };
-
 
   return (
     <IonPage>
@@ -394,7 +368,7 @@ const DashBoard: React.FC = () => {
                       icon={isMuted ? UnmuteSVG : MuteSVG}
                       label={isMuted ? "Unmute" : "Mute"}
                       onClick={toggleMute}
-                    />      
+                    />
                   </div>
 
                   <div className="absolute bottom-[90px] left-4">
@@ -449,33 +423,33 @@ const DashBoard: React.FC = () => {
               <EventPlaceholder />
             )}
           </div>
-          
-            <>
-              <p
-                className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
-                onClick={handleGoEventDetail}
-              >
-                Tailored
-              </p>
-              {/* <img
+
+          <>
+            <p
+              className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
+              onClick={handleGoEventDetail}
+            >
+              Tailored
+            </p>
+            {/* <img
               className="h-6 absolute right-3 top-5"
               src={PageInfoSVG}
               alt="Page Info"
               onClick={() => setFilterVisible(true)}
             /> */}
-              <button
-                ref={swipeButtonsRef} // Assigning ref dynamically
-                id="animate-wiggle"
-                className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75`}
-              >
-                <img src={ArrowLeft} alt="Swipe for Details" />
-                <p className="text-body-small font-semibold leading-[17px]">
-                  Swipe for Details
-                </p>
-              </button>
-              <FooterBar />
-            </>
-          
+            <button
+              ref={swipeButtonsRef} // Assigning ref dynamically
+              id="animate-wiggle"
+              className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75`}
+            >
+              <img src={ArrowLeft} alt="Swipe for Details" />
+              <p className="text-body-small font-semibold leading-[17px]">
+                Swipe for Details
+              </p>
+            </button>
+            <FooterBar />
+          </>
+
           <SwipeableEdgeDrawer
             openState={filterVisible}
             onClose={() => setFilterVisible(false)}
