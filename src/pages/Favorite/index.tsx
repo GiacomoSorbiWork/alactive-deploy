@@ -33,6 +33,13 @@ const QUERY_LIKED = gql(`
           name
           avatar
         }
+
+        ... on Venue {
+          id
+          name
+          avatar     
+          type   
+        }
       }
     }
   }
@@ -67,7 +74,7 @@ const Favorite: React.FC = () => {
     }).format(Math.round(policy.minPrice));
   };
 
-  if (queryLoading) return <Loading />;
+  // if (queryLoading) return <Loading />;
 
   return (
     <IonPage>
@@ -140,14 +147,14 @@ const Favorite: React.FC = () => {
               {data &&
                 data.me.likes
                   .filter((liked): liked is Venue => {
-                    return liked.__typename == "Host";
+                    return liked.__typename == "Venue";
                   })
-                  .map((host) => (
+                  .map((venue) => (
                     <HostCard
-                      key={host.id}
-                      imgUrl={host.avatar ?? ""}
-                      title={host.name}
-                      subTitle="Nightclub"
+                      key={venue.id}
+                      imgUrl={venue.avatar ?? ""}
+                      title={venue.name}
+                      subTitle={venue.type ?? ""}
                     />
                   ))}
             </div>

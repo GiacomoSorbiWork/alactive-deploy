@@ -145,8 +145,9 @@ const VenueDetail: React.FC = () => {
   };
 
 
-  if (loading || !data || !data.venue) return <Loading />;
-  const venue = data.venue
+  if (loading || !data || !data.venue) return <Loading />
+  
+  const venue = data?.venue
 
   const handleClick = () => handleMapClick(venue.latitude, venue.longitude);
 

@@ -282,7 +282,9 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
   const handleClose = useCallback(() => setIsBookingModal(false), []);
 
   // TODO: Error handling.
-  if (loading || !data || !data.event) return <Loading />;
+  if (loading || !data || !data.event) 
+    return <Loading />
+
   const event = data.event
 
   return (
