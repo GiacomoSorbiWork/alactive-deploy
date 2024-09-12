@@ -55,8 +55,11 @@ const QUERY_VENUE= gql(`
         media
         datetime
         accessPolicies {
+          type
+          maxPrice
           minPrice
           currency
+          info
         }
       }
     }
@@ -214,7 +217,7 @@ const VenueDetail: React.FC = () => {
                   Hosting Events
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {data && data.venue.hosting.length > 0 ? (
+                  {data && data.venue && data.venue && data.venue.hosting.length > 0 ? (
                       data.venue.hosting?.map((
                           event) => (
                               <EventCard
@@ -222,9 +225,9 @@ const VenueDetail: React.FC = () => {
                                   imgUrl={event.media[0]}
                                   title={event.name}
                                   date={moment(event.datetime).format("D MMM")}
-                                  location={venue.municipality}
+                                  location={venue?.municipality}
                                   price={`FROM ${extractMinPrice(event.accessPolicies)}`}
-                                  titleLogo={venue.avatar}
+                                  titleLogo={venue?.avatar}
                                   selectFunc={() => history.push(`/event/${event.id}`)}
                               />
                           ))
@@ -259,7 +262,7 @@ const VenueDetail: React.FC = () => {
                 <h2 className="text-title-small font-bold mb-4">Highlights</h2>
                 <div className="overflow-x-auto w-full">
                   <div className="flex w-max gap-4 ">
-                    {data && data.venue.highlights.length>0 ? (
+                    {data && data.venue && data.venue.highlights.length>0 ? (
                       data.venue.highlights.map((highlight, index) => (
                       <div key={index}>
                         <EventCard
@@ -291,11 +294,11 @@ const VenueDetail: React.FC = () => {
                       className="text-label-small mb-4"
                       onClick={handleClick}
                     >
-                      {venue.address + ', ' + venue.postcode + ', ' + venue.municipality + ', ' + venue.country}
+                      {venue?.address + ', ' + venue?.postcode + ', ' + venue?.municipality + ', ' + venue?.country}
                     </p>
                     <MapCard
-                      coordinates={[venue.latitude, venue.longitude]} // Passa le coordinate della venue
-                      address={venue.address + ', ' + venue.postcode + ', ' + venue.municipality + ', ' + venue.country} // Componi l'indirizzo completo
+                      coordinates={[venue?.latitude?? 0, venue?.longitude?? 0]} // Passa le coordinate della venue
+                      address={venue?.address + ', ' + venue?.postcode + ', ' + venue?.municipality + ', ' + venue?.country} // Componi l'indirizzo completo
                     />
                   </>
                 ) : (
