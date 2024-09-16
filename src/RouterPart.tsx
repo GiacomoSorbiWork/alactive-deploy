@@ -69,7 +69,7 @@ const RouterPart: React.FC = () => {
             <Route exact path="/host-events" component={HostingEvent} />
             <Route path="/event/:id" component={EventDetail} />
             <Route exact path="/event-view" component={EventMediaView} />
-            <Route exact path="/highlight-view" component={HighlightsView} />
+            <Route exact path="/highlight-view/:id/:highlightTitle" component={HighlightsView} />
             <Route exact path="/dashboard" component={DashBoard} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/favorite" component={Favorite} />
