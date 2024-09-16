@@ -108,7 +108,7 @@ const Profile: React.FC<ProfileType> = () => {
   };
 
   const handleLogout = () => {
-    logout({ logoutParams: { returnTo: window.location.origin } });
+    logout({ logoutParams: { returnTo: window.location.origin + "/login" } });
   };
 
   const { loading, error, data } = useQuery(QUERY_ME);
