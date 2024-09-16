@@ -7,6 +7,7 @@ import HostingEvent from "./pages/HostingEvent";
 import { gql } from "./__generated__";
 import { useQuery } from "@apollo/client";
 import { PurpleScreen } from "./components/PurpleScreen";
+import HighlightsView from "./pages/HighlightsView";
 
 // Lazy load the components
 const Login = lazy(() => import("./pages/Login"));
@@ -68,6 +69,7 @@ const RouterPart: React.FC = () => {
             <Route exact path="/host-events" component={HostingEvent} />
             <Route path="/event/:id" component={EventDetail} />
             <Route exact path="/event-view" component={EventMediaView} />
+            <Route exact path="/highlight-view/:id/:highlightTitle" component={HighlightsView} />
             <Route exact path="/dashboard" component={DashBoard} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/favorite" component={Favorite} />

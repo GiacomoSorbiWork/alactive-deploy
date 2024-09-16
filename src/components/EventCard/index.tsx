@@ -31,7 +31,8 @@ const EventCard: React.FC<EventCardProps> = ({
     if (selectFunc) {
       selectFunc(cardId);
     } else {
-      history.push(`/${nextURL}`);
+      // history.push(`/${nextURL}`);
+      history.push(nextURL);
     }
   };
 
