@@ -82,6 +82,8 @@ const EventCard: React.FC<EventCardProps> = ({
           autoPlay
           loop
 					controls={false}
+          playsInline
+          webkit-playsinline
         />
       ) : (
         <div
