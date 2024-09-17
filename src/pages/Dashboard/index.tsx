@@ -314,12 +314,6 @@ const DashBoard: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen={true}>
-        {/* {(loading || delayedLoading) && (
-          <div className="absolute w-full h-full bg-primaryContainer z-20">
-            <Loading />
-          </div>
-        )} */}
-
         <div className="relative h-full">
           <div
             className="relative h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
@@ -335,7 +329,7 @@ const DashBoard: React.FC = () => {
                       if (el) videoRefs.current[index] = el;
                     }}
                     muted={true}
-                    // autoPlay
+                    autoPlay
                     loop
                     playsInline
                     webkit-playsinline
