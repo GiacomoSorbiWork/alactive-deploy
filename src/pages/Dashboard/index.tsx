@@ -119,6 +119,7 @@ const DashBoard: React.FC = () => {
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [currentEventId, setCurrentEventId] = useState<string>("");
+  const [feedStartTime, setFeedStartTime] = useState<number>(0);
 
   const { data: ILike, refetch: refetchILike } = useQuery(QUERY_WHAT_I_LIKE);
   const { loading, data } = useQuery(QUERY_RECOMMEND);
@@ -131,6 +132,13 @@ const DashBoard: React.FC = () => {
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
   // const [delayedLoading, setDelayedLoading] = useState(true);
+
+  useEffect(() => {
+    if (!loading && feedStartTime <= 6)
+      setTimeout(() => {
+        setFeedStartTime((prev) => prev + 1);
+      }, 1000);
+  }, [feedStartTime, loading]);
 
   useEffect(() => {
     if (ILike && data) {
@@ -148,7 +156,6 @@ const DashBoard: React.FC = () => {
 
   // Handle video playback based on visibility
   useEffect(() => {
-    let timer: NodeJS.Timeout | undefined;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(async (entry) => {
@@ -160,9 +167,6 @@ const DashBoard: React.FC = () => {
                 data?.recommendMe.find((event) => event.id == video.id)?.video
               );
               await playM3u8(video.src, video);
-              // timer = setTimeout(() => {
-              //   setDelayedLoading(false);
-              // }, 100);
             }
           } else {
             video.muted = true;
@@ -181,7 +185,6 @@ const DashBoard: React.FC = () => {
       videoRefs.current.forEach((video) => {
         if (video) observer.unobserve(video);
       });
-      clearTimeout(timer);
     };
   }, [isMuted, videoRefs, data]);
 
@@ -190,9 +193,13 @@ const DashBoard: React.FC = () => {
     if (eventDetailRef.current) {
       eventDetailRef.current.style.transition = "transform 0.1s ease";
     }
-
+    const currentEventIndex: number =
+      data?.recommendMe.findIndex((item) => item.id === currentEventId) ?? 0;
     if (!loading)
-      setTimeout(() => {
+      if (
+        (currentEventIndex < 3 && feedStartTime > 6) ||
+        (currentEventIndex >= 3 && feedStartTime > 3)
+      )
         if (swipeButtonsRef.current) {
           swipeButtonsRef.current.style.top = "0px";
           swipeButtonsRef.current.style.opacity = "0";
@@ -201,8 +208,7 @@ const DashBoard: React.FC = () => {
           swipeButtonsRef.current.style.right = "0px";
           swipeButtonsRef.current.id = "";
         }
-      }, 5000);
-  }, [loading]);
+  }, [loading, feedStartTime, currentEventId]);
 
   // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
@@ -329,7 +335,7 @@ const DashBoard: React.FC = () => {
                       if (el) videoRefs.current[index] = el;
                     }}
                     muted={true}
-                    autoPlay
+                    // autoPlay
                     loop
                     playsInline
                     disablePictureInPicture
