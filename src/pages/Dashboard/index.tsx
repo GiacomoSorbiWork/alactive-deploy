@@ -174,7 +174,7 @@ const DashBoard: React.FC = () => {
           setCurrentEventId(video.id);
         });
       },
-      { threshold: 0.5 }
+      { root: null, rootMargin: "0px", threshold: 0.1 }
     );
 
     videoRefs.current.forEach((video) => {
