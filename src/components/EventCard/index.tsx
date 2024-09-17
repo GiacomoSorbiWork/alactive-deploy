@@ -31,7 +31,8 @@ const EventCard: React.FC<EventCardProps> = ({
     if (selectFunc) {
       selectFunc(cardId);
     } else {
-      history.push(`/${nextURL}`);
+      // history.push(`/${nextURL}`);
+      history.push(nextURL);
     }
   };
 
@@ -81,6 +82,8 @@ const EventCard: React.FC<EventCardProps> = ({
           autoPlay
           loop
 					controls={false}
+          playsInline
+          webkit-playsinline
         />
       ) : (
         <div

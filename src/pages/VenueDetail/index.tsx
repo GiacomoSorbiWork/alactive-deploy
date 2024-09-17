@@ -268,7 +268,7 @@ const VenueDetail: React.FC = () => {
                         <EventCard
                           title={highlight.title}
                           imgUrl={highlight.cover}
-                          nextURL="event-view"
+                          nextURL={`/highlight-view/${id}/${encodeURIComponent(highlight.title)}/`}
                           className="!w-[44.3vw]"
                         />
                       </div>
