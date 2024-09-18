@@ -170,7 +170,7 @@ const VenueDetail: React.FC = () => {
         <ArrowBack />
         <img
           className="absolute right-4 top-6 z-20"
-          src={!Liked ? LikedSVG : LikeSVG}
+          src={Liked ? LikedSVG : LikeSVG}
           onClick={toggleLike}
         />
         <CarouselComponent items={venue?.media?? []} />
