@@ -1,5 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { IonContent, IonPage } from "@ionic/react";
+import { useHistory } from "react-router";
+import { gql, useQuery, useMutation } from "@apollo/client";
+import moment from "moment";
 import SwipeableEdgeDrawer from "../../components/SwipeableEdgeDrawer";
+import FooterBar from "../../components/FooterBar";
+import EventDetail, { MUTATION_LIKE } from "../EventDetail";
+import { AccessPolicy } from "../../__generated__/graphql";
+import playM3u8 from "../../util/playM3u8";
+
+// Import SVGs
 import FavoriteSVG from "../../../resources/svg/favorite.svg";
 import LikedSVG from "../../../resources/svg/liked.svg";
 import MuteSVG from "../../../resources/svg/Speaker.svg";
@@ -8,19 +18,9 @@ import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
-import { IonContent, IonPage } from "@ionic/react";
-import { useHistory } from "react-router";
-import FooterBar from "../../components/FooterBar";
-import { IconButtonProps } from "./type";
-import EventDetail, { MUTATION_LIKE } from "../EventDetail";
-import { gql } from "../../__generated__";
-import { useMutation, useQuery } from "@apollo/client";
-import { AccessPolicy } from "../../__generated__/graphql";
-import moment from "moment";
-import playM3u8 from "../../util/playM3u8";
-// import Loading from "../../components/Loading";
 
-const QUERY_WHAT_I_LIKE = gql(`
+// GraphQL queries
+const QUERY_WHAT_I_LIKE = gql`
   query whatILike {
     me {
       likes {
@@ -28,9 +28,9 @@ const QUERY_WHAT_I_LIKE = gql(`
       }
     }
   }
-`);
+`;
 
-const QUERY_RECOMMEND = gql(`
+const QUERY_RECOMMEND = gql`
   query recommendMe {
     recommendMe {
       id
@@ -53,15 +53,52 @@ const QUERY_RECOMMEND = gql(`
         avatar
       }
     }
-  }  
-`);
+  }
+`;
 
-export const extractMinPrice = (policies: AccessPolicy[]) => {
+// Types
+interface IconButtonProps {
+  icon: string;
+  label: string;
+  onClick: () => void;
+}
+
+interface Event {
+  id: string;
+  name: string;
+  description: string;
+  musicGenres: string[];
+  video: string;
+  media: string;
+  datetime: string;
+  duration: number;
+  recurrence: string;
+  tags: string[];
+  accessPolicies: AccessPolicy[];
+  hostedAt: {
+    id: string;
+    name: string;
+    avatar: string;
+  };
+}
+
+interface QueryData {
+  recommendMe: Event[];
+}
+
+interface LikeData {
+  me: {
+    likes: { id: string }[];
+  };
+}
+
+// Helper functions
+export const extractMinPrice = (policies: AccessPolicy[]): string => {
   const policy = policies.reduce(
     (min, policy) => {
       const minPrice = parseFloat(policy.minPrice);
       return minPrice < min.minPrice
-        ? { minPrice: minPrice, currency: policy.currency }
+        ? { minPrice, currency: policy.currency }
         : min;
     },
     { minPrice: Infinity, currency: "" }
@@ -75,38 +112,33 @@ export const extractMinPrice = (policies: AccessPolicy[]) => {
 };
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
-  if (icon && label) {
-    return (
-      <button
-        className="flex flex-col items-center m-2 cursor-pointer"
-        onClick={onClick}
-        aria-label={label}
-      >
-        <img
-          style={{ clipPath: "circle(50% at 50% 50%)" }}
-          src={icon}
-          className={`${
-            ["Like", "Liked", "Mute", "Unmute"].includes(label)
-              ? "w-8"
-              : "h-10 w-10"
-          }`}
-          alt={label}
-        />
-        <p className="text-body-small">{label}</p>
-      </button>
-    );
-  } else return <></>;
+  if (!icon || !label) return null;
+
+  return (
+    <button
+      className="flex flex-col items-center m-2 cursor-pointer"
+      onClick={onClick}
+      aria-label={label}
+    >
+      <img
+        style={{ clipPath: "circle(50% at 50% 50%)" }}
+        src={icon}
+        className={`${
+          ["Like", "Liked", "Mute", "Unmute"].includes(label)
+            ? "w-8"
+            : "h-10 w-10"
+        }`}
+        alt={label}
+      />
+      <p className="text-body-small">{label}</p>
+    </button>
+  );
 };
 
 const useVideoControls = (initialState = { id: "", muted: false }) => {
-  const [isMuted, setIsMuted] = useState(initialState.muted);
-
+  const [isMuted, setIsMuted] = useState<boolean>(initialState.muted);
   const toggleMute = () => setIsMuted((prev) => !prev);
-
-  return {
-    isMuted,
-    toggleMute,
-  };
+  return { isMuted, toggleMute };
 };
 
 const DashBoard: React.FC = () => {
@@ -115,14 +147,15 @@ const DashBoard: React.FC = () => {
   const eventDetailRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<HTMLVideoElement[]>([]);
   const history = useHistory();
-  const [filterVisible, setFilterVisible] = useState(false);
+  const [filterVisible, setFilterVisible] = useState<boolean>(false);
   const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [currentEventId, setCurrentEventId] = useState<string>("");
   const [feedStartTime, setFeedStartTime] = useState<number>(0);
 
-  const { data: ILike, refetch: refetchILike } = useQuery(QUERY_WHAT_I_LIKE);
-  const { loading, data } = useQuery(QUERY_RECOMMEND);
+  const { data: ILike, refetch: refetchILike } =
+    useQuery<LikeData>(QUERY_WHAT_I_LIKE);
+  const { loading, data } = useQuery<QueryData>(QUERY_RECOMMEND);
 
   const { isMuted, toggleMute } = useVideoControls();
 
@@ -131,13 +164,15 @@ const DashBoard: React.FC = () => {
   );
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
-  // const [delayedLoading, setDelayedLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && feedStartTime <= 6)
-      setTimeout(() => {
-        setFeedStartTime((prev) => prev + 1);
-      }, 1000);
+    if (!loading && feedStartTime <= 6) {
+      const timer = setTimeout(
+        () => setFeedStartTime((prev) => prev + 1),
+        1000
+      );
+      return () => clearTimeout(timer);
+    }
   }, [feedStartTime, loading]);
 
   useEffect(() => {
@@ -152,9 +187,8 @@ const DashBoard: React.FC = () => {
 
   useEffect(() => {
     refetchILike();
-  }, [likedEvents]);
+  }, [likedEvents, refetchILike]);
 
-  // Handle video playback based on visibility
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -164,7 +198,7 @@ const DashBoard: React.FC = () => {
             video.muted = isMuted;
             if (video.src === "") {
               video.src = String(
-                data?.recommendMe.find((event) => event.id == video.id)?.video
+                data?.recommendMe.find((event) => event.id === video.id)?.video
               );
               await playM3u8(video.src, video);
             }
@@ -174,7 +208,7 @@ const DashBoard: React.FC = () => {
           setCurrentEventId(video.id);
         });
       },
-      { root: null, rootMargin: "0px", threshold: 0.1 }
+      { threshold: 0.1 }
     );
 
     videoRefs.current.forEach((video) => {
@@ -186,41 +220,40 @@ const DashBoard: React.FC = () => {
         if (video) observer.unobserve(video);
       });
     };
-  }, [isMuted, videoRefs, data]);
+  }, [isMuted, data]);
 
-  // Effect to add smooth transition to the event detail element
   useEffect(() => {
     if (eventDetailRef.current) {
       eventDetailRef.current.style.transition = "transform 0.1s ease";
     }
-    const currentEventIndex: number =
+    const currentEventIndex =
       data?.recommendMe.findIndex((item) => item.id === currentEventId) ?? 0;
-    if (!loading)
-      if (
-        (currentEventIndex < 3 && feedStartTime > 6) ||
-        (currentEventIndex >= 3 && feedStartTime > 3)
-      )
-        if (swipeButtonsRef.current) {
-          swipeButtonsRef.current.style.top = "0px";
-          swipeButtonsRef.current.style.opacity = "0";
-          swipeButtonsRef.current.style.height = "92vh";
-          swipeButtonsRef.current.style.width = "10px";
-          swipeButtonsRef.current.style.right = "0px";
-          swipeButtonsRef.current.id = "";
-        }
-  }, [loading, feedStartTime, currentEventId]);
+    if (
+      !loading &&
+      ((currentEventIndex < 3 && feedStartTime > 6) ||
+        (currentEventIndex >= 3 && feedStartTime > 3))
+    ) {
+      if (swipeButtonsRef.current) {
+        Object.assign(swipeButtonsRef.current.style, {
+          top: "0px",
+          opacity: "0",
+          height: "92vh",
+          width: "10px",
+          right: "0px",
+        });
+        swipeButtonsRef.current.id = "";
+      }
+    }
+  }, [loading, feedStartTime, currentEventId, data]);
 
-  // Helper function to handle navigating to the event detail page
   const handleGoEventDetail = useCallback(() => {
     history.push("/event/" + currentEventId);
   }, [history, currentEventId]);
 
-  // Function to handle touch start on swipe buttons
   const handleSwipeButtonTouchStart = useCallback((e: TouchEvent) => {
     touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, []);
 
-  // Function to handle touch move on swipe buttons
   const handleSwipeButtonTouchMove = useCallback((e: TouchEvent) => {
     touchEnd.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     const deltaX = touchEnd.current.x - touchStart.current.x + 10;
@@ -229,7 +262,6 @@ const DashBoard: React.FC = () => {
     }
   }, []);
 
-  // Function to handle touch end on swipe buttons
   const handleSwipeButtonTouchEnd = useCallback(() => {
     const swipeDistanceX = Math.abs(touchEnd.current.x - touchStart.current.x);
     const swipeDistanceY = Math.abs(touchEnd.current.y - touchStart.current.y);
@@ -238,17 +270,14 @@ const DashBoard: React.FC = () => {
       const isSwipeLeft = touchEnd.current.x < touchStart.current.x;
 
       if (isSwipeLeft && eventDetailRef.current) {
-        // Animate to the left when swiped
-        eventDetailRef.current.style.transform = `translateX(-100%)`; // Move to left
+        eventDetailRef.current.style.transform = `translateX(-100%)`;
         setTimeout(handleGoEventDetail, 200);
       }
     } else if (eventDetailRef.current) {
-      // Reset position if not an effective swipe
       eventDetailRef.current.style.transform = `translateX(0)`;
     }
   }, [handleGoEventDetail]);
 
-  // Effect to handle adding and removing touch events on swipe buttons
   useEffect(() => {
     const element = swipeButtonsRef.current;
     if (element) {
@@ -268,48 +297,42 @@ const DashBoard: React.FC = () => {
     handleSwipeButtonTouchEnd,
   ]);
 
-  const EventPlaceholder: React.FC = () => {
-    return (
-      <div className="relative h-full">
-        {/* Video Placeholder */}
-        <div className="bg-gray-700 w-full h-full absolute animate-pulse"></div>
-
-        {/* Icon Buttons Placeholder */}
-        <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
-          <div className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"></div>
-          <div className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"></div>
-          <div className="w-[50px] h-[50px] rounded-full bg-gray-600 animate-pulse"></div>
-        </div>
-
-        {/* Event Details Placeholder */}
-        <div className="absolute bottom-[90px] left-4">
-          <p className="text-title-small font-bold my-2 bg-gray-600 h-6 w-[150px] rounded-md animate-pulse"></p>
-          <div className="overflow-hidden w-[75vw]">
-            <div className="flex animate-marqueeDashboard gap-3">
-              {[...Array(3)].map((_, index) => (
-                <React.Fragment key={index}>
-                  {/* Price Placeholder */}
-                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
-                    <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[100px]"></p>
+  const EventPlaceholder: React.FC = () => (
+    <div className="relative h-full">
+      <div className="bg-gray-700 w-full h-full absolute animate-pulse"></div>
+      <div className="absolute flex flex-col items-center bottom-[83px] right-[5px]">
+        {[...Array(3)].map((_, index) => (
+          <div
+            key={index}
+            className="w-[50px] h-[50px] rounded-full bg-gray-600 mb-2 animate-pulse"
+          ></div>
+        ))}
+      </div>
+      <div className="absolute bottom-[90px] left-4">
+        <p className="text-title-small font-bold my-2 bg-gray-600 h-6 w-[150px] rounded-md animate-pulse"></p>
+        <div className="overflow-hidden w-[75vw]">
+          <div className="flex animate-marqueeDashboard gap-3">
+            {[...Array(3)].map((_, index) => (
+              <React.Fragment key={index}>
+                {["Price", "Date", "Music Genre"].map((type, i) => (
+                  <div
+                    key={`${type}-${i}`}
+                    className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse"
+                  >
+                    <p
+                      className={`text-label-small font-medium ml-2 bg-gray-600 h-4 w-[${
+                        type === "Price" ? "100" : "80"
+                      }px]`}
+                    ></p>
                   </div>
-
-                  {/* Date Placeholder */}
-                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
-                    <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[80px]"></p>
-                  </div>
-
-                  {/* Music Genre Placeholder */}
-                  <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-gray-600 rounded-3xl animate-pulse">
-                    <p className="text-label-small font-medium ml-2 bg-gray-600 h-4 w-[80px]"></p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
+                ))}
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
   return (
     <IonPage>
@@ -323,7 +346,7 @@ const DashBoard: React.FC = () => {
               data.recommendMe.map((event, index) => (
                 <div className="relative h-full" key={event.id}>
                   <video
-                    key={event.id + "-video"}
+                    key={`${event.id}-video`}
                     id={event.id}
                     ref={(el) => {
                       if (el) videoRefs.current[index] = el;
@@ -332,10 +355,10 @@ const DashBoard: React.FC = () => {
                     autoPlay
                     loop
                     playsInline
-                    webkit-playsinline
+                    webkit-playsinline={true}
                     disablePictureInPicture
                     style={{ pointerEvents: "none" }}
-                    className={`snap-center inset-0 object-cover w-full h-full absolute`}
+                    className="snap-center inset-0 object-cover w-full h-full absolute"
                   >
                     Your browser does not support the video tag.
                   </video>
@@ -344,10 +367,9 @@ const DashBoard: React.FC = () => {
                       icon={event.hostedAt.avatar}
                       label={event.hostedAt.name}
                       onClick={() =>
-                        history.push("/venue/" + event.hostedAt.id)
+                        history.push(`/venue/${event.hostedAt.id}`)
                       }
                     />
-
                     <IconButton
                       icon={likedEvents[event.id] ? LikedSVG : FavoriteSVG}
                       label={likedEvents[event.id] ? "Liked" : "Like"}
@@ -364,18 +386,16 @@ const DashBoard: React.FC = () => {
                         });
                       }}
                     />
-
                     <IconButton
                       icon={isMuted ? UnmuteSVG : MuteSVG}
                       label={isMuted ? "Unmute" : "Mute"}
                       onClick={toggleMute}
                     />
                   </div>
-
                   <div className="absolute bottom-[90px] left-4">
                     <p
                       className="text-title-small font-bold my-2"
-                      onClick={() => history.push("/event/" + event.id)}
+                      onClick={() => history.push(`/event/${event.id}`)}
                     >
                       {event.name}
                     </p>
@@ -387,9 +407,7 @@ const DashBoard: React.FC = () => {
                               <img src={CreditSVG} alt="Credit Card" />
                               <p className="text-label-small font-medium ml-2">
                                 Starting from{" "}
-                                {extractMinPrice(
-                                  event.accessPolicies as AccessPolicy[]
-                                )}
+                                {extractMinPrice(event.accessPolicies)}
                               </p>
                             </div>
                             <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
@@ -400,7 +418,7 @@ const DashBoard: React.FC = () => {
                             </div>
                             {event.musicGenres.map((genre, index) => (
                               <div
-                                key={`carousel-genre-` + index}
+                                key={`carousel-genre-${index}`}
                                 className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl"
                               >
                                 <img
@@ -424,7 +442,6 @@ const DashBoard: React.FC = () => {
               <EventPlaceholder />
             )}
           </div>
-
           <>
             <p
               className="text-[27px] font-bold cursor-pointer absolute top-5 left-4"
@@ -432,16 +449,10 @@ const DashBoard: React.FC = () => {
             >
               Tailored
             </p>
-            {/* <img
-              className="h-6 absolute right-3 top-5"
-              src={PageInfoSVG}
-              alt="Page Info"
-              onClick={() => setFilterVisible(true)}
-            /> */}
             <button
-              ref={swipeButtonsRef} // Assigning ref dynamically
+              ref={swipeButtonsRef}
               id="animate-wiggle"
-              className={`absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75`}
+              className="absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75"
             >
               <img src={ArrowLeft} alt="Swipe for Details" />
               <p className="text-body-small font-semibold leading-[17px]">
@@ -450,14 +461,13 @@ const DashBoard: React.FC = () => {
             </button>
             <FooterBar />
           </>
-
           <SwipeableEdgeDrawer
             openState={filterVisible}
             onClose={() => setFilterVisible(false)}
           />
           <div
             ref={eventDetailRef}
-            className={`absolute top-0 left-full h-full w-full`}
+            className="absolute top-0 left-full h-full w-full"
           >
             <EventDetail />
           </div>
