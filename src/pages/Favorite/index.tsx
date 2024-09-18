@@ -21,6 +21,7 @@ const QUERY_LIKED = gql(`
           name
           media
           datetime
+          recurrence
           accessPolicies {
             minPrice
             currency
@@ -76,6 +77,7 @@ const Favorite: React.FC = () => {
   };
 
   // if (queryLoading) return <Loading />;
+  
 
   return (
     <IonPage>
@@ -130,11 +132,12 @@ const Favorite: React.FC = () => {
                         return liked.__typename === "Event";
                       })
                       .map((event) => (
+
                         <EventCard
                           key={event.id}
                           imgUrl={event.media[0]}
                           title={event.name}
-                          date={moment(event.datetime).format("D MMM")}
+                          date={event.recurrence !== null ? event.recurrence : moment(event.datetime).format("D MMM")}
                           location={event.hostedAt.municipality}
                           price={`FROM ${extractMinPrice(event.accessPolicies)}`}
                           titleLogo={event.hostedAt.avatar}

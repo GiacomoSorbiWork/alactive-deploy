@@ -54,6 +54,7 @@ const QUERY_VENUE= gql(`
         name
         media
         datetime
+        recurrence
         accessPolicies {
           type
           maxPrice
@@ -224,7 +225,7 @@ const VenueDetail: React.FC = () => {
                                   key={event.id}
                                   imgUrl={event.media[0]}
                                   title={event.name}
-                                  date={moment(event.datetime).format("D MMM")}
+                                  date={event.recurrence !== null ? event.recurrence : moment(event.datetime).format("D MMM")}
                                   location={venue?.municipality}
                                   price={`FROM ${extractMinPrice(event.accessPolicies)}`}
                                   titleLogo={venue?.avatar}
