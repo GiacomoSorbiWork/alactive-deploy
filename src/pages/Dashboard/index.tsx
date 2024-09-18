@@ -355,7 +355,7 @@ const DashBoard: React.FC = () => {
                     autoPlay
                     loop
                     playsInline
-                    webkit-playsinline={true}
+                    webkit-playsinline
                     disablePictureInPicture
                     style={{ pointerEvents: "none" }}
                     className="snap-center inset-0 object-cover w-full h-full absolute"
