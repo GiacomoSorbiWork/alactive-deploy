@@ -9,13 +9,13 @@ import playM3u8 from "../../util/playM3u8";
 import { RRule } from 'rrule';
 
 const dayMapping: { [key: number]: string } = {
-  0: 'Mon', // Monday
-  1: 'Tue', // Tuesday
-  2: 'Wen', // Wednesday
-  3: 'Thu', // Thursday
-  4: 'Fry', // Friday
-  5: 'Sat', // Saturday
-  6: 'Sun', // Sunday
+  0: 'Next Mon', // Monday
+  1: 'Next Tue', // Tuesday
+  2: 'Next Wen', // Wednesday
+  3: 'Next Thu', // Thursday
+  4: 'Next Fry', // Friday
+  5: 'Next Sat', // Saturday
+  6: "Next Sun", // Sunday
 };
 
 const getRecurrentDay = (rruleString: string) => {
@@ -123,7 +123,7 @@ const EventCard: React.FC<EventCardProps> = ({
       )}
 
       {isCard && displayedDate && (
-        <p className="absolute top-0 right-0 bg-black bg-opacity-80 text-center text-[12px] font-medium w-10 p-2 leading-[14.4px] tracking-[1%] rounded-bl-xl z-10">
+        <p className="absolute top-0 right-0 bg-black bg-opacity-80 text-center text-[12px] font-medium w-12 p-2 leading-[14.4px] tracking-[1%] rounded-bl-xl z-10">
           {displayedDate}
         </p>
       )}
