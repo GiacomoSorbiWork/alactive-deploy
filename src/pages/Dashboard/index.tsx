@@ -18,6 +18,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { AccessPolicy } from "../../__generated__/graphql";
 import moment from "moment";
 import playM3u8 from "../../util/playM3u8";
+import { RRule } from "rrule";
 // import Loading from "../../components/Loading";
 
 const QUERY_WHAT_I_LIKE = gql(`
@@ -55,6 +56,32 @@ const QUERY_RECOMMEND = gql(`
     }
   }  
 `);
+
+const dayMapping: { [key: number]: string } = {
+  0: 'Every Monday', // Monday
+  1: 'Every Tuesday', // Tuesday
+  2: 'Every Wednesday', // Wednesday
+  3: 'Every Thursday', // Thursday
+  4: 'Every Friday', // Friday
+  5: 'Every Saturday', // Saturday
+  6: "Every Sunday", // Sunday
+};
+
+const getRecurrentDay = (rruleString: string) => {
+  try {
+    const rule = RRule.fromString(rruleString);
+
+    // Extract the first (and only) day from the RRULE and return its abbreviation
+    const weekday = rule.options.byweekday[0]; // Get the first weekday
+
+    console.log('Extracted weekday as number:', weekday);
+
+    return weekday ? dayMapping[weekday] : null; 
+  } catch (error) {
+    console.error('Error parsing RRULE:', error);
+    return null;
+  }
+};
 
 export const extractMinPrice = (policies: AccessPolicy[]) => {
   const policy = policies.reduce(
@@ -400,7 +427,7 @@ const DashBoard: React.FC = () => {
                             <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                               <img src={CalendarSVG} alt="Calendar" />
                               <p className="text-label-small font-medium ml-2">
-                                {moment(event.datetime).format("DD/MM/yyyy")}
+                                {event.recurrence ? getRecurrentDay(event.recurrence) : moment(event.datetime).format("DD/MM/yyyy")}
                               </p>
                             </div>
                             {event.musicGenres.map((genre, index) => (
