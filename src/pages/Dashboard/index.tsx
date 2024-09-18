@@ -75,6 +75,11 @@ export const extractMinPrice = (policies: AccessPolicy[]) => {
 };
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
+
+  const truncateLabel = (text: string, maxLength: number): string => {
+    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+  };
+
   if (icon && label) {
     return (
       <button
@@ -92,7 +97,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
           }`}
           alt={label}
         />
-        <p className="text-body-small marquee">{label}</p>
+        <p className="text-body-small">{truncateLabel(label, 6)}</p>
       </button>
     );
   } else return <></>;
