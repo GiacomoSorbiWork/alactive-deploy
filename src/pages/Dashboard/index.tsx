@@ -92,13 +92,13 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
           }`}
           alt={label}
         />
-        <p className="text-body-small">{label}</p>
+        <p className="text-body-small marquee">{label}</p>
       </button>
     );
   } else return <></>;
 };
 
-const useVideoControls = (initialState = { id: "", muted: false }) => {
+const useVideoControls = (initialState = { id: "", muted: true }) => {
   const [isMuted, setIsMuted] = useState(initialState.muted);
 
   const toggleMute = () => setIsMuted((prev) => !prev);
