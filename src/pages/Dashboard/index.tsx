@@ -16,9 +16,10 @@ import MuteSVG from "../../../resources/svg/Speaker.svg";
 import UnmuteSVG from "../../../resources/svg/mute.svg";
 import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
-import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
+// import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import AlertDialogSlide from "../../components/Dialog";
+import InfoSVG from "../../../resources/svg/icons8-info.svg";
 
 // GraphQL queries
 const QUERY_WHAT_I_LIKE = gql`
@@ -364,7 +365,7 @@ const DashBoard: React.FC = () => {
                       }
                     }}
                     muted={true}
-                    autoPlay
+                    // autoPlay
                     playsInline
                     loop
                     style={{ pointerEvents: "none" }}
@@ -400,6 +401,11 @@ const DashBoard: React.FC = () => {
                       icon={isMuted ? UnmuteSVG : MuteSVG}
                       label={isMuted ? "Unmute" : "Mute"}
                       onClick={toggleMute}
+                    />
+                    <IconButton
+                      icon={InfoSVG}
+                      label={"Info"}
+                      onClick={handleGoEventDetail}
                     />
                   </div>
                   <div className="absolute bottom-[90px] left-4">
@@ -459,7 +465,7 @@ const DashBoard: React.FC = () => {
             >
               Tailored
             </p>
-            <button
+            {/* <button
               ref={swipeButtonsRef}
               id="animate-wiggle"
               className="absolute top-[46%] flex items-center right-3 p-2 rounded-[20px] bg-black bg-opacity-30 backdrop-blur-sm border border-solid border-white border-opacity-75"
@@ -468,7 +474,7 @@ const DashBoard: React.FC = () => {
               <p className="text-body-small font-semibold leading-[17px]">
                 Swipe for Details
               </p>
-            </button>
+            </button> */}
             <FooterBar />
           </>
           <SwipeableEdgeDrawer
