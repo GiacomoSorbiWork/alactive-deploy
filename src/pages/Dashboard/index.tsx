@@ -195,7 +195,7 @@ const DashBoard: React.FC = () => {
         entries.forEach(async (entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            video.muted = isMuted;
+            // video.muted = isMuted;
             if (video.src === "") {
               video.src = String(
                 data?.recommendMe.find((event) => event.id === video.id)?.video
@@ -354,9 +354,6 @@ const DashBoard: React.FC = () => {
                     ref={(el) => {
                       if (el) {
                         videoRefs.current[index] = el;
-                        el.play().catch((error) =>
-                          console.log("Autoplay was prevented:", error)
-                        );
                       }
                     }}
                     muted={true}
