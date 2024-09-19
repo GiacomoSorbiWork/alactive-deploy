@@ -20,6 +20,7 @@ import CalendarSVG from "../../../resources/svg/calendar.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import AlertDialogSlide from "../../components/Dialog";
 import InfoSVG from "../../../resources/svg/icons8-info.svg";
+import { RRule } from "rrule";
 
 // GraphQL queries
 const QUERY_WHAT_I_LIKE = gql`
@@ -95,7 +96,33 @@ interface LikeData {
 }
 
 // Helper functions
-export const extractMinPrice = (policies: AccessPolicy[]): string => {
+
+
+const dayMapping: { [key: number]: string } = {
+  0: 'Every Monday', // Monday
+  1: 'Every Tuesday', // Tuesday
+  2: 'Every Wednesday', // Wednesday
+  3: 'Every Thursday', // Thursday
+  4: 'Every Friday', // Friday
+  5: 'Every Saturday', // Saturday
+  6: "Every Sunday", // Sunday
+};
+
+const getRecurrentDay = (rruleString: string) => {
+  try {
+    const rule = RRule.fromString(rruleString);
+
+    // Extract the first (and only) day from the RRULE and return its abbreviation
+    const weekday = rule.options.byweekday[0]; // Get the first weekday
+
+    return weekday ? dayMapping[weekday] : null; 
+  } catch (error) {
+    console.error('Error parsing RRULE:', error);
+    return null;
+  }
+};
+
+export const extractMinPrice = (policies: AccessPolicy[]) => {
   const policy = policies.reduce(
     (min, policy) => {
       const minPrice = parseFloat(policy.minPrice);
@@ -114,6 +141,10 @@ export const extractMinPrice = (policies: AccessPolicy[]): string => {
 };
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
+  const truncateLabel = (text: string, maxLength: number): string => {
+    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+  };
+  
   if (!icon || !label) return null;
 
   return (
@@ -132,7 +163,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
         }`}
         alt={label}
       />
-      <p className="text-body-small">{label}</p>
+      <p className="text-body-small">{truncateLabel(label, 6)}</p>
     </button>
   );
 };
@@ -155,6 +186,7 @@ const DashBoard: React.FC = () => {
   const [currentEventId, setCurrentEventId] = useState<string>("");
   const [feedStartTime, setFeedStartTime] = useState<number>(0);
   const [audioAllowState, setAudioAllowState] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const { data: ILike, refetch: refetchILike } =
     useQuery<LikeData>(QUERY_WHAT_I_LIKE);
@@ -167,6 +199,20 @@ const DashBoard: React.FC = () => {
   );
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
+  useEffect(() => {
+    // Controllo se l'alert è già stato mostrato
+    const hasSeenAlert = localStorage.getItem('hasSeenAlert');
+    if (!hasSeenAlert) {
+      setShowAlert(true);
+    }
+  }, []);
+
+  const handleAgreeState = (state: boolean) => {
+    setAudioAllowState(state);
+    localStorage.setItem('hasSeenAlert', 'true'); // Salva che l'alert è stato visto
+    setShowAlert(false); // Nascondi l'alert
+  };
 
   useEffect(() => {
     if (!loading && feedStartTime <= 6) {
@@ -346,7 +392,8 @@ const DashBoard: React.FC = () => {
 
   return (
     <IonPage>
-      <AlertDialogSlide getAgreeState={getAgreeState} />
+      {showAlert && <AlertDialogSlide getAgreeState={handleAgreeState} />}
+      {/* <AlertDialogSlide getAgreeState={getAgreeState} /> */}
       <IonContent fullscreen={true}>
         <div className="relative h-full">
           <div
@@ -429,7 +476,7 @@ const DashBoard: React.FC = () => {
                             <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                               <img src={CalendarSVG} alt="Calendar" />
                               <p className="text-label-small font-medium ml-2">
-                                {moment(event.datetime).format("DD/MM/yyyy")}
+                                {event.recurrence ? getRecurrentDay(event.recurrence) : moment(event.datetime).format("DD/MM/yyyy")}
                               </p>
                             </div>
                             {event.musicGenres.map((genre, index) => (

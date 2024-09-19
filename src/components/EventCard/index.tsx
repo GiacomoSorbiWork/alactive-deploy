@@ -6,6 +6,31 @@ import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ThumbUPSVG from "../../../resources/svg/thumbvector.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
 import playM3u8 from "../../util/playM3u8";
+import { RRule } from 'rrule';
+
+const dayMapping: { [key: number]: string } = {
+  0: 'Next Mon', // Monday
+  1: 'Next Tue', // Tuesday
+  2: 'Next Wen', // Wednesday
+  3: 'Next Thu', // Thursday
+  4: 'Next Fry', // Friday
+  5: 'Next Sat', // Saturday
+  6: "Next Sun", // Sunday
+};
+
+const getRecurrentDay = (rruleString: string) => {
+  try {
+    const rule = RRule.fromString(rruleString);
+
+    // Extract the first (and only) day from the RRULE and return its abbreviation
+    const weekday = rule.options.byweekday[0]; // Get the first weekday
+
+    return weekday ? dayMapping[weekday] : null; 
+  } catch (error) {
+    console.error('Error parsing RRULE:', error);
+    return null;
+  }
+};
 
 const EventCard: React.FC<EventCardProps> = ({
   imgUrl,
@@ -26,6 +51,9 @@ const EventCard: React.FC<EventCardProps> = ({
   const history = useHistory();
   const isCard = purpose === "card";
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const isRRule = date && date.startsWith('FREQ=WEEKLY');
+  const displayedDate = isRRule ? getRecurrentDay(date) : date;
 
   const handleClick = () => {
     if (selectFunc) {
@@ -92,9 +120,9 @@ const EventCard: React.FC<EventCardProps> = ({
         />
       )}
 
-      {isCard && date && (
-        <p className="absolute top-0 right-0 bg-black bg-opacity-80 text-center text-[12px] font-medium w-10 p-2 leading-[14.4px] tracking-[1%] rounded-bl-xl z-10">
-          {date}
+      {isCard && displayedDate && (
+        <p className="absolute top-0 right-0 bg-black bg-opacity-80 text-center text-[12px] font-medium w-12 p-2 leading-[14.4px] tracking-[1%] rounded-bl-xl z-10">
+          {displayedDate}
         </p>
       )}
 

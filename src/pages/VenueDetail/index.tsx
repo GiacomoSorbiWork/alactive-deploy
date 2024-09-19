@@ -54,6 +54,7 @@ const QUERY_VENUE= gql(`
         name
         media
         datetime
+        recurrence
         accessPolicies {
           type
           maxPrice
@@ -170,7 +171,7 @@ const VenueDetail: React.FC = () => {
         <ArrowBack />
         <img
           className="absolute right-4 top-6 z-20"
-          src={!Liked ? LikedSVG : LikeSVG}
+          src={Liked ? LikedSVG : LikeSVG}
           onClick={toggleLike}
         />
         <CarouselComponent items={venue?.media?? []} />
@@ -224,7 +225,7 @@ const VenueDetail: React.FC = () => {
                                   key={event.id}
                                   imgUrl={event.media[0]}
                                   title={event.name}
-                                  date={moment(event.datetime).format("D MMM")}
+                                  date={event.recurrence !== null ? event.recurrence : moment(event.datetime).format("D MMM")}
                                   location={venue?.municipality}
                                   price={`FROM ${extractMinPrice(event.accessPolicies)}`}
                                   titleLogo={venue?.avatar}
