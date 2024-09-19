@@ -8,13 +8,13 @@ import { gql } from "./__generated__";
 import { useQuery } from "@apollo/client";
 import { PurpleScreen } from "./components/PurpleScreen";
 import HighlightsView from "./pages/HighlightsView";
+import DashBoard from "./pages/Dashboard";
 
 // Lazy load the components
 const Login = lazy(() => import("./pages/Login"));
 const OnBoarding = lazy(() => import("./pages/OnBoarding"));
 const VenueDetail = lazy(() => import("./pages/VenueDetail"));
 const EventDetail = lazy(() => import("./pages/EventDetail"));
-const DashBoard = lazy(() => import("./pages/Dashboard"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Favorite = lazy(() => import("./pages/Favorite"));
 const EventMediaView = lazy(() => import("./pages/EventMediaView"));
@@ -69,7 +69,11 @@ const RouterPart: React.FC = () => {
             <Route exact path="/host-events" component={HostingEvent} />
             <Route path="/event/:id" component={EventDetail} />
             <Route exact path="/event-view" component={EventMediaView} />
-            <Route exact path="/highlight-view/:id/:highlightTitle" component={HighlightsView} />
+            <Route
+              exact
+              path="/highlight-view/:id/:highlightTitle"
+              component={HighlightsView}
+            />
             <Route exact path="/dashboard" component={DashBoard} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/favorite" component={Favorite} />
