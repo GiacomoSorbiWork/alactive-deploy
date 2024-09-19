@@ -18,6 +18,7 @@ import CreditSVG from "../../../resources/svg/solar_wallet-linear.svg";
 import CalendarSVG from "../../../resources/svg/calendar.svg";
 import ArrowLeft from "../../../resources/svg/Left Arrow.svg";
 import MusicSVG from "../../../resources/svg/musical-note-music-svgrepo-com.svg";
+import AlertDialogSlide from "../../components/Dialog";
 
 // GraphQL queries
 const QUERY_WHAT_I_LIKE = gql`
@@ -152,6 +153,7 @@ const DashBoard: React.FC = () => {
   const touchEnd = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [currentEventId, setCurrentEventId] = useState<string>("");
   const [feedStartTime, setFeedStartTime] = useState<number>(0);
+  const [audioAllowState, setAudioAllowState] = useState<boolean>(false);
 
   const { data: ILike, refetch: refetchILike } =
     useQuery<LikeData>(QUERY_WHAT_I_LIKE);
@@ -195,8 +197,7 @@ const DashBoard: React.FC = () => {
         entries.forEach(async (entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            video.click();
-            video.muted = isMuted;
+            if (audioAllowState) video.muted = isMuted;
             if (video.src === "") {
               video.src = String(
                 data?.recommendMe.find((event) => event.id === video.id)?.video
@@ -224,7 +225,7 @@ const DashBoard: React.FC = () => {
         if (video) observer.unobserve(video);
       });
     };
-  }, [isMuted, data]);
+  }, [isMuted, data, audioAllowState]);
 
   useEffect(() => {
     if (eventDetailRef.current) {
@@ -301,6 +302,10 @@ const DashBoard: React.FC = () => {
     handleSwipeButtonTouchEnd,
   ]);
 
+  const getAgreeState = (state: boolean) => {
+    setAudioAllowState(state);
+  };
+
   const EventPlaceholder: React.FC = () => (
     <div className="relative h-full">
       <div className="bg-gray-700 w-full h-full absolute animate-pulse"></div>
@@ -340,6 +345,7 @@ const DashBoard: React.FC = () => {
 
   return (
     <IonPage>
+      <AlertDialogSlide getAgreeState={getAgreeState} />
       <IonContent fullscreen={true}>
         <div className="relative h-full">
           <div
