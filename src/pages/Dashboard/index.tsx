@@ -201,8 +201,8 @@ const DashBoard: React.FC = () => {
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
 
   useEffect(() => {
-    // Controllo se l'alert è già stato mostrato
-    const hasSeenAlert = localStorage.getItem('hasSeenAlert');
+    const hasSeenAlert = sessionStorage.getItem("hasSeenAlert");
+  
     if (!hasSeenAlert) {
       setShowAlert(true);
     }
@@ -210,7 +210,7 @@ const DashBoard: React.FC = () => {
 
   const handleAgreeState = (state: boolean) => {
     setAudioAllowState(state);
-    localStorage.setItem('hasSeenAlert', 'true'); // Salva che l'alert è stato visto
+    sessionStorage.setItem('hasSeenAlert', 'true'); // Salva che l'alert è stato visto
     setShowAlert(false); // Nascondi l'alert
   };
 
