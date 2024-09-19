@@ -202,6 +202,9 @@ const DashBoard: React.FC = () => {
               );
               await playM3u8(video.src, video);
             }
+            video
+              .play()
+              .catch((error) => console.log("Autoplay was prevented:", error));
           } else {
             video.muted = true;
           }
@@ -349,14 +352,17 @@ const DashBoard: React.FC = () => {
                     key={`${event.id}-video`}
                     id={event.id}
                     ref={(el) => {
-                      if (el) videoRefs.current[index] = el;
+                      if (el) {
+                        videoRefs.current[index] = el;
+                        el.play().catch((error) =>
+                          console.log("Autoplay was prevented:", error)
+                        );
+                      }
                     }}
                     muted={true}
                     autoPlay
-                    loop
                     playsInline
-                    webkit-playsinline
-                    disablePictureInPicture
+                    loop
                     style={{ pointerEvents: "none" }}
                     className="snap-center inset-0 object-cover w-full h-full absolute"
                   >
