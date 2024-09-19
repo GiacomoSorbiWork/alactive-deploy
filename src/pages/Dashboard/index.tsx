@@ -195,7 +195,8 @@ const DashBoard: React.FC = () => {
         entries.forEach(async (entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            // video.muted = isMuted;
+            video.click();
+            video.muted = isMuted;
             if (video.src === "") {
               video.src = String(
                 data?.recommendMe.find((event) => event.id === video.id)?.video
