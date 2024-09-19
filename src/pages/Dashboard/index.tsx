@@ -186,6 +186,7 @@ const DashBoard: React.FC = () => {
   const [currentEventId, setCurrentEventId] = useState<string>("");
   const [feedStartTime, setFeedStartTime] = useState<number>(0);
   const [audioAllowState, setAudioAllowState] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const { data: ILike, refetch: refetchILike } =
     useQuery<LikeData>(QUERY_WHAT_I_LIKE);
@@ -198,6 +199,20 @@ const DashBoard: React.FC = () => {
   );
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
+
+  useEffect(() => {
+    // Controllo se l'alert è già stato mostrato
+    const hasSeenAlert = localStorage.getItem('hasSeenAlert');
+    if (!hasSeenAlert) {
+      setShowAlert(true);
+    }
+  }, []);
+
+  const handleAgreeState = (state: boolean) => {
+    setAudioAllowState(state);
+    localStorage.setItem('hasSeenAlert', 'true'); // Salva che l'alert è stato visto
+    setShowAlert(false); // Nascondi l'alert
+  };
 
   useEffect(() => {
     if (!loading && feedStartTime <= 6) {
@@ -377,7 +392,8 @@ const DashBoard: React.FC = () => {
 
   return (
     <IonPage>
-      <AlertDialogSlide getAgreeState={getAgreeState} />
+      {showAlert && <AlertDialogSlide getAgreeState={handleAgreeState} />}
+      {/* <AlertDialogSlide getAgreeState={getAgreeState} /> */}
       <IonContent fullscreen={true}>
         <div className="relative h-full">
           <div
