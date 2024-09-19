@@ -25,8 +25,6 @@ const getRecurrentDay = (rruleString: string) => {
     // Extract the first (and only) day from the RRULE and return its abbreviation
     const weekday = rule.options.byweekday[0]; // Get the first weekday
 
-    console.log('Extracted weekday as number:', weekday);
-
     return weekday ? dayMapping[weekday] : null; 
   } catch (error) {
     console.error('Error parsing RRULE:', error);
