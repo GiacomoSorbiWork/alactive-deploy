@@ -97,14 +97,13 @@ interface LikeData {
 
 // Helper functions
 
-
 const dayMapping: { [key: number]: string } = {
-  0: 'Every Monday', // Monday
-  1: 'Every Tuesday', // Tuesday
-  2: 'Every Wednesday', // Wednesday
-  3: 'Every Thursday', // Thursday
-  4: 'Every Friday', // Friday
-  5: 'Every Saturday', // Saturday
+  0: "Every Monday", // Monday
+  1: "Every Tuesday", // Tuesday
+  2: "Every Wednesday", // Wednesday
+  3: "Every Thursday", // Thursday
+  4: "Every Friday", // Friday
+  5: "Every Saturday", // Saturday
   6: "Every Sunday", // Sunday
 };
 
@@ -115,9 +114,9 @@ const getRecurrentDay = (rruleString: string) => {
     // Extract the first (and only) day from the RRULE and return its abbreviation
     const weekday = rule.options.byweekday[0]; // Get the first weekday
 
-    return weekday ? dayMapping[weekday] : null; 
+    return weekday ? dayMapping[weekday] : null;
   } catch (error) {
-    console.error('Error parsing RRULE:', error);
+    console.error("Error parsing RRULE:", error);
     return null;
   }
 };
@@ -142,9 +141,11 @@ export const extractMinPrice = (policies: AccessPolicy[]) => {
 
 const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
   const truncateLabel = (text: string, maxLength: number): string => {
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    return text.length > maxLength
+      ? `${text.substring(0, maxLength)}...`
+      : text;
   };
-  
+
   if (!icon || !label) return null;
 
   return (
@@ -186,7 +187,7 @@ const DashBoard: React.FC = () => {
   const [currentEventId, setCurrentEventId] = useState<string>("");
   const [feedStartTime, setFeedStartTime] = useState<number>(0);
   const [audioAllowState, setAudioAllowState] = useState<boolean>(false);
-  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean | null>(null);
 
   const { data: ILike, refetch: refetchILike } =
     useQuery<LikeData>(QUERY_WHAT_I_LIKE);
@@ -200,17 +201,8 @@ const DashBoard: React.FC = () => {
 
   const [setLikeRequest] = useMutation(MUTATION_LIKE);
 
-  useEffect(() => {
-    const hasSeenAlert = sessionStorage.getItem("hasSeenAlert");
-  
-    if (!hasSeenAlert) {
-      setShowAlert(true);
-    }
-  }, []);
-
   const handleAgreeState = (state: boolean) => {
     setAudioAllowState(state);
-    sessionStorage.setItem('hasSeenAlert', 'true'); // Salva che l'alert è stato visto
     setShowAlert(false); // Nascondi l'alert
   };
 
@@ -251,9 +243,7 @@ const DashBoard: React.FC = () => {
               );
               await playM3u8(video.src, video);
             }
-            video
-              .play()
-              .catch((error) => console.log("Autoplay was prevented:", error));
+            video.play().catch(() => setShowAlert(true));
           } else {
             video.muted = true;
           }
@@ -272,7 +262,7 @@ const DashBoard: React.FC = () => {
         if (video) observer.unobserve(video);
       });
     };
-  }, [isMuted, data, audioAllowState]);
+  }, [isMuted, data, audioAllowState, showAlert]);
 
   useEffect(() => {
     if (eventDetailRef.current) {
@@ -349,10 +339,6 @@ const DashBoard: React.FC = () => {
     handleSwipeButtonTouchEnd,
   ]);
 
-  const getAgreeState = (state: boolean) => {
-    setAudioAllowState(state);
-  };
-
   const EventPlaceholder: React.FC = () => (
     <div className="relative h-full">
       <div className="bg-gray-700 w-full h-full absolute animate-pulse"></div>
@@ -392,7 +378,7 @@ const DashBoard: React.FC = () => {
 
   return (
     <IonPage>
-      {showAlert && <AlertDialogSlide getAgreeState={handleAgreeState} />}
+      {!!showAlert && <AlertDialogSlide getAgreeState={handleAgreeState} />}
       {/* <AlertDialogSlide getAgreeState={getAgreeState} /> */}
       <IonContent fullscreen={true}>
         <div className="relative h-full">
@@ -411,8 +397,8 @@ const DashBoard: React.FC = () => {
                         videoRefs.current[index] = el;
                       }
                     }}
-                    muted={true}
-                    // autoPlay
+                    muted={index != 0 || (index == 0 && showAlert == false)}
+                    autoPlay
                     playsInline
                     loop
                     style={{ pointerEvents: "none" }}
@@ -476,7 +462,9 @@ const DashBoard: React.FC = () => {
                             <div className="flex items-center px-2 py-1 min-w-max min-h-9 bg-secondaryContainer bg-opacity-40 backdrop-blur-[3px] rounded-3xl">
                               <img src={CalendarSVG} alt="Calendar" />
                               <p className="text-label-small font-medium ml-2">
-                                {event.recurrence ? getRecurrentDay(event.recurrence) : moment(event.datetime).format("DD/MM/yyyy")}
+                                {event.recurrence
+                                  ? getRecurrentDay(event.recurrence)
+                                  : moment(event.datetime).format("DD/MM/yyyy")}
                               </p>
                             </div>
                             {event.musicGenres.map((genre, index) => (
