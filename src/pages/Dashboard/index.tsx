@@ -236,14 +236,14 @@ const DashBoard: React.FC = () => {
         entries.forEach(async (entry) => {
           const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
-            if (audioAllowState) video.muted = isMuted;
+            if (isMuted) video.muted = isMuted;
             if (video.src === "") {
               video.src = String(
                 data?.recommendMe.find((event) => event.id === video.id)?.video
               );
               await playM3u8(video.src, video);
             }
-            video.play().catch(() => setShowAlert(true));
+            // video.play().catch(() => setShowAlert(true));
           } else {
             video.muted = true;
           }
@@ -398,7 +398,7 @@ const DashBoard: React.FC = () => {
                         videoRefs.current[index] = el;
                       }
                     }}
-                    muted={index != 0 || (index == 0 && !showAlert)}
+                    muted={true}
                     autoPlay
                     playsInline
                     loop
