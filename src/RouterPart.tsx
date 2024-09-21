@@ -1,5 +1,5 @@
-import React, { useEffect, lazy, Suspense, useState } from "react";
-import { Route, useHistory } from "react-router-dom";
+import React, { useEffect, lazy, Suspense, useState, useRef } from "react";
+import { Route, useHistory, useLocation } from "react-router-dom";
 import { IonRouterOutlet } from "@ionic/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "./components/Loading";
@@ -29,11 +29,21 @@ const RouterPart: React.FC = () => {
   const { isAuthenticated, isLoading, error } = useAuth0();
   const [purpleScreen, setPurpleScreen] = useState<boolean>(true);
   const history = useHistory();
+  const location = useLocation();
+  const prevLocationRef = useRef<string>();
+
+  useEffect(() => {
+    return () => {
+      prevLocationRef.current = location.pathname;
+    };
+  }, [location.pathname]);
+
+  const isPreviousLogin = prevLocationRef.current === "/login";
 
   const { data: dolExist, loading: queryLoading } = useQuery(QUERY_DOL_EXIST);
 
   useEffect(() => {
-    setPurpleScreen(true);
+    if (isPreviousLogin) setPurpleScreen(true);
     if (!isLoading && !queryLoading) {
       if (!isLoading && !isAuthenticated) {
         history.push("/login");
