@@ -169,7 +169,7 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, label, onClick }) => {
   );
 };
 
-const useVideoControls = (initialState = { id: "", muted: false }) => {
+const useVideoControls = (initialState = { id: "", muted: true }) => {
   const [isMuted, setIsMuted] = useState<boolean>(initialState.muted);
   const toggleMute = () => setIsMuted((prev) => !prev);
   return { isMuted, toggleMute };
@@ -378,7 +378,8 @@ const DashBoard: React.FC = () => {
 
   return (
     <IonPage>
-      {showAlert && <AlertDialogSlide getAgreeState={handleAgreeState} />}
+
+      {/*showAlert && <AlertDialogSlide getAgreeState={handleAgreeState} />*/}
       {/* <AlertDialogSlide getAgreeState={getAgreeState} /> */}
       <IonContent fullscreen={true}>
         <div className="relative h-full">
