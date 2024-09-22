@@ -17,7 +17,10 @@ const Login: React.FC = () => {
         <LargeDefaultButton
           text="Continue"
           className="w-full"
-          onClick={() => loginWithRedirect()}
+          onClick={() => {
+            localStorage.setItem("fromLogin", "true");
+            loginWithRedirect();
+          }}
           state={"isActive"}
         />
       </IonFooter>

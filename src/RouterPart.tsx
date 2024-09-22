@@ -1,5 +1,5 @@
-import React, { useEffect, lazy, Suspense, useState, useRef } from "react";
-import { Route, useHistory, useLocation } from "react-router-dom";
+import React, { useEffect, lazy, Suspense, useState } from "react";
+import { Route, useHistory } from "react-router-dom";
 import { IonRouterOutlet } from "@ionic/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "./components/Loading";
@@ -27,23 +27,16 @@ const QUERY_DOL_EXIST = gql(`
 
 const RouterPart: React.FC = () => {
   const { isAuthenticated, isLoading, error } = useAuth0();
-  const [purpleScreen, setPurpleScreen] = useState<boolean>(true);
+  const [purpleScreen, setPurpleScreen] = useState<boolean>(false);
   const history = useHistory();
-  const location = useLocation();
-  const prevLocationRef = useRef<string>();
-
-  useEffect(() => {
-    return () => {
-      prevLocationRef.current = location.pathname;
-    };
-  }, [location.pathname]);
-
-  const isPreviousLogin = prevLocationRef.current === "/login";
+  const isPreviousLogin = localStorage.getItem("fromLogin") === "true";
 
   const { data: dolExist, loading: queryLoading } = useQuery(QUERY_DOL_EXIST);
 
   useEffect(() => {
-    if (isPreviousLogin) setPurpleScreen(true);
+    if (!isPreviousLogin) {
+      setPurpleScreen(true);
+    }
     if (!isLoading && !queryLoading) {
       if (!isLoading && !isAuthenticated) {
         history.push("/login");
@@ -67,6 +60,7 @@ const RouterPart: React.FC = () => {
     return <div>Error: {error.message}</div>;
   }
   if (purpleScreen) return <PurpleScreen />;
+  if (isPreviousLogin) localStorage.removeItem("fromLogin");
   return (
     <IonRouterOutlet className="bg-primaryContainer overflow-y-auto">
       <Suspense fallback={<Loading />}>
