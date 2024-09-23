@@ -402,10 +402,10 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
             <Divider className="!border-white h-0 opacity-20 !mt-6" />
             <div className="py-1">
               {event.accessPolicies
-              .filter(item => item.type === "TICKETS" || item.type === "TABLES")
+              .filter(item => (item.type === "GUESTLIST" || item.type === "TICKETS" || item.type === "TABLES") && item.info != "TBD")
               .map((item, index) => {
 
-                const subTitle = item.type === "TABLES" && !event.accessPolicies.some(ap => ap.type === "TICKET")
+                const subTitle = item.type === "TABLES"
                     ? ""
                     : item.currency + item.minPrice + " - " + item.currency + item.maxPrice;
 
@@ -420,7 +420,8 @@ const EventDetail: React.FC<{ window?: () => Window }> = ({ window }) => {
                         ? "bg-white bg-opacity-10 rounded-[20px]"
                         : ""
                     }
-                    onClick={() => setSelectedBook("booklist" + index)}
+                    // onClick={() => setSelectedBook("booklist" + index)}
+                    onClick={item.info === "TBD" ? undefined : () => setSelectedBook("booklist" + index)}
                   ></BookList>
                 );
               })}
